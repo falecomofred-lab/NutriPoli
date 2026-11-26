@@ -2,25 +2,25 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Plano Poliana</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <title>NutriDia — Plano Alimentar</title>
 
   <!-- Metadados PWA -->
+  <meta name="theme-color" content="#F6F4EF">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Plano Poliana">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="NutriDia">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#7C9A7A">
-  <meta name="description" content="Plano Alimentar de Poliana - Acompanhamento diário, Mercado e Mounjaro">
+  <meta name="description" content="NutriDia — Acompanhamento alimentar editorial, lista de mercado e protocolo Mounjaro.">
 
-  <!-- Ícones do App (Tela Inicial) -->
+  <!-- Ícones do App -->
   <link rel="icon" type="image/png" href="icon.png">
   <link rel="apple-touch-icon" href="icon.png">
 
-  <!-- Google Fonts: Inter (com fallback seguro) -->
+  <!-- Google Fonts: Fraunces + Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -29,25 +29,25 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            serif: ['Fraunces', 'Georgia', 'serif'],
+            sans: ['Plus Jakarta Sans', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
           },
           colors: {
-            sage: {
-              50: '#F3F7F2',
-              100: '#E6ECE6',
-              200: '#C9D8C8',
-              300: '#A5BFA3',
-              600: '#7C9A7A',
-              700: '#628060',
-              800: '#4E6B4C',
+            canvas: '#F6F4EF',
+            surface: '#FFFFFF',
+            hairline: '#E8E3D9',
+            ink: '#1A241E',
+            muted: '#626E66',
+            forest: {
+              DEFAULT: '#3D5A47',
+              dark: '#2F4737',
+              tint: '#EDF2EE',
+              border: '#D5E1D8',
             },
-            cream: '#F7F9F7',
-            terracotta: {
-              50: '#FDF6F0',
-              100: '#FAE8D8',
-              200: '#F3CFAF',
-              700: '#A6542B',
-              800: '#854221',
+            warm: {
+              DEFAULT: '#A65E3E',
+              bg: '#FBF3EE',
+              border: '#EED8CC',
             }
           }
         }
@@ -56,12 +56,34 @@
   </script>
 
   <style>
+    :root {
+      --canvas: #F6F4EF;
+      --surface: #FFFFFF;
+      --hairline: #E8E3D9;
+      --ink: #1A241E;
+      --muted: #626E66;
+      --forest: #3D5A47;
+      --forest-tint: #EDF2EE;
+      --warm: #A65E3E;
+      --warm-bg: #FBF3EE;
+      --warm-border: #EED8CC;
+    }
+
     html, body {
-      background-color: #ECEFE9;
-      color: #1F2937;
+      background-color: var(--canvas);
+      color: var(--ink);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
       -webkit-tap-highlight-color: transparent;
       overscroll-behavior-y: none;
+      margin: 0;
+      padding: 0;
     }
+
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+
     .no-scrollbar::-webkit-scrollbar {
       display: none;
     }
@@ -69,393 +91,649 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
+
+    /* Menu inferior fixo: filho direto de <body>, imune a overflow/transform */
+    #bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 9999;
+      background: rgba(246, 244, 239, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid #E5E0D6;
+      padding-top: 8px;
+      padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    }
+
+    .nav-inner {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    /* Área principal com folga generosa para o rodapé aparecer acima do menu fixo */
+    #app-main-scroll {
+      padding-bottom: calc(110px + env(safe-area-inset-bottom));
+    }
+
     .fade-in {
-      animation: fadeIn 0.2s ease-out forwards;
+      animation: fadeIn 0.22s ease-out forwards;
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(4px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    .shake {
+      animation: shake 0.32s ease-in-out;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      50% { transform: translateX(6px); }
+      75% { transform: translateX(-4px); }
+    }
   </style>
 </head>
-<body class="font-sans antialiased min-h-screen flex justify-center">
+<body class="min-h-screen bg-canvas text-ink">
 
-  <!-- Container Mobile-First -->
-  <div id="app" class="w-full max-w-[480px] min-h-screen bg-cream shadow-xl flex flex-col relative pb-20">
+  <!-- ===================================================================== -->
+  <!-- TELA DE ENTRADA / SELEÇÃO DE PERFIL E PIN                             -->
+  <!-- ===================================================================== -->
+  <section id="auth-screen" class="hidden min-h-screen flex flex-col justify-between max-w-[480px] mx-auto px-6 py-10">
+    <div class="pt-4">
+      <div class="flex items-center gap-2 text-forest">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+          <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+        </svg>
+        <span class="font-serif text-xl tracking-tight text-ink">NutriDia</span>
+      </div>
+      <h1 class="font-serif text-3xl font-normal text-ink mt-6 leading-tight">
+        Seu acompanhamento <span class="italic text-forest">diário</span>.
+      </h1>
+      <p class="text-sm text-muted mt-2 leading-relaxed">
+        Selecione seu perfil para acessar seu cardápio, lista de mercado e histórico privado neste aparelho.
+      </p>
+    </div>
 
-    <!-- CABEÇALHO -->
-    <header class="bg-sage-600 text-white rounded-b-3xl px-5 pt-6 pb-5 shadow-md sticky top-0 z-20">
-      <div class="flex items-start justify-between gap-3">
-        <div>
-          <p id="date-display" class="text-sage-100 text-xs font-medium capitalize"></p>
-          <h1 id="greeting-display" class="text-xl font-bold tracking-tight mt-0.5">Olá, Poliana</h1>
+    <!-- Passo 1: Escolher Perfil -->
+    <div id="auth-step-profiles" class="space-y-3 my-8 fade-in">
+      <button
+        type="button"
+        onclick="selectAuthProfile('poliana')"
+        class="w-full bg-surface border border-hairline hover:border-forest rounded-2xl p-4 flex items-center justify-between transition active:scale-[0.99] text-left"
+      >
+        <div class="flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-full bg-forest-tint border border-forest-border text-forest font-serif text-lg flex items-center justify-center">
+            P
+          </div>
+          <div>
+            <p class="text-base font-semibold text-ink">Poliana</p>
+            <p class="text-xs text-muted">Plano alimentar e protocolo Mounjaro</p>
+          </div>
         </div>
+        <svg class="w-5 h-5 text-muted" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </button>
+
+      <button
+        type="button"
+        onclick="selectAuthProfile('rayne')"
+        class="w-full bg-surface border border-hairline hover:border-forest rounded-2xl p-4 flex items-center justify-between transition active:scale-[0.99] text-left"
+      >
+        <div class="flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-full bg-forest-tint border border-forest-border text-forest font-serif text-lg flex items-center justify-center">
+            R
+          </div>
+          <div>
+            <p class="text-base font-semibold text-ink">Rayne</p>
+            <p class="text-xs text-muted">Plano alimentar e protocolo Mounjaro</p>
+          </div>
+        </div>
+        <svg class="w-5 h-5 text-muted" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Passo 2: Digitar PIN (4 dígitos) -->
+    <div id="auth-step-pin" class="hidden my-6 fade-in">
+      <div class="flex items-center justify-between mb-6">
         <button
-          id="btn-nutri-info"
           type="button"
-          aria-label="Dados do Nutricionista"
-          class="bg-white/15 hover:bg-white/25 active:scale-95 transition px-3 py-2 rounded-2xl flex items-center gap-1.5 text-xs font-medium backdrop-blur-sm"
+          onclick="backToProfileSelect()"
+          class="inline-flex items-center gap-1.5 text-xs font-medium text-muted hover:text-ink transition py-1"
         >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M15 18l-6-6 6-6"/>
           </svg>
-          <span>Nutricionista</span>
+          <span>Voltar</span>
         </button>
+        <span id="auth-pin-profile-name" class="text-sm font-semibold text-ink">Poliana</span>
       </div>
 
-      <!-- Barra de Progresso das Refeições (visível apenas na aba Cardápio) -->
-      <div id="header-meal-progress" class="mt-4 bg-white/15 rounded-2xl p-3 backdrop-blur-sm">
-        <div class="flex items-center justify-between text-xs font-medium mb-1.5">
-          <span>Refeições concluídas hoje</span>
-          <span id="progress-text" class="font-bold">0/7 refeições</span>
+      <p class="text-center text-xs text-muted mb-4">Digite seu PIN de 4 dígitos</p>
+
+      <!-- 4 Bolinhas do PIN -->
+      <div id="pin-dots" class="flex items-center justify-center gap-4 mb-2">
+        <span class="w-3.5 h-3.5 rounded-full border border-forest/40 transition-all"></span>
+        <span class="w-3.5 h-3.5 rounded-full border border-forest/40 transition-all"></span>
+        <span class="w-3.5 h-3.5 rounded-full border border-forest/40 transition-all"></span>
+        <span class="w-3.5 h-3.5 rounded-full border border-forest/40 transition-all"></span>
+      </div>
+      <p id="pin-error-msg" class="text-center text-xs text-warm h-4 mb-4 font-medium"></p>
+
+      <!-- Teclado Numérico Minimalista -->
+      <div class="grid grid-cols-3 gap-3 max-w-[270px] mx-auto">
+        <button type="button" onclick="pressPinDigit('1')" class="h-14 rounded-2xl bg-surface border border-hairline text-lg font-medium text-ink tabular-nums active:bg-forest-tint transition">1</button>
+        <button type="button" onclick="pressPinDigit('2')" class="h-14 rounded-2xl bg-surface border border-hairline text-lg font-medium text-ink tabular-nums active:bg-forest-tint transition">2</button>
+        <button type="button" onclick="pressPinDigit('3')" class="h-14 rounded-2xl bg-surface border border-hairline text-lg font-medium text-ink tabular-nums active:bg-forest-tint transition">3</button>
+        <button type="button" onclick="pressPinDigit('4')" class="h-14 rounded-2xl bg-surface border border-hairline text-lg font-medium text-ink tabular-nums active:bg-forest-tint transition">4</button>
+        <button type="button" onclick="pressPinDigit('5')" class="h-14 rounded-2xl bg-surface border border-hairline text-lg font-medium text-ink tabular-nums active:bg-forest-tint transition">5</button>
+        <button type="button" onclick="pressPinDigit('6')" class="h-14 rounded-2xl bg-surface border border-hairline text-lg font-medium text-ink tabular-nums active:bg-forest-tint transition">6</button>
+        <button type="button" onclick="pressPinDigit('7')" class="h-14 rounded-2xl bg-surface border border-hairline text-lg font-medium text-ink tabular-nums active:bg-forest-tint transition">7</button>
+        <button type="button" onclick="pressPinDigit('8')" class="h-14 rounded-2xl bg-surface border border-hairline text-lg font-medium text-ink tabular-nums active:bg-forest-tint transition">8</button>
+        <button type="button" onclick="pressPinDigit('9')" class="h-14 rounded-2xl bg-surface border border-hairline text-lg font-medium text-ink tabular-nums active:bg-forest-tint transition">9</button>
+        <div></div>
+        <button type="button" onclick="pressPinDigit('0')" class="h-14 rounded-2xl bg-surface border border-hairline text-lg font-medium text-ink tabular-nums active:bg-forest-tint transition">0</button>
+        <button type="button" onclick="deletePinDigit()" aria-label="Apagar" class="h-14 rounded-2xl bg-transparent text-muted hover:text-ink flex items-center justify-center active:scale-95 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/>
+            <line x1="18" y1="9" x2="12" y2="15"/>
+            <line x1="12" y1="9" x2="18" y2="15"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="text-center pt-4">
+      <a href="https://venure.com.br" target="_blank" rel="noopener noreferrer" class="text-[11px] tracking-wide text-muted hover:text-forest transition">
+        tecnologia Venure.com.br
+      </a>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- CONTAINER PRINCIPAL DO APP (CENTRALIZADO, SEM TRANSFORM/OVERFLOW)     -->
+  <!-- ===================================================================== -->
+  <div id="app-shell" class="hidden max-w-[480px] mx-auto min-h-screen flex flex-col">
+
+    <!-- CABEÇALHO EDITORIAL -->
+    <header class="px-5 pt-6 pb-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-1.5 text-forest">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+          </svg>
+          <span class="font-serif text-base tracking-tight text-ink">NutriDia</span>
         </div>
-        <div class="w-full h-2 bg-black/20 rounded-full overflow-hidden">
-          <div id="progress-bar" class="h-full bg-white rounded-full transition-all duration-300" style="width: 0%"></div>
+
+        <div class="flex items-center gap-2">
+          <button
+            type="button"
+            onclick="openNutriModal()"
+            aria-label="Dados do Nutricionista"
+            class="h-8 px-2.5 rounded-full bg-surface border border-hairline text-xs font-medium text-muted hover:text-ink hover:border-forest/40 transition inline-flex items-center gap-1.5"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="16" x2="12" y2="12"/>
+              <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+            <span>Nutricionista</span>
+          </button>
+
+          <button
+            type="button"
+            onclick="openProfileModal()"
+            aria-label="Configurações e Trocar Perfil"
+            class="h-8 px-2.5 rounded-full bg-surface border border-hairline text-xs font-medium text-muted hover:text-ink hover:border-forest/40 transition inline-flex items-center gap-1.5"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <span id="header-profile-label">Perfil</span>
+          </button>
         </div>
+      </div>
+
+      <div class="mt-4">
+        <p id="date-display" class="text-xs font-medium uppercase tracking-widest text-muted"></p>
+        <h1 id="greeting-display" class="font-serif text-[28px] font-normal text-ink leading-tight mt-1"></h1>
       </div>
     </header>
 
-    <!-- =================================================================== -->
-    <!-- ABA 1: CARDÁPIO                                                     -->
-    <!-- =================================================================== -->
-    <main id="view-cardapio" class="flex-1 px-4 pt-4 pb-6 space-y-4 fade-in">
+    <!-- ÁREA ROLÁVEL PRINCIPAL -->
+    <main id="app-main-scroll" class="flex-1 px-5 space-y-5">
 
-      <!-- Card Mounjaro (toda quarta-feira) -->
-      <section id="mounjaro-card" class="rounded-3xl p-4 shadow-sm border transition-all bg-indigo-50/70 border-indigo-200/80">
-        <!-- Renderizado via JS -->
-      </section>
+      <!-- ================================================================= -->
+      <!-- ABA 1: CARDÁPIO                                                   -->
+      <!-- ================================================================= -->
+      <div id="view-cardapio" class="space-y-4 fade-in">
 
-      <!-- Card Compacto de Hidratação -->
-      <section class="bg-white rounded-3xl p-4 shadow-sm border border-sage-100">
-        <div class="flex items-center justify-between gap-2 mb-2.5">
-          <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>
-              </svg>
-            </div>
+        <!-- Resumo Editorial do Dia (Progresso + Hidratação) -->
+        <section class="bg-surface border border-hairline rounded-2xl p-4 space-y-4">
+          <div class="flex items-center justify-between">
             <div>
-              <h2 class="text-sm font-bold text-gray-800 leading-tight">Hidratação</h2>
-              <p class="text-[11px] text-gray-500">Meta: 2.500 ml (10 copos)</p>
+              <p class="text-[11px] font-semibold uppercase tracking-wider text-muted">Progresso de hoje</p>
+              <p id="daily-progress-subtitle" class="text-sm font-semibold text-ink tabular-nums mt-0.5">0/7 refeições • 0/4 suplementos</p>
+            </div>
+            <div class="w-11 h-11 relative flex items-center justify-center shrink-0">
+              <svg class="w-11 h-11 -rotate-90" viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="15" fill="none" stroke="#EDF2EE" stroke-width="2.5"></circle>
+                <circle id="progress-ring" cx="18" cy="18" r="15" fill="none" stroke="#3D5A47" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="94.25" stroke-dashoffset="94.25" class="transition-all duration-300"></circle>
+              </svg>
+              <span id="progress-pct" class="absolute text-[10px] font-semibold text-forest tabular-nums">0%</span>
             </div>
           </div>
-          <div class="text-right">
-            <span id="water-amount" class="text-sm font-bold text-sky-700">0 ml</span>
-            <span id="water-cups" class="block text-[11px] text-gray-400">0/10 copos</span>
-          </div>
-        </div>
 
-        <div class="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden mb-3">
-          <div id="water-bar" class="h-full bg-sky-500 rounded-full transition-all duration-300" style="width: 0%"></div>
-        </div>
+          <div class="h-px bg-hairline"></div>
 
-        <div class="grid grid-cols-2 gap-2.5">
-          <button
-            type="button"
-            onclick="updateWater(-1)"
-            class="py-2.5 px-3 rounded-2xl bg-gray-100 hover:bg-gray-200 active:scale-95 transition text-gray-700 font-semibold text-xs"
-          >
-            − 250 ml
-          </button>
-          <button
-            type="button"
-            onclick="updateWater(1)"
-            class="py-2.5 px-3 rounded-2xl bg-sky-500 hover:bg-sky-600 active:scale-95 transition text-white font-semibold text-xs shadow-xs"
-          >
-            + 250 ml (1 copo)
-          </button>
-        </div>
-      </section>
-
-      <!-- Check-in rápido: Como você está hoje? -->
-      <section class="bg-white rounded-3xl p-4 shadow-sm border border-sage-100">
-        <p class="text-xs font-bold text-gray-800 mb-2.5">Como você está hoje?</p>
-        <div id="symptom-buttons" class="grid grid-cols-3 gap-2">
-          <!-- Renderizado via JS -->
-        </div>
-      </section>
-
-      <!-- Lista das 7 Refeições -->
-      <section aria-label="Plano Alimentar">
-        <div class="flex items-center justify-between px-1 mb-2.5">
-          <h2 class="text-xs font-bold uppercase tracking-wider text-gray-400">Cardápio do Dia</h2>
-          <span class="text-[11px] text-sage-800 font-medium">Toque nas opções para marcar</span>
-        </div>
-        <div id="meals-container" class="space-y-4">
-          <!-- Renderizado via JS -->
-        </div>
-      </section>
-
-    </main>
-
-    <!-- =================================================================== -->
-    <!-- ABA 2: MERCADO                                                      -->
-    <!-- =================================================================== -->
-    <main id="view-mercado" class="hidden flex-1 px-4 pt-4 pb-6 space-y-4 fade-in">
-
-      <!-- Dica Mounjaro -->
-      <section class="bg-indigo-50/80 border border-indigo-200/80 rounded-3xl p-4 shadow-xs flex items-start gap-3">
-        <div class="w-9 h-9 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shrink-0 text-base shadow-xs">
-          💡
-        </div>
-        <div>
-          <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-700">Dica Mounjaro</span>
-          <p class="text-xs text-indigo-950 font-medium leading-relaxed mt-0.5">
-            Priorize proteínas magras e boa hidratação; evite comprar ultraprocessados gordurosos que aumentam o enjoo.
-          </p>
-        </div>
-      </section>
-
-      <!-- Progresso, Filtros e Adicionar Extra -->
-      <section class="bg-white rounded-3xl p-4 shadow-sm border border-sage-100 space-y-3">
-        <div class="flex items-center justify-between gap-2">
+          <!-- Hidratação -->
           <div>
-            <h2 class="text-sm font-bold text-gray-900">Lista de Compras</h2>
-            <p id="market-progress-text" class="text-xs text-sage-800 font-semibold mt-0.5">0 de 0 itens no carrinho</p>
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-forest" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                  <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+                </svg>
+                <span class="text-xs font-semibold text-ink">Hidratação</span>
+                <span class="text-[11px] text-muted">Meta 2.500 ml</span>
+              </div>
+              <span id="water-amount" class="text-xs font-semibold text-forest tabular-nums">0 ml (0/10)</span>
+            </div>
+
+            <div class="w-full h-1.5 bg-forest-tint rounded-full overflow-hidden mb-3">
+              <div id="water-bar" class="h-full bg-forest rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onclick="updateWater(-1)"
+                class="py-2 px-3 rounded-xl bg-canvas border border-hairline hover:border-forest/40 active:scale-[0.98] transition text-xs font-semibold text-ink tabular-nums"
+              >
+                − 250 ml
+              </button>
+              <button
+                type="button"
+                onclick="updateWater(1)"
+                class="py-2 px-3 rounded-xl bg-forest hover:bg-forest-dark active:scale-[0.98] transition text-xs font-semibold text-white tabular-nums"
+              >
+                + 250 ml
+              </button>
+            </div>
           </div>
-          <button
-            type="button"
-            onclick="clearMarketCart()"
-            class="px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-red-50 hover:text-red-600 active:scale-95 transition text-xs font-semibold text-gray-600"
-          >
-            Limpar carrinho
-          </button>
-        </div>
+        </section>
 
-        <div class="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
-          <div id="market-progress-bar" class="h-full bg-sage-600 rounded-full transition-all duration-300" style="width: 0%"></div>
-        </div>
+        <!-- Card Mounjaro (Tirzepatida) -->
+        <section id="mounjaro-card" class="rounded-2xl p-4 border transition-all">
+          <!-- Renderizado via JS -->
+        </section>
 
-        <div class="grid grid-cols-3 gap-1.5 bg-gray-100 p-1 rounded-2xl">
-          <button
-            type="button"
-            id="filter-todos"
-            onclick="setMarketFilter('todos')"
-            class="py-1.5 px-2 rounded-xl text-xs font-semibold transition bg-sage-600 text-white shadow-xs"
-          >
-            Todos
-          </button>
-          <button
-            type="button"
-            id="filter-faltam"
-            onclick="setMarketFilter('faltam')"
-            class="py-1.5 px-2 rounded-xl text-xs font-semibold transition text-gray-600 hover:text-gray-900"
-          >
-            Faltam
-          </button>
-          <button
-            type="button"
-            id="filter-carrinho"
-            onclick="setMarketFilter('carrinho')"
-            class="py-1.5 px-2 rounded-xl text-xs font-semibold transition text-gray-600 hover:text-gray-900"
-          >
-            No carrinho
-          </button>
-        </div>
+        <!-- Check-in Diário de Bem-Estar -->
+        <section class="bg-surface border border-hairline rounded-2xl p-4">
+          <div class="flex items-center justify-between mb-2.5">
+            <p class="text-xs font-semibold text-ink">Como você está hoje?</p>
+            <span class="text-[11px] text-muted">Salvo no histórico</span>
+          </div>
+          <div id="symptom-buttons" class="grid grid-cols-2 gap-2">
+            <!-- Renderizado via JS -->
+          </div>
+        </section>
 
-        <form onsubmit="addExtraMarketItem(event)" class="flex gap-2 pt-1">
-          <input
-            id="input-extra-item"
-            type="text"
-            placeholder="+ Adicionar item extra (ex: água com gás)"
-            class="flex-1 bg-cream border border-sage-100 focus:border-sage-600 focus:outline-none rounded-2xl px-3.5 py-2.5 text-xs text-gray-800 placeholder-gray-400"
-          >
-          <button
-            type="submit"
-            class="px-4 py-2.5 rounded-2xl bg-sage-600 hover:bg-sage-800 active:scale-95 transition text-white font-bold text-xs shrink-0 shadow-xs"
-          >
-            Adicionar
-          </button>
-        </form>
-      </section>
-
-      <!-- Corredores -->
-      <div id="market-categories-container" class="space-y-4">
-        <!-- Renderizado via JS -->
+        <!-- Lista das 7 Refeições -->
+        <section aria-label="Plano Alimentar" class="pt-1">
+          <div class="flex items-baseline justify-between mb-3">
+            <h2 class="font-serif text-xl font-normal text-ink">Cardápio do dia</h2>
+            <span class="text-[11px] text-muted">Toque nas opções para marcar</span>
+          </div>
+          <div id="meals-container" class="space-y-3.5">
+            <!-- Renderizado via JS -->
+          </div>
+        </section>
       </div>
 
-    </main>
+      <!-- ================================================================= -->
+      <!-- ABA 2: MERCADO                                                    -->
+      <!-- ================================================================= -->
+      <div id="view-mercado" class="hidden space-y-4 fade-in">
 
-    <!-- =================================================================== -->
-    <!-- ABA 3: HISTÓRICO (EVOLUÇÃO E CONSULTA MÉDICA)                       -->
-    <!-- =================================================================== -->
-    <main id="view-historico" class="hidden flex-1 px-4 pt-4 pb-6 space-y-4 fade-in">
-
-      <!-- Privacidade -->
-      <section class="bg-sage-50 border border-sage-200 rounded-3xl p-4 flex items-start gap-3">
-        <div class="w-9 h-9 rounded-2xl bg-sage-600 text-white flex items-center justify-center shrink-0 text-base">
-          🔒
-        </div>
-        <div>
-          <h2 class="text-sm font-bold text-sage-800">Seu diário privado</h2>
-          <p class="text-xs text-sage-800/80 leading-relaxed mt-0.5">
-            Todos os seus registros ficam salvos com privacidade no próprio celular. À meia-noite o cardápio começa limpo, mas seus dias anteriores continuam guardados aqui para a consulta médica.
-          </p>
-        </div>
-      </section>
-
-      <!-- Resumo para a Consulta -->
-      <section class="bg-white rounded-3xl p-4 shadow-sm border border-sage-100 space-y-3">
-        <div class="flex items-center justify-between">
-          <h2 class="text-sm font-bold text-gray-900">Resumo para a Consulta</h2>
-          <span class="text-[11px] text-gray-400 font-medium">Últimos 14 dias</span>
-        </div>
-
-        <div id="history-summary-cards" class="grid grid-cols-3 gap-2">
-          <!-- Renderizado via JS -->
-        </div>
-
-        <button
-          type="button"
-          onclick="copyDoctorReport()"
-          class="w-full py-3 px-4 rounded-2xl bg-sage-600 hover:bg-sage-800 active:scale-[0.99] transition text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+        <!-- Dica Mounjaro -->
+        <section class="bg-warm-bg border border-warm-border rounded-2xl p-4 flex items-start gap-3">
+          <svg class="w-4 h-4 text-warm shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
           </svg>
-          <span>Copiar resumo para a médica (WhatsApp)</span>
-        </button>
-      </section>
+          <div>
+            <p class="text-[11px] font-semibold uppercase tracking-wider text-warm">Protocolo Mounjaro</p>
+            <p class="text-xs text-ink/90 leading-relaxed mt-0.5">
+              Priorize proteínas magras e frutas leves. Evite ultraprocessados gordurosos, que podem intensificar náuseas.
+            </p>
+          </div>
+        </section>
 
-      <!-- Aplicações de Mounjaro -->
-      <section class="bg-white rounded-3xl p-4 shadow-sm border border-sage-100">
-        <div class="flex items-center justify-between mb-3">
-          <h3 class="text-sm font-bold text-gray-900">Aplicações de Mounjaro (Quartas-feiras)</h3>
-          <span id="mounjaro-count-badge" class="text-[11px] font-bold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full">0</span>
-        </div>
-        <div id="history-mounjaro-list" class="space-y-2">
-          <!-- Renderizado via JS -->
-        </div>
-      </section>
-
-      <!-- Diário dos Últimos Dias -->
-      <section>
-        <div class="flex items-center justify-between px-1 mb-2.5">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400">Diário dos Últimos Dias</h3>
-          <span class="text-[11px] text-sage-800 font-medium">Toque no dia para ver detalhes</span>
-        </div>
-        <div id="history-daily-list" class="space-y-3">
-          <!-- Renderizado via JS -->
-        </div>
-      </section>
-
-    </main>
-
-    <!-- RODAPÉ DISCRETO EM TODAS AS ABAS -->
-    <footer class="mt-auto py-5 px-4 text-center border-t border-sage-100">
-      <a
-        href="https://venure.com.br"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-flex items-center justify-center text-xs font-medium text-gray-400 hover:text-sage-800 transition"
-      >
-        tecnologia Venure.com.br
-      </a>
-    </footer>
-
-    <!-- BARRA DE NAVEGAÇÃO INFERIOR FIXA (3 ABAS) -->
-    <nav aria-label="Navegação Principal" class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white/95 backdrop-blur-md border-t border-sage-100 px-3 py-2 z-30 shadow-[0_-4px_16px_rgba(0,0,0,0.04)]">
-      <div class="grid grid-cols-3 gap-1.5">
-        <button
-          type="button"
-          id="nav-btn-cardapio"
-          onclick="switchView('cardapio')"
-          class="flex flex-col items-center justify-center py-1.5 rounded-2xl transition active:scale-95 bg-sage-50 text-sage-800"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2M7 2v20M21 15V2v0a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/>
-          </svg>
-          <span class="text-[11px] font-bold mt-0.5">Cardápio</span>
-        </button>
-
-        <button
-          type="button"
-          id="nav-btn-mercado"
-          onclick="switchView('mercado')"
-          class="relative flex flex-col items-center justify-center py-1.5 rounded-2xl transition active:scale-95 text-gray-500 hover:bg-gray-50"
-        >
-          <div class="relative">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-            </svg>
-            <span
-              id="nav-market-badge"
-              class="absolute -top-1.5 -right-3 min-w-[18px] h-[18px] px-1 rounded-full bg-sage-600 text-white text-[10px] font-bold flex items-center justify-center shadow-xs"
+        <!-- Controles da Lista -->
+        <section class="bg-surface border border-hairline rounded-2xl p-4 space-y-3.5">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="font-serif text-lg text-ink leading-tight">Lista de compras</h2>
+              <p id="market-progress-text" class="text-xs text-muted tabular-nums mt-0.5">0 de 0 itens no carrinho</p>
+            </div>
+            <button
+              type="button"
+              onclick="clearMarketCart()"
+              class="text-xs font-medium text-muted hover:text-warm transition py-1 px-2 rounded-lg"
             >
-              0
-            </span>
+              Limpar carrinho
+            </button>
           </div>
-          <span class="text-[11px] font-bold mt-0.5">Mercado</span>
-        </button>
 
-        <button
-          type="button"
-          id="nav-btn-historico"
-          onclick="switchView('historico')"
-          class="flex flex-col items-center justify-center py-1.5 rounded-2xl transition active:scale-95 text-gray-500 hover:bg-gray-50"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-          </svg>
-          <span class="text-[11px] font-bold mt-0.5">Histórico</span>
-        </button>
+          <div class="w-full h-1.5 bg-forest-tint rounded-full overflow-hidden">
+            <div id="market-progress-bar" class="h-full bg-forest rounded-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+
+          <!-- Segmented Control -->
+          <div class="grid grid-cols-3 gap-1 bg-canvas p-1 rounded-full border border-hairline">
+            <button type="button" id="filter-todos" onclick="setMarketFilter('todos')" class="py-1.5 rounded-full text-xs font-semibold transition">Todos</button>
+            <button type="button" id="filter-faltam" onclick="setMarketFilter('faltam')" class="py-1.5 rounded-full text-xs font-semibold transition">Faltam</button>
+            <button type="button" id="filter-carrinho" onclick="setMarketFilter('carrinho')" class="py-1.5 rounded-full text-xs font-semibold transition">No carrinho</button>
+          </div>
+
+          <!-- Adicionar Item Extra -->
+          <form onsubmit="addExtraMarketItem(event)" class="flex gap-2">
+            <input
+              id="input-extra-item"
+              type="text"
+              placeholder="Adicionar item extra..."
+              class="flex-1 bg-canvas border border-hairline focus:border-forest focus:outline-none rounded-xl px-3.5 py-2.5 text-xs text-ink placeholder-muted"
+            >
+            <button
+              type="submit"
+              class="px-4 py-2.5 rounded-xl bg-forest hover:bg-forest-dark active:scale-95 transition text-white font-semibold text-xs shrink-0"
+            >
+              Adicionar
+            </button>
+          </form>
+        </section>
+
+        <!-- Corredores -->
+        <div id="market-categories-container" class="space-y-3.5">
+          <!-- Renderizado via JS -->
+        </div>
       </div>
-    </nav>
 
-    <!-- TOAST DE CONFIRMAÇÃO -->
-    <div
-      id="toast"
-      class="hidden fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white text-xs font-semibold px-4 py-2.5 rounded-2xl shadow-lg fade-in"
-    >
-      Resumo copiado!
-    </div>
+      <!-- ================================================================= -->
+      <!-- ABA 3: HISTÓRICO                                                  -->
+      <!-- ================================================================= -->
+      <div id="view-historico" class="hidden space-y-4 fade-in">
+
+        <!-- Resumo para Consulta -->
+        <section class="bg-surface border border-hairline rounded-2xl p-4 space-y-4">
+          <div class="flex items-baseline justify-between">
+            <h2 class="font-serif text-lg text-ink">Resumo para consulta</h2>
+            <span class="text-[11px] text-muted">Últimos 14 dias</span>
+          </div>
+
+          <div id="history-summary-cards" class="grid grid-cols-2 gap-2.5">
+            <!-- Renderizado via JS -->
+          </div>
+
+          <button
+            type="button"
+            onclick="copyDoctorReport()"
+            class="w-full py-3 px-4 rounded-xl bg-forest hover:bg-forest-dark active:scale-[0.99] transition text-white font-semibold text-xs inline-flex items-center justify-center gap-2"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            <span>Copiar resumo para WhatsApp</span>
+          </button>
+        </section>
+
+        <!-- Linha do Tempo Mounjaro -->
+        <section class="bg-surface border border-hairline rounded-2xl p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-serif text-base text-ink">Aplicações de Mounjaro</h3>
+            <span id="mounjaro-count-badge" class="text-xs font-semibold text-forest bg-forest-tint px-2.5 py-0.5 rounded-full tabular-nums">0</span>
+          </div>
+          <div id="history-mounjaro-list" class="space-y-2">
+            <!-- Renderizado via JS -->
+          </div>
+        </section>
+
+        <!-- Diário dos Últimos Dias -->
+        <section>
+          <div class="flex items-baseline justify-between mb-2.5">
+            <h3 class="font-serif text-base text-ink">Diário de registros</h3>
+            <span class="text-[11px] text-muted">Toque para expandir</span>
+          </div>
+          <div id="history-daily-list" class="space-y-2.5">
+            <!-- Renderizado via JS -->
+          </div>
+        </section>
+      </div>
+
+      <!-- RODAPÉ ELEGANTE NO FINAL DO CONTEÚDO ROLÁVEL -->
+      <footer class="pt-6 pb-2 text-center border-t border-hairline/80 mt-6">
+        <a
+          href="https://venure.com.br"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-block text-[11px] font-medium tracking-wide text-muted hover:text-forest transition py-1"
+        >
+          tecnologia Venure.com.br
+        </a>
+      </footer>
+
+    </main>
   </div>
 
-  <!-- MODAL: DADOS DO NUTRICIONISTA -->
-  <div id="modal-nutri" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-[400px] rounded-3xl p-6 shadow-2xl fade-in relative">
+  <!-- ===================================================================== -->
+  <!-- MENU INFERIOR FIXO — FILHO DIRETO DE <body>                           -->
+  <!-- ===================================================================== -->
+  <nav id="bottom-nav" aria-label="Navegação Principal" class="hidden">
+    <div class="nav-inner grid grid-cols-3 gap-2">
+      <button
+        type="button"
+        id="nav-btn-cardapio"
+        onclick="switchView('cardapio')"
+        class="flex flex-col items-center justify-center py-1.5 rounded-xl transition active:scale-95"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
+          <path d="M7 2v20"/>
+          <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+        </svg>
+        <span class="text-[11px] font-semibold mt-1">Cardápio</span>
+      </button>
+
+      <button
+        type="button"
+        id="nav-btn-mercado"
+        onclick="switchView('mercado')"
+        class="flex flex-col items-center justify-center py-1.5 rounded-xl transition active:scale-95"
+      >
+        <div class="relative">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          <span
+            id="nav-market-badge"
+            class="hidden absolute -top-1.5 -right-2.5 min-w-[16px] h-[16px] px-1 rounded-full bg-forest text-white text-[9px] font-bold flex items-center justify-center tabular-nums"
+          >
+            0
+          </span>
+        </div>
+        <span class="text-[11px] font-semibold mt-1">Mercado</span>
+      </button>
+
+      <button
+        type="button"
+        id="nav-btn-historico"
+        onclick="switchView('historico')"
+        class="flex flex-col items-center justify-center py-1.5 rounded-xl transition active:scale-95"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        <span class="text-[11px] font-semibold mt-1">Histórico</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- TOAST DISCRETO -->
+  <div
+    id="toast"
+    class="hidden fixed bottom-24 left-1/2 -translate-x-1/2 z-[10000] bg-ink text-canvas text-xs font-medium px-4 py-2.5 rounded-full shadow-lg fade-in whitespace-nowrap"
+  >
+    Salvo
+  </div>
+
+  <!-- MODAL: NUTRICIONISTA -->
+  <div id="modal-nutri" class="hidden fixed inset-0 z-[10001] bg-ink/40 backdrop-blur-xs flex items-center justify-center p-5">
+    <div class="bg-surface border border-hairline w-full max-w-[400px] rounded-3xl p-6 fade-in relative">
       <button
         type="button"
         onclick="closeNutriModal()"
         aria-label="Fechar"
-        class="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 transition"
+        class="absolute top-5 right-5 w-8 h-8 rounded-full bg-canvas border border-hairline flex items-center justify-center text-muted hover:text-ink transition"
       >
-        ✕
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
       </button>
 
-      <div class="flex items-center gap-3 mb-4">
-        <div class="w-12 h-12 rounded-2xl bg-sage-50 text-sage-800 flex items-center justify-center font-bold text-lg shrink-0">
-          JI
-        </div>
-        <div>
-          <span class="text-[11px] font-semibold uppercase tracking-wider text-sage-600">Nutricionista</span>
-          <h2 class="text-base font-bold text-gray-900 leading-tight">João Igor Correia Ferreira da Silva</h2>
-        </div>
-      </div>
+      <p class="text-[11px] font-semibold uppercase tracking-widest text-forest">Prescrição Nutricional</p>
+      <h2 class="font-serif text-xl text-ink mt-1 pr-8">João Igor Correia Ferreira da Silva</h2>
 
-      <div class="space-y-2 text-sm text-gray-700 bg-cream rounded-2xl p-4 border border-sage-100">
-        <p><span class="font-semibold text-gray-900">CRN:</span> 32010</p>
-        <p><span class="font-semibold text-gray-900">Paciente:</span> Poliana</p>
-        <p><span class="font-semibold text-gray-900">Data do plano:</span> 17/11/2026</p>
-        <p><span class="font-semibold text-gray-900">Endereço:</span> Rua 15 de novembro, 121 Clínica, Gravatá</p>
-        <p><span class="font-semibold text-gray-900">Telefone:</span> <a href="tel:35330910" class="text-sage-800 underline font-medium">3533-0910</a></p>
+      <div class="mt-4 space-y-2.5 text-xs text-ink bg-canvas rounded-2xl p-4 border border-hairline">
+        <div class="flex justify-between gap-2">
+          <span class="text-muted">CRN</span>
+          <span class="font-semibold tabular-nums">32010</span>
+        </div>
+        <div class="flex justify-between gap-2">
+          <span class="text-muted">Data do plano</span>
+          <span class="font-semibold tabular-nums">17/11/2026</span>
+        </div>
+        <div class="flex justify-between gap-2">
+          <span class="text-muted">E-mail</span>
+          <a href="mailto:joao_igor@icloud.com" class="font-semibold text-forest underline">joao_igor@icloud.com</a>
+        </div>
+        <div class="flex justify-between gap-2">
+          <span class="text-muted">Telefone</span>
+          <a href="tel:35330910" class="font-semibold text-forest underline tabular-nums">3533-0910</a>
+        </div>
+        <div class="pt-2 border-t border-hairline">
+          <span class="text-muted block mb-0.5">Endereço</span>
+          <span class="font-medium">Rua 15 de novembro, 121 Clínica, Gravatá</span>
+        </div>
       </div>
 
       <button
         type="button"
         onclick="closeNutriModal()"
-        class="w-full mt-5 py-3 rounded-2xl bg-sage-600 hover:bg-sage-800 text-white font-semibold text-sm transition active:scale-95"
+        class="w-full mt-5 py-3 rounded-xl bg-forest hover:bg-forest-dark text-white font-semibold text-xs transition"
       >
         Fechar
       </button>
     </div>
   </div>
 
-  <!-- SCRIPT PRINCIPAL -->
+  <!-- MODAL: PERFIL & CONFIGURAÇÕES -->
+  <div id="modal-profile" class="hidden fixed inset-0 z-[10001] bg-ink/40 backdrop-blur-xs flex items-center justify-center p-5">
+    <div class="bg-surface border border-hairline w-full max-w-[400px] rounded-3xl p-6 fade-in relative">
+      <button
+        type="button"
+        onclick="closeProfileModal()"
+        aria-label="Fechar"
+        class="absolute top-5 right-5 w-8 h-8 rounded-full bg-canvas border border-hairline flex items-center justify-center text-muted hover:text-ink transition"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+
+      <p class="text-[11px] font-semibold uppercase tracking-widest text-forest">Perfil ativo</p>
+      <h2 id="profile-modal-name" class="font-serif text-2xl text-ink mt-1">Poliana</h2>
+
+      <div class="mt-4 bg-canvas border border-hairline rounded-2xl p-4 space-y-3">
+        <div>
+          <label for="select-mounjaro-day" class="block text-xs font-semibold text-ink mb-1.5">Dia semanal do Mounjaro</label>
+          <select
+            id="select-mounjaro-day"
+            onchange="updateMounjaroDay(this.value)"
+            class="w-full bg-surface border border-hairline rounded-xl px-3 py-2.5 text-xs text-ink focus:outline-none focus:border-forest"
+          >
+            <option value="0">Domingo</option>
+            <option value="1">Segunda-feira</option>
+            <option value="2">Terça-feira</option>
+            <option value="3">Quarta-feira</option>
+            <option value="4">Quinta-feira</option>
+            <option value="5">Sexta-feira</option>
+            <option value="6">Sábado</option>
+          </select>
+        </div>
+        <p class="text-[11px] text-muted leading-relaxed">
+          Seus registros diários, aplicações e lista de mercado ficam salvos separadamente neste aparelho.
+        </p>
+      </div>
+
+      <div class="mt-5 space-y-2.5">
+        <button
+          type="button"
+          onclick="switchUserProfile()"
+          class="w-full py-3 rounded-xl bg-canvas border border-hairline hover:border-forest text-ink font-semibold text-xs transition"
+        >
+          Trocar perfil (Poliana / Rayne)
+        </button>
+        <button
+          type="button"
+          onclick="closeProfileModal()"
+          class="w-full py-3 rounded-xl bg-forest hover:bg-forest-dark text-white font-semibold text-xs transition"
+        >
+          Concluir
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- SCRIPT PRINCIPAL                                                      -->
+  <!-- ===================================================================== -->
   <script>
     /**
      * =========================================================================
-     * DADOS DO PLANO ALIMENTAR (100% FIEL NA ÍNTEGRA)
+     * PERFIS PRÉ-CONFIGURADOS
+     * =========================================================================
+     */
+    const PROFILES = {
+      poliana: { id: 'poliana', name: 'Poliana', pin: '1234', defaultMounjaroDay: 3 },
+      rayne: { id: 'rayne', name: 'Rayne', pin: '4321', defaultMounjaroDay: 3 }
+    };
+
+    const WEEKDAYS_PT = [
+      'Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira',
+      'Quinta-feira', 'Sexta-feira', 'Sábado'
+    ];
+
+    /**
+     * =========================================================================
+     * PLANO ALIMENTAR NA ÍNTEGRA (7 REFEIÇÕES)
      * =========================================================================
      */
     const PLANO_ALIMENTAR = [
@@ -473,15 +751,15 @@
               {
                 id: 'sup-desjejum-manipulado',
                 titulo: 'Manipulado (Desjejum)',
-                texto: 'TOMAR 01 DOSE DO MANIPULADO: GLUTAMINA + INULINA + CHÁ VERDE + CAVALINHA + OPUNTIA FICUS + HIBISCUS + CAPSIATE + GENGIBRE + CAFEÍNA + CITRUS SINENSIS (NO DESJEJUM)'
+                texto: '01 dose do manipulado: Glutamina + Inulina + Chá Verde + Cavalinha + Opuntia Ficus + Hibiscus + Capsiate + Gengibre + Cafeína + Citrus Sinensis (no desjejum).'
               },
               {
                 id: 'sup-desjejum-creatina',
-                titulo: 'Creatina (escolher 1)',
-                texto: 'CREATINA - DUX (6g) OU CREATINA - VITAFOR (6g)'
+                titulo: 'Creatina (6g)',
+                texto: 'Creatina — Dux (6g) OU Creatina — Vitafor (6g).'
               }
             ],
-            obs: 'DILUIR O SACHÊ COM A CREATINA EM 150ML DE ÁGUA GELADA.'
+            obs: 'Diluir o sachê com a creatina em 150ml de água gelada.'
           }
         ]
       },
@@ -490,14 +768,14 @@
         horario: '06:30',
         horaNum: 6,
         minNum: 30,
-        titulo: 'Refeição pré treino',
+        titulo: 'Pré-treino',
         opcoes: [
           {
             nome: 'Principal',
             itens: [
               { label: 'Pré-treino', opcoes: ['Banana prata assada em frigideira antiaderente (80g)'] }
             ],
-            obs: 'POLVILHAR A BANANA PRATA COM CANELA EM PÓ.'
+            obs: 'Polvilhar a banana prata com canela em pó.'
           },
           {
             nome: 'Substituição 1',
@@ -505,20 +783,10 @@
               {
                 label: 'Fruta (escolha 1)',
                 opcoes: [
-                  'Ameixa fresca (1 un)',
-                  'Abacaxi (100g)',
-                  'Banana prata (80g)',
-                  'Goiaba (1 un)',
-                  'Kiwi (1 un)',
-                  'Laranja (1 un)',
-                  'Maçã (1 un)',
-                  'Mamão (100g)',
-                  'Melão (120g)',
-                  'Melancia (150g)',
-                  'Morango (100g)',
-                  'Pera (1 un)',
-                  'Pitaya (150g)',
-                  'Uva sem semente (80g)'
+                  'Ameixa fresca (1 un)', 'Abacaxi (100g)', 'Banana prata (80g)',
+                  'Goiaba (1 un)', 'Kiwi (1 un)', 'Laranja (1 un)', 'Maçã (1 un)',
+                  'Mamão (100g)', 'Melão (120g)', 'Melancia (150g)', 'Morango (100g)',
+                  'Pera (1 un)', 'Pitaya (150g)', 'Uva sem semente (80g)'
                 ]
               }
             ]
@@ -528,7 +796,7 @@
             itens: [
               { label: 'Pré-treino', opcoes: ['Banana da terra cozida (100g)'] }
             ],
-            obs: 'POLVILHAR A BANANA DA TERRA COM CANELA EM PÓ.'
+            obs: 'Polvilhar a banana da terra com canela em pó.'
           }
         ]
       },
@@ -545,10 +813,10 @@
               {
                 label: 'Proteína (escolha 1)',
                 opcoes: [
-                  'Filé de bovino magro moído (100g)',
+                  'Filé bovino magro moído (100g)',
                   'Filé de frango desfiado (100g)',
-                  'Ovo de galinha (3 un)',
-                  'Ovo de galinha (2 un) + Queijo coalho assado em frigideira antiaderente (40g)'
+                  '3 Ovos de galinha',
+                  '2 Ovos + Queijo coalho assado em frigideira antiaderente (40g)'
                 ]
               },
               { label: 'Carboidrato', opcoes: ['Cuscuz de milho (60g)'] },
@@ -558,10 +826,10 @@
               {
                 id: 'sup-cafe-manipulado',
                 titulo: 'Manipulado (Pós-café)',
-                texto: 'TOMAR 01 DOSE DO MANIPULADO: GARCINIA CAMBOGIA + MOROSIL + OPUNTIA (APÓS O CAFÉ DA MANHÃ)'
+                texto: '01 dose do manipulado: Garcinia Cambogia + Morosil + Opuntia (após o café da manhã).'
               }
             ],
-            obs: 'OVOS: MEXIDOS/COZIDOS/OMELETE. NÃO ADOÇAR O CAFÉ!'
+            obs: 'Ovos mexidos/cozidos/omelete. Não adoçar o café!'
           },
           {
             nome: 'Substituição 1',
@@ -569,10 +837,10 @@
               {
                 label: 'Proteína (escolha 1)',
                 opcoes: [
-                  'Filé de bovino magro moído (100g)',
+                  'Filé bovino magro moído (100g)',
                   'Filé de frango desfiado (100g)',
-                  'Ovo de galinha (3 un)',
-                  'Ovo de galinha (2 un) + Queijo coalho assado em frigideira antiaderente (30g)'
+                  '3 Ovos de galinha',
+                  '2 Ovos + Queijo coalho assado em frigideira antiaderente (30g)'
                 ]
               },
               { label: 'Carboidrato', opcoes: ['Batata doce cozida (80g)'] },
@@ -582,10 +850,10 @@
               {
                 id: 'sup-cafe-manipulado',
                 titulo: 'Manipulado (Pós-café)',
-                texto: 'TOMAR 01 DOSE DO MANIPULADO: GARCINIA CAMBOGIA + MOROSIL + OPUNTIA (APÓS O CAFÉ DA MANHÃ)'
+                texto: '01 dose do manipulado: Garcinia Cambogia + Morosil + Opuntia (após o café da manhã).'
               }
             ],
-            obs: 'OVOS: MEXIDOS/COZIDOS/OMELETE. NÃO ADOÇAR O CAFÉ!'
+            obs: 'Ovos mexidos/cozidos/omelete. Não adoçar o café!'
           },
           {
             nome: 'Substituição 2',
@@ -593,10 +861,10 @@
               {
                 label: 'Proteína (escolha 1)',
                 opcoes: [
-                  'Filé de bovino magro moído (100g)',
+                  'Filé bovino magro moído (100g)',
                   'Filé de frango desfiado (100g)',
-                  'Ovo de galinha (3 un)',
-                  'Ovo de galinha (2 un) + Queijo coalho assado em frigideira antiaderente (30g)'
+                  '3 Ovos de galinha',
+                  '2 Ovos + Queijo coalho assado em frigideira antiaderente (30g)'
                 ]
               },
               { label: 'Carboidrato', opcoes: ['Banana da terra cozida (100g)'] },
@@ -606,10 +874,10 @@
               {
                 id: 'sup-cafe-manipulado',
                 titulo: 'Manipulado (Pós-café)',
-                texto: 'TOMAR 01 DOSE DO MANIPULADO: GARCINIA CAMBOGIA + MOROSIL + OPUNTIA (APÓS O CAFÉ DA MANHÃ)'
+                texto: '01 dose do manipulado: Garcinia Cambogia + Morosil + Opuntia (após o café da manhã).'
               }
             ],
-            obs: 'OVOS: MEXIDOS/COZIDOS/OMELETE. POLVILHAR A BANANA DA TERRA COM CANELA EM PÓ. NÃO ADOÇAR O CAFÉ!'
+            obs: 'Ovos mexidos/cozidos/omelete. Polvilhar a banana da terra com canela em pó. Não adoçar o café!'
           },
           {
             nome: 'Substituição 3',
@@ -617,19 +885,15 @@
               {
                 label: 'Proteína (escolha 1)',
                 opcoes: [
-                  'Filé de bovino magro moído (100g)',
+                  'Filé bovino magro moído (100g)',
                   'Filé de frango desfiado (100g)',
-                  'Ovo de galinha (3 un)',
-                  'Ovo de galinha (2 un) + Queijo coalho assado em frigideira antiaderente (30g)'
+                  '3 Ovos de galinha',
+                  '2 Ovos + Queijo coalho assado em frigideira antiaderente (30g)'
                 ]
               },
               {
                 label: 'Carboidrato (escolha 1)',
-                opcoes: [
-                  'Cará cozido (120g)',
-                  'Inhame cozido (120g)',
-                  'Macaxeira cozida (120g)'
-                ]
+                opcoes: ['Cará cozido (120g)', 'Inhame cozido (120g)', 'Macaxeira cozida (120g)']
               },
               { label: 'Bebida', opcoes: ['Café (1 xícara)'] }
             ],
@@ -637,10 +901,10 @@
               {
                 id: 'sup-cafe-manipulado',
                 titulo: 'Manipulado (Pós-café)',
-                texto: 'TOMAR 01 DOSE DO MANIPULADO: GARCINIA CAMBOGIA + MOROSIL + OPUNTIA (APÓS O CAFÉ DA MANHÃ)'
+                texto: '01 dose do manipulado: Garcinia Cambogia + Morosil + Opuntia (após o café da manhã).'
               }
             ],
-            obs: 'OVOS: MEXIDOS/COZIDOS/OMELETE. NÃO ADOÇAR O CAFÉ!'
+            obs: 'Ovos mexidos/cozidos/omelete. Não adoçar o café!'
           },
           {
             nome: 'Substituição 4',
@@ -648,10 +912,10 @@
               {
                 label: 'Proteína (escolha 1)',
                 opcoes: [
-                  'Filé de bovino magro moído (100g)',
+                  'Filé bovino magro moído (100g)',
                   'Filé de frango desfiado (100g)',
-                  'Ovo de galinha (3 un)',
-                  'Ovo de galinha (2 un) + Queijo coalho assado em frigideira antiaderente (40g)'
+                  '3 Ovos de galinha',
+                  '2 Ovos + Queijo coalho assado em frigideira antiaderente (40g)'
                 ]
               },
               { label: 'Carboidrato', opcoes: ['Pão francês (1 un)'] },
@@ -661,10 +925,10 @@
               {
                 id: 'sup-cafe-manipulado',
                 titulo: 'Manipulado (Pós-café)',
-                texto: 'TOMAR 01 DOSE DO MANIPULADO: GARCINIA CAMBOGIA + MOROSIL + OPUNTIA (APÓS O CAFÉ DA MANHÃ)'
+                texto: '01 dose do manipulado: Garcinia Cambogia + Morosil + Opuntia (após o café da manhã).'
               }
             ],
-            obs: 'OVOS: MEXIDOS. NÃO ADOÇAR O CAFÉ!'
+            obs: 'Ovos mexidos. Não adoçar o café!'
           }
         ]
       },
@@ -695,10 +959,10 @@
               {
                 id: 'sup-almoco-omega',
                 titulo: 'Suplemento (Pós-almoço)',
-                texto: 'TOMAR 02 CÁPSULAS DE OMEGAFOR PLUS - VITAFOR (APÓS O ALMOÇO)'
+                texto: '02 cápsulas de Omegafor Plus — Vitafor (após o almoço).'
               }
             ],
-            obs: 'TEMPERAR A SALADA: AZEITE DE OLIVA EXTRA VIRGEM E LIMÃO.'
+            obs: 'Temperar a salada com azeite de oliva extra virgem e limão.'
           }
         ],
         opcoesFds: [
@@ -716,13 +980,8 @@
               },
               { label: 'Carboidrato', opcoes: ['Arroz branco cozido (80g)'] },
               {
-                label: 'Leguminosa (escolha 1)',
-                opcoes: [
-                  'Feijão carioca cozido (80g)',
-                  'Feijão macassar cozido (80g)',
-                  'Feijão preto cozido (80g)',
-                  'Feijão verde cozido (80g)'
-                ]
+                label: 'Feijão (escolha 1)',
+                opcoes: ['Carioca (80g)', 'Macassar (80g)', 'Preto (80g)', 'Verde (80g)']
               },
               { label: 'Salada', opcoes: ['Salada crua à vontade'] }
             ],
@@ -730,10 +989,10 @@
               {
                 id: 'sup-almoco-omega',
                 titulo: 'Suplemento (Pós-almoço)',
-                texto: 'TOMAR 02 CÁPSULAS DE OMEGAFOR PLUS - VITAFOR (APÓS O ALMOÇO)'
+                texto: '02 cápsulas de Omegafor Plus — Vitafor (após o almoço).'
               }
             ],
-            obs: 'TEMPERAR A SALADA: AZEITE DE OLIVA EXTRA VIRGEM E LIMÃO.'
+            obs: 'Temperar a salada com azeite de oliva extra virgem e limão.'
           },
           {
             nome: 'Substituição 1',
@@ -749,10 +1008,7 @@
               },
               {
                 label: 'Carboidrato (escolha 1)',
-                opcoes: [
-                  'Batata inglesa cozida (150g)',
-                  'Macarrão cozido (150g)'
-                ]
+                opcoes: ['Batata inglesa cozida (150g)', 'Macarrão cozido (150g)']
               },
               { label: 'Salada', opcoes: ['Salada crua à vontade'] }
             ],
@@ -760,14 +1016,14 @@
               {
                 id: 'sup-almoco-omega',
                 titulo: 'Suplemento (Pós-almoço)',
-                texto: 'TOMAR 02 CÁPSULAS DE OMEGAFOR PLUS - VITAFOR (APÓS O ALMOÇO)'
+                texto: '02 cápsulas de Omegafor Plus — Vitafor (após o almoço).'
               }
             ],
-            obs: 'TEMPERAR A SALADA: AZEITE DE OLIVA EXTRA VIRGEM E LIMÃO.',
+            obs: 'Temperar a salada com azeite de oliva extra virgem e limão.',
             receita: {
-              titulo: 'Ver receita do Molho para Macarrão',
-              ingredientes: 'Tomate em cubos, manjericão fresco picado, azeite extra virgem, dente de alho e cebola picados em cubos.',
-              preparo: 'Coloque o alho amassado, a cebola e o azeite numa panela e refogue até dourar. Depois, adicione o tomate e refogue por aproximadamente 15 minutos ou até que desmanchem. Separe metade dessa receita, bata no liquidificador e depois junte à receita novamente. Assim ficará com uns pedaços moles de tomate no meio do molho. Se preferir, bata tudo. Por último, adicione o manjericão.'
+              titulo: 'Receita do molho para o macarrão',
+              ingredientes: 'Tomate em cubos, manjericão fresco picado, azeite extra virgem, dente de alho e cebola picada em cubos.',
+              preparo: 'Coloque o alho amassado, a cebola e o azeite numa panela e refogue até dourar. Depois, adicione o tomate e refogue por aproximadamente 15 minutos ou até que desmanchem. Separe metade dessa receita, bata no liquidificador e junte à receita novamente. Assim ficará com uns pedaços moles de tomate no meio do molho. Se preferir, bata tudo. Por último adicione o manjericão.'
             }
           }
         ]
@@ -785,31 +1041,17 @@
               {
                 label: 'Fruta (escolha 1)',
                 opcoes: [
-                  'Ameixa fresca (1 un)',
-                  'Abacaxi (100g)',
-                  'Banana prata (80g)',
-                  'Goiaba (1 un)',
-                  'Kiwi (1 un)',
-                  'Laranja (1 un)',
-                  'Maçã (1 un)',
-                  'Mamão (100g)',
-                  'Melão (120g)',
-                  'Melancia (150g)',
-                  'Morango (100g)',
-                  'Pera (1 un)',
-                  'Pitaya (150g)',
-                  'Uva sem semente (80g)'
+                  'Ameixa fresca (1 un)', 'Abacaxi (100g)', 'Banana prata (80g)',
+                  'Goiaba (1 un)', 'Kiwi (1 un)', 'Laranja (1 un)', 'Maçã (1 un)',
+                  'Mamão (100g)', 'Melão (120g)', 'Melancia (150g)', 'Morango (100g)',
+                  'Pera (1 un)', 'Pitaya (150g)', 'Uva sem semente (80g)'
                 ]
               },
               {
                 label: 'Iogurte 170g (escolha 1)',
                 opcoes: [
-                  'PENSE ZERO - Batavo (170g)',
-                  'ACTIVIA ZERO - Danone (170g)',
-                  'CORPUS ZERO - Danone (170g)',
-                  'ZERO - Itambé (170g)',
-                  'ZERO - Nestlé (170g)',
-                  'TRIPLO ZERO - Molico (170g)'
+                  'Pense Zero Batavo', 'Activia Zero Danone', 'Corpus Zero Danone',
+                  'Zero Itambé', 'Zero Nestlé', 'Triplo Zero Molico'
                 ]
               }
             ]
@@ -818,27 +1060,14 @@
             nome: 'Substituição 1',
             itens: [
               {
-                label: 'Fruta 1 (escolha 1)',
-                opcoes: [
-                  'Ameixa fresca (1 un)',
-                  'Goiaba (1 un)',
-                  'Kiwi (1 un)',
-                  'Laranja (1 un)',
-                  'Maçã (1 un)',
-                  'Pera (1 un)'
-                ]
+                label: 'Fruta grupo 1 (escolha 1)',
+                opcoes: ['Ameixa fresca (1 un)', 'Goiaba (1 un)', 'Kiwi (1 un)', 'Laranja (1 un)', 'Maçã (1 un)', 'Pera (1 un)']
               },
               {
-                label: 'Fruta 2 (escolha 1)',
+                label: 'Fruta grupo 2 (escolha 1)',
                 opcoes: [
-                  'Abacaxi (100g)',
-                  'Banana prata (80g)',
-                  'Mamão (100g)',
-                  'Melão (120g)',
-                  'Melancia (150g)',
-                  'Morango (100g)',
-                  'Pitaya (150g)',
-                  'Uva sem semente (80g)'
+                  'Abacaxi (100g)', 'Banana prata (80g)', 'Mamão (100g)', 'Melão (120g)',
+                  'Melancia (150g)', 'Morango (100g)', 'Pitaya (150g)', 'Uva sem semente (80g)'
                 ]
               }
             ]
@@ -851,15 +1080,10 @@
               { label: 'Fruta base', opcoes: ['Banana prata (80g)'] },
               {
                 label: 'Fruta adicional (escolha 1)',
-                opcoes: [
-                  'Abacate (60g)',
-                  'Maçã (1 un)',
-                  'Mamão (100g)',
-                  'Morango (80g)'
-                ]
+                opcoes: ['Abacate (60g)', 'Maçã (1 un)', 'Mamão (100g)', 'Morango (80g)']
               }
             ],
-            obs: 'LIQUIDIFICAR EM 200ML DE ÁGUA GELADA. NÃO ADOÇAR A VITAMINA!'
+            obs: 'Liquidificar em 200ml de água gelada. Não adoçar a vitamina!'
           }
         ]
       },
@@ -879,13 +1103,13 @@
                   'Filé bovino magro assado (100g)',
                   'Filé de frango assado (100g)',
                   'Filé de peixe assado (120g)',
-                  'Ovo de galinha (3 un)',
-                  'Ovo de galinha (2 un) + Queijo coalho assado em frigideira antiaderente (40g)'
+                  '3 Ovos',
+                  '2 Ovos + Queijo coalho assado em frigideira antiaderente (40g)'
                 ]
               },
               { label: 'Carboidrato', opcoes: ['Cuscuz de milho (80g)'] }
             ],
-            obs: 'OVOS: MEXIDOS/COZIDOS/OMELETE.'
+            obs: 'Ovos mexidos/cozidos/omelete.'
           },
           {
             nome: 'Substituição 1',
@@ -896,13 +1120,13 @@
                   'Filé bovino magro assado (100g)',
                   'Filé de frango assado (100g)',
                   'Filé de peixe assado (120g)',
-                  'Ovo de galinha (3 un)',
-                  'Ovo de galinha (2 un) + Queijo coalho assado em frigideira antiaderente (40g)'
+                  '3 Ovos',
+                  '2 Ovos + Queijo coalho assado em frigideira antiaderente (40g)'
                 ]
               },
               { label: 'Carboidrato', opcoes: ['Batata doce cozida (100g)'] }
             ],
-            obs: 'OVOS: MEXIDOS/COZIDOS/OMELETE.'
+            obs: 'Ovos mexidos/cozidos/omelete.'
           },
           {
             nome: 'Substituição 2',
@@ -913,13 +1137,13 @@
                   'Filé bovino magro assado (100g)',
                   'Filé de frango assado (100g)',
                   'Filé de peixe assado (120g)',
-                  'Ovo de galinha (3 un)',
-                  'Ovo de galinha (2 un) + Queijo coalho assado em frigideira antiaderente (40g)'
+                  '3 Ovos',
+                  '2 Ovos + Queijo coalho assado em frigideira antiaderente (40g)'
                 ]
               },
               { label: 'Carboidrato', opcoes: ['Banana da terra cozida (120g)'] }
             ],
-            obs: 'OVOS: MEXIDOS/COZIDOS/OMELETE.'
+            obs: 'Ovos mexidos/cozidos/omelete.'
           },
           {
             nome: 'Substituição 3',
@@ -930,21 +1154,19 @@
                   'Filé bovino magro assado (100g)',
                   'Filé de frango assado (100g)',
                   'Filé de peixe assado (120g)',
-                  'Ovo de galinha (3 un)',
-                  'Ovo de galinha (2 un) + Queijo coalho assado em frigideira antiaderente (40g)'
+                  '3 Ovos',
+                  '2 Ovos + Queijo coalho assado em frigideira antiaderente (40g)'
                 ]
               },
               {
                 label: 'Carboidrato (escolha 1)',
                 opcoes: [
-                  'Batata inglesa cozida (150g)',
-                  'Cará cozido (150g)',
-                  'Inhame cozido (150g)',
-                  'Macaxeira cozida (150g)'
+                  'Batata inglesa cozida (150g)', 'Cará cozido (150g)',
+                  'Inhame cozido (150g)', 'Macaxeira cozida (150g)'
                 ]
               }
             ],
-            obs: 'OVOS: MEXIDOS/COZIDOS/OMELETE.'
+            obs: 'Ovos mexidos/cozidos/omelete.'
           }
         ]
       },
@@ -961,19 +1183,10 @@
               {
                 label: 'Fruta (escolha 1)',
                 opcoes: [
-                  'Ameixa fresca (1 un)',
-                  'Abacaxi (100g)',
-                  'Banana prata (80g)',
-                  'Goiaba (1 un)',
-                  'Kiwi (1 un)',
-                  'Laranja (1 un)',
-                  'Maçã (1 un)',
-                  'Mamão (100g)',
-                  'Melão (120g)',
-                  'Melancia (150g)',
-                  'Morango (100g)',
-                  'Pera (1 un)',
-                  'Uva sem semente (80g)'
+                  'Ameixa fresca (1 un)', 'Abacaxi (100g)', 'Banana prata (80g)',
+                  'Goiaba (1 un)', 'Kiwi (1 un)', 'Laranja (1 un)', 'Maçã (1 un)',
+                  'Mamão (100g)', 'Melão (120g)', 'Melancia (150g)', 'Morango (100g)',
+                  'Pera (1 un)', 'Uva sem semente (80g)'
                 ]
               }
             ]
@@ -984,12 +1197,8 @@
               {
                 label: 'Iogurte 170g (escolha 1)',
                 opcoes: [
-                  'PENSE ZERO - Batavo (170g)',
-                  'ACTIVIA ZERO - Danone (170g)',
-                  'CORPUS ZERO - Danone (170g)',
-                  'ZERO - Itambé (170g)',
-                  'ZERO - Nestlé (170g)',
-                  'TRIPLO ZERO - Molico (170g)'
+                  'Pense Zero Batavo', 'Activia Zero Danone', 'Corpus Zero Danone',
+                  'Zero Itambé', 'Zero Nestlé', 'Triplo Zero Molico'
                 ]
               }
             ]
@@ -1006,26 +1215,21 @@
     };
 
     const LOCAIS_APLICACAO = [
-      'Abdômen Direito',
-      'Abdômen Esquerdo',
-      'Coxa Direita',
-      'Coxa Esquerda',
-      'Braço Direito',
-      'Braço Esquerdo'
+      'Abdômen Dir.',
+      'Abdômen Esq.',
+      'Coxa Dir.',
+      'Coxa Esq.',
+      'Braço Dir.',
+      'Braço Esq.'
     ];
 
-    const SINTOMAS_OPCOES = [
-      { id: 'Normal', label: 'Normal', emoji: '😊' },
-      { id: 'Pouco apetite', label: 'Pouco apetite', emoji: '🍽️' },
-      { id: 'Enjoo', label: 'Enjoo', emoji: '🤢' }
-    ];
+    const SINTOMAS_OPCOES = ['Normal', 'Pouco apetite', 'Enjoo', 'Cansaço'];
 
     const LISTA_MERCADO_BASE = [
       {
         id: 'acougue',
-        titulo: 'Açougue, Peixaria e Ovos',
-        icone: '🥩',
-        badge: 'Prioridade Proteína',
+        titulo: 'Açougue e Ovos',
+        badge: 'Proteínas',
         itens: [
           { id: 'm-bovino', nome: 'Filé bovino magro (moído e para assar)' },
           { id: 'm-frango', nome: 'Filé de frango (peito)' },
@@ -1035,41 +1239,26 @@
         ]
       },
       {
-        id: 'frutas',
-        titulo: 'Hortifruti (Frutas da dieta)',
-        icone: '🍌',
+        id: 'hortifruti',
+        titulo: 'Hortifruti',
         itens: [
           { id: 'm-banana-prata', nome: 'Banana prata' },
           { id: 'm-banana-terra', nome: 'Banana da terra' },
-          { id: 'm-maca', nome: 'Maçã' },
-          { id: 'm-mamao', nome: 'Mamão' },
-          { id: 'm-morango', nome: 'Morango' },
-          { id: 'm-melao-melancia', nome: 'Melão / Melancia' },
-          { id: 'm-abacaxi', nome: 'Abacaxi' },
-          { id: 'm-outras-frutas', nome: 'Outras frutas (Ameixa, Goiaba, Kiwi, Laranja, Pera, Pitaya, Uva sem semente)' },
-          { id: 'm-abacate', nome: 'Abacate (para vitamina)' }
-        ]
-      },
-      {
-        id: 'legumes',
-        titulo: 'Hortifruti (Legumes, Salada e Temperos do molho)',
-        icone: '🥗',
-        itens: [
+          { id: 'm-frutas-variadas', nome: 'Frutas (Maçã, Mamão, Morango, Melão, Melancia, Abacaxi, Kiwi, Uva)' },
+          { id: 'm-abacate', nome: 'Abacate (vitamina)' },
           { id: 'm-salada', nome: 'Folhas para salada crua' },
-          { id: 'm-legumes-vapor', nome: 'Legumes para vapor (brócolis, cenoura, abobrinha, etc.)' },
-          { id: 'm-limao', nome: 'Limão (tempero da salada)' },
-          { id: 'm-molho-base', nome: 'Tomate, cebola e alho (molho do fim de semana)' },
-          { id: 'm-manjericao', nome: 'Manjericão fresco' }
+          { id: 'm-legumes', nome: 'Legumes para vapor (brócolis, cenoura, abobrinha)' },
+          { id: 'm-limao', nome: 'Limão' },
+          { id: 'm-molho', nome: 'Tomate, cebola, alho e manjericão fresco' }
         ]
       },
       {
         id: 'raizes',
         titulo: 'Raízes e Carboidratos',
-        icone: '🍠',
         itens: [
           { id: 'm-batata-doce', nome: 'Batata doce' },
           { id: 'm-batata-inglesa', nome: 'Batata inglesa' },
-          { id: 'm-raizes', nome: 'Cará / Inhame / Macaxeira' },
+          { id: 'm-raizes', nome: 'Cará, inhame ou macaxeira' },
           { id: 'm-cuscuz', nome: 'Cuscuz de milho (flocão)' },
           { id: 'm-arroz', nome: 'Arroz branco' },
           { id: 'm-feijao', nome: 'Feijão (carioca, macassar, preto ou verde)' },
@@ -1080,12 +1269,17 @@
       },
       {
         id: 'laticinios',
-        titulo: 'Laticínios e Mercearia',
-        icone: '🧀',
+        titulo: 'Laticínios e Iogurtes Zero',
         itens: [
           { id: 'm-coalho', nome: 'Queijo coalho' },
           { id: 'm-iogurte', nome: 'Iogurte Zero (Pense Zero, Activia, Corpus, Itambé, Nestlé ou Molico)' },
-          { id: 'm-leite-po', nome: 'Leite desnatado em pó' },
+          { id: 'm-leite-po', nome: 'Leite desnatado em pó' }
+        ]
+      },
+      {
+        id: 'mercearia',
+        titulo: 'Mercearia e Temperos',
+        itens: [
           { id: 'm-cafe', nome: 'Café (sem açúcar)' },
           { id: 'm-canela', nome: 'Canela em pó' },
           { id: 'm-azeite', nome: 'Azeite de oliva extra virgem' }
@@ -1094,29 +1288,40 @@
       {
         id: 'farmacia',
         titulo: 'Farmácia e Suplementos',
-        icone: '💊',
         itens: [
           { id: 'm-creatina', nome: 'Creatina (Dux ou Vitafor)' },
           { id: 'm-omega', nome: 'Omegafor Plus (Vitafor)' },
           { id: 'm-manip-desjejum', nome: 'Manipulado Desjejum' },
           { id: 'm-manip-poscafe', nome: 'Manipulado Pós-Café' },
-          { id: 'm-mounjaro', nome: 'Caneta Mounjaro (conferir estoque para quarta-feira)' }
+          { id: 'm-mounjaro', nome: 'Caneta Mounjaro (conferir estoque)' }
         ]
       }
     ];
 
-    const MOUNJARO_DOW = 3; // Quarta-feira
-
     /**
      * =========================================================================
-     * PERSISTÊNCIA DE DADOS (localStorage)
+     * ESTADO GLOBAL E PERSISTÊNCIA POR PERFIL
      * =========================================================================
      */
-    const STORAGE_KEYS = {
-      DAILY: 'poliana_daily_logs',
-      MOUNJARO: 'poliana_mounjaro_logs',
-      MARKET: 'poliana_market_state'
-    };
+    const todayDate = new Date();
+    const todayKey = getDateKey(todayDate);
+    const isWeekendAuto = todayDate.getDay() === 0 || todayDate.getDay() === 6;
+
+    let currentUser = null;
+    let pendingAuthProfileId = null;
+    let enteredPin = '';
+
+    let currentView = 'cardapio';
+    let currentDayMode = isWeekendAuto ? 'fds' : 'semana';
+    let currentMarketFilter = 'todos';
+    let showMounjaroForm = false;
+    let selectedMounjaroSite = LOCAIS_APLICACAO[0];
+
+    let userSettings = { mounjaroDay: 3 };
+    let allDailyLogs = {};
+    let todayLog = createEmptyDayLog();
+    let mounjaroLogs = [];
+    let marketState = { checked: {}, extras: [] };
 
     function getDateKey(dateObj) {
       const y = dateObj.getFullYear();
@@ -1134,11 +1339,7 @@
     function formatFullDateBR(dateKey) {
       const [y, m, d] = dateKey.split('-').map(Number);
       const dt = new Date(y, m - 1, d);
-      return dt.toLocaleDateString('pt-BR', {
-        weekday: 'short',
-        day: '2-digit',
-        month: 'short'
-      });
+      return dt.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' });
     }
 
     function createEmptyDayLog() {
@@ -1152,101 +1353,158 @@
       };
     }
 
-    function loadAllDailyLogs() {
+    function storageKey(suffix) {
+      return `nutridia_${currentUser.id}_${suffix}`;
+    }
+
+    function loadUserData() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEYS.DAILY);
-        if (raw) return JSON.parse(raw);
+        const sRaw = localStorage.getItem(storageKey('settings'));
+        userSettings = sRaw ? JSON.parse(sRaw) : { mounjaroDay: currentUser.defaultMounjaroDay };
       } catch (e) {
-        console.error('Erro ao carregar daily logs:', e);
+        userSettings = { mounjaroDay: currentUser.defaultMounjaroDay };
       }
-      return {};
+
+      try {
+        const dRaw = localStorage.getItem(storageKey('daily'));
+        allDailyLogs = dRaw ? JSON.parse(dRaw) : {};
+      } catch (e) {
+        allDailyLogs = {};
+      }
+
+      if (!allDailyLogs[todayKey]) {
+        allDailyLogs[todayKey] = createEmptyDayLog();
+        saveAllDailyLogs();
+      }
+      todayLog = allDailyLogs[todayKey];
+
+      try {
+        const mRaw = localStorage.getItem(storageKey('mounjaro'));
+        const parsed = mRaw ? JSON.parse(mRaw) : [];
+        mounjaroLogs = Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        mounjaroLogs = [];
+      }
+
+      try {
+        const mkRaw = localStorage.getItem(storageKey('market'));
+        marketState = mkRaw ? JSON.parse(mkRaw) : { checked: {}, extras: [] };
+      } catch (e) {
+        marketState = { checked: {}, extras: [] };
+      }
+
+      selectedMounjaroSite = getSuggestedSite();
+    }
+
+    function saveSettings() {
+      try { localStorage.setItem(storageKey('settings'), JSON.stringify(userSettings)); } catch (e) {}
     }
 
     function saveAllDailyLogs() {
-      try {
-        localStorage.setItem(STORAGE_KEYS.DAILY, JSON.stringify(allDailyLogs));
-      } catch (e) {
-        console.error('Erro ao salvar daily logs:', e);
-      }
-    }
-
-    function loadMounjaroLogs() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEYS.MOUNJARO);
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed)) return parsed;
-        }
-      } catch (e) {
-        console.error('Erro ao carregar mounjaro logs:', e);
-      }
-      return [];
+      try { localStorage.setItem(storageKey('daily'), JSON.stringify(allDailyLogs)); } catch (e) {}
     }
 
     function saveMounjaroLogs() {
-      try {
-        localStorage.setItem(STORAGE_KEYS.MOUNJARO, JSON.stringify(mounjaroLogs));
-      } catch (e) {
-        console.error('Erro ao salvar mounjaro logs:', e);
-      }
-    }
-
-    function loadMarketState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEYS.MARKET);
-        if (raw) return JSON.parse(raw);
-      } catch (e) {
-        console.error('Erro ao carregar market state:', e);
-      }
-      return { checked: {}, extras: [] };
+      try { localStorage.setItem(storageKey('mounjaro'), JSON.stringify(mounjaroLogs)); } catch (e) {}
     }
 
     function saveMarketState() {
-      try {
-        localStorage.setItem(STORAGE_KEYS.MARKET, JSON.stringify(marketState));
-      } catch (e) {
-        console.error('Erro ao salvar market state:', e);
-      }
+      try { localStorage.setItem(storageKey('market'), JSON.stringify(marketState)); } catch (e) {}
     }
 
     /**
      * =========================================================================
-     * ESTADO EM MEMÓRIA
+     * AUTENTICAÇÃO SIMPLES POR PERFIL + PIN
      * =========================================================================
      */
-    const todayDate = new Date();
-    const todayKey = getDateKey(todayDate);
-    const isWednesday = todayDate.getDay() === MOUNJARO_DOW;
-    const isWeekendAuto = todayDate.getDay() === 0 || todayDate.getDay() === 6;
-
-    let currentView = 'cardapio';
-    let currentDayMode = isWeekendAuto ? 'fds' : 'semana';
-    let currentMarketFilter = 'todos';
-    let showMounjaroForm = false;
-
-    let allDailyLogs = loadAllDailyLogs();
-    if (!allDailyLogs[todayKey]) {
-      allDailyLogs[todayKey] = createEmptyDayLog();
-      saveAllDailyLogs();
-    }
-    let todayLog = allDailyLogs[todayKey];
-    let mounjaroLogs = loadMounjaroLogs();
-    let marketState = loadMarketState();
-
-    // Sugestão de local para o formulário do Mounjaro
-    let selectedMounjaroSite = getSuggestedSite();
-
-    function getSortedMounjaroLogs() {
-      return [...mounjaroLogs].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+    function showAuthScreen() {
+      document.getElementById('auth-screen').classList.remove('hidden');
+      document.getElementById('app-shell').classList.add('hidden');
+      document.getElementById('bottom-nav').classList.add('hidden');
+      backToProfileSelect();
     }
 
-    function getSuggestedSite() {
-      const sorted = getSortedMounjaroLogs();
-      if (sorted.length === 0) return LOCAIS_APLICACAO[0];
-      const lastSite = sorted[0].site;
-      const idx = LOCAIS_APLICACAO.indexOf(lastSite);
-      if (idx === -1) return LOCAIS_APLICACAO[0];
-      return LOCAIS_APLICACAO[(idx + 1) % LOCAIS_APLICACAO.length];
+    function selectAuthProfile(profileId) {
+      pendingAuthProfileId = profileId;
+      enteredPin = '';
+      document.getElementById('auth-pin-profile-name').textContent = PROFILES[profileId].name;
+      document.getElementById('pin-error-msg').textContent = '';
+      document.getElementById('auth-step-profiles').classList.add('hidden');
+      document.getElementById('auth-step-pin').classList.remove('hidden');
+      updatePinDots();
+    }
+
+    function backToProfileSelect() {
+      pendingAuthProfileId = null;
+      enteredPin = '';
+      document.getElementById('auth-step-pin').classList.add('hidden');
+      document.getElementById('auth-step-profiles').classList.remove('hidden');
+    }
+
+    function updatePinDots() {
+      const dots = document.querySelectorAll('#pin-dots span');
+      dots.forEach((dot, i) => {
+        if (i < enteredPin.length) {
+          dot.className = 'w-3.5 h-3.5 rounded-full bg-forest border border-forest transition-all';
+        } else {
+          dot.className = 'w-3.5 h-3.5 rounded-full border border-forest/40 transition-all';
+        }
+      });
+    }
+
+    function pressPinDigit(digit) {
+      if (enteredPin.length >= 4) return;
+      enteredPin += digit;
+      document.getElementById('pin-error-msg').textContent = '';
+      updatePinDots();
+
+      if (enteredPin.length === 4) {
+        const profile = PROFILES[pendingAuthProfileId];
+        if (enteredPin === profile.pin) {
+          localStorage.setItem('nutridia_last_user', profile.id);
+          enterApp(profile.id);
+        } else {
+          const dotsEl = document.getElementById('pin-dots');
+          dotsEl.classList.remove('shake');
+          void dotsEl.offsetWidth;
+          dotsEl.classList.add('shake');
+          document.getElementById('pin-error-msg').textContent = 'PIN incorreto. Tente novamente.';
+          setTimeout(() => {
+            enteredPin = '';
+            updatePinDots();
+          }, 350);
+        }
+      }
+    }
+
+    function deletePinDigit() {
+      if (enteredPin.length === 0) return;
+      enteredPin = enteredPin.slice(0, -1);
+      updatePinDots();
+    }
+
+    function enterApp(profileId) {
+      currentUser = PROFILES[profileId];
+      loadUserData();
+
+      document.getElementById('auth-screen').classList.add('hidden');
+      document.getElementById('app-shell').classList.remove('hidden');
+      document.getElementById('bottom-nav').classList.remove('hidden');
+
+      initHeader();
+      renderMounjaroCard();
+      renderWaterCard();
+      renderSymptoms();
+      renderMeals();
+      updateMarketStats();
+      switchView('cardapio');
+    }
+
+    function switchUserProfile() {
+      closeProfileModal();
+      localStorage.removeItem('nutridia_last_user');
+      currentUser = null;
+      showAuthScreen();
     }
 
     /**
@@ -1260,9 +1518,7 @@
       el.textContent = msg;
       el.classList.remove('hidden');
       if (toastTimer) clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => {
-        el.classList.add('hidden');
-      }, 2400);
+      toastTimer = setTimeout(() => el.classList.add('hidden'), 2400);
     }
 
     function copyTextToClipboard(text) {
@@ -1275,10 +1531,10 @@
       textarea.select();
       try {
         document.execCommand('copy');
-        showToast('Resumo copiado!');
+        showToast('Resumo copiado para o WhatsApp');
       } catch (err) {
         if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text).then(() => showToast('Resumo copiado!'));
+          navigator.clipboard.writeText(text).then(() => showToast('Resumo copiado para o WhatsApp'));
         }
       }
       document.body.removeChild(textarea);
@@ -1286,30 +1542,22 @@
 
     /**
      * =========================================================================
-     * NAVEGAÇÃO ENTRE ABAS (CARDÁPIO / MERCADO / HISTÓRICO)
+     * NAVEGAÇÃO ENTRE ABAS
      * =========================================================================
      */
     function switchView(viewName) {
       currentView = viewName;
-      const views = ['cardapio', 'mercado', 'historico'];
-      const headerProgress = document.getElementById('header-meal-progress');
-
-      views.forEach(v => {
-        const mainEl = document.getElementById(`view-${v}`);
+      ['cardapio', 'mercado', 'historico'].forEach(v => {
+        const viewEl = document.getElementById(`view-${v}`);
         const navBtn = document.getElementById(`nav-btn-${v}`);
-        const isActive = v === viewName;
-
-        if (mainEl) mainEl.classList.toggle('hidden', !isActive);
+        const active = v === viewName;
+        if (viewEl) viewEl.classList.toggle('hidden', !active);
         if (navBtn) {
-          navBtn.className = isActive
-            ? 'relative flex flex-col items-center justify-center py-1.5 rounded-2xl transition active:scale-95 bg-sage-50 text-sage-800'
-            : 'relative flex flex-col items-center justify-center py-1.5 rounded-2xl transition active:scale-95 text-gray-500 hover:bg-gray-50';
+          navBtn.className = active
+            ? 'flex flex-col items-center justify-center py-1.5 rounded-xl transition active:scale-95 text-forest'
+            : 'flex flex-col items-center justify-center py-1.5 rounded-xl transition active:scale-95 text-muted hover:text-ink';
         }
       });
-
-      if (headerProgress) {
-        headerProgress.classList.toggle('hidden', viewName !== 'cardapio');
-      }
 
       if (viewName === 'mercado') renderMarket();
       if (viewName === 'historico') renderHistory();
@@ -1323,11 +1571,13 @@
      */
     function initHeader() {
       const hour = todayDate.getHours();
-      let saudacao = 'Boa noite, Poliana';
-      if (hour >= 5 && hour < 12) saudacao = 'Bom dia, Poliana';
-      else if (hour >= 12 && hour < 18) saudacao = 'Boa tarde, Poliana';
+      let prefix = 'Boa noite';
+      if (hour >= 5 && hour < 12) prefix = 'Bom dia';
+      else if (hour >= 12 && hour < 18) prefix = 'Boa tarde';
 
-      document.getElementById('greeting-display').textContent = saudacao;
+      document.getElementById('greeting-display').innerHTML =
+        `${prefix}, <span class="italic text-forest">${currentUser.name}</span>`;
+      document.getElementById('header-profile-label').textContent = currentUser.name;
       document.getElementById('date-display').textContent = todayDate.toLocaleDateString('pt-BR', {
         weekday: 'long',
         day: '2-digit',
@@ -1335,82 +1585,103 @@
       });
     }
 
-    function updateProgressBar() {
-      const total = PLANO_ALIMENTAR.length;
-      const done = PLANO_ALIMENTAR.filter(m => todayLog.completedMeals[m.id]).length;
-      const pct = Math.round((done / total) * 100);
-      document.getElementById('progress-text').textContent = `${done}/${total} refeições`;
-      document.getElementById('progress-bar').style.width = `${pct}%`;
+    function updateProgressSummary() {
+      const totalMeals = PLANO_ALIMENTAR.length;
+      const doneMeals = PLANO_ALIMENTAR.filter(m => todayLog.completedMeals[m.id]).length;
+      const supKeys = Object.keys(SUPLEMENTOS_MAP);
+      const doneSups = supKeys.filter(id => todayLog.completedSupplements[id]).length;
+
+      const totalUnits = totalMeals + supKeys.length;
+      const doneUnits = doneMeals + doneSups;
+      const pct = Math.round((doneUnits / totalUnits) * 100);
+
+      document.getElementById('daily-progress-subtitle').textContent =
+        `${doneMeals}/${totalMeals} refeições • ${doneSups}/${supKeys.length} suplementos`;
+      document.getElementById('progress-pct').textContent = `${pct}%`;
+
+      const circumference = 94.25;
+      const offset = circumference - (pct / 100) * circumference;
+      document.getElementById('progress-ring').style.strokeDashoffset = offset;
     }
 
     /**
      * =========================================================================
-     * MÓDULO MOUNJARO (QUARTA-FEIRA)
+     * MÓDULO MOUNJARO (TIRZEPATIDA)
      * =========================================================================
      */
+    function getSortedMounjaroLogs() {
+      return [...mounjaroLogs].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+    }
+
+    function getSuggestedSite() {
+      const sorted = getSortedMounjaroLogs();
+      if (sorted.length === 0) return LOCAIS_APLICACAO[0];
+      const idx = LOCAIS_APLICACAO.indexOf(sorted[0].site);
+      return idx === -1 ? LOCAIS_APLICACAO[0] : LOCAIS_APLICACAO[(idx + 1) % LOCAIS_APLICACAO.length];
+    }
+
     function renderMounjaroCard() {
       const container = document.getElementById('mounjaro-card');
+      const targetDow = Number(userSettings.mounjaroDay ?? 3);
+      const isApplicationDay = todayDate.getDay() === targetDow;
       const sorted = getSortedMounjaroLogs();
       const lastEntry = sorted[0] || null;
       const appliedToday = sorted.find(item => item.date === todayKey) || null;
       const suggestedSite = getSuggestedSite();
 
-      if (isWednesday) {
-        container.className = 'rounded-3xl p-4 shadow-sm border-2 transition-all bg-indigo-50 border-indigo-400';
-
+      if (isApplicationDay) {
+        container.className = 'rounded-2xl p-4 border transition-all bg-warm-bg border-warm-border';
         const siteButtons = LOCAIS_APLICACAO.map(site => {
-          const isSelected = selectedMounjaroSite === site;
-          const isSuggested = site === suggestedSite && !appliedToday;
+          const isSel = selectedMounjaroSite === site;
           return `
             <button
               type="button"
               onclick="chooseMounjaroSite('${site}')"
               class="px-2.5 py-1.5 rounded-xl text-xs font-medium border transition active:scale-95 ${
-                isSelected
-                  ? 'bg-indigo-600 text-white border-indigo-600 font-semibold'
-                  : 'bg-white text-indigo-900 border-indigo-200 hover:border-indigo-400'
+                isSel
+                  ? 'bg-warm text-white border-warm'
+                  : 'bg-surface text-ink border-warm-border hover:border-warm'
               }"
             >
-              ${site}${isSuggested ? ' ★' : ''}
+              ${site}
             </button>
           `;
         }).join('');
 
         container.innerHTML = `
-          <div class="flex items-center gap-2.5">
-            <div class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs">
-              💉
-            </div>
+          <div class="flex items-start justify-between gap-2">
             <div>
-              <span class="inline-block text-[10px] font-bold uppercase tracking-wider bg-indigo-600 text-white px-2 py-0.5 rounded-full">Mounjaro • Tirzepatida</span>
-              <h2 class="text-sm font-bold text-indigo-950 mt-0.5">Hoje é dia de Mounjaro!</h2>
+              <p class="text-[11px] font-semibold uppercase tracking-wider text-warm">Protocolo Mounjaro</p>
+              <h2 class="font-serif text-lg text-ink mt-0.5">Hoje é dia de aplicação</h2>
             </div>
+            <svg class="w-5 h-5 text-warm shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <path d="m18 2 4 4"/>
+              <path d="m17 7 3-3"/>
+              <path d="M19 9 8.7 19.3c-1 1-2.5 1-3.4 0l-.6-.6c-1-1-1-2.5 0-3.4L15 5"/>
+              <path d="m9 11 4 4"/>
+              <path d="m5 19-3 3"/>
+              <path d="m14 4 6 6"/>
+            </svg>
           </div>
 
           ${appliedToday ? `
-            <div class="mt-3 p-3 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-2">
-              <div class="text-xs text-emerald-900">
-                <p class="font-bold">✓ Aplicação de hoje registrada</p>
-                <p class="text-[11px] text-emerald-700 mt-0.5">Local: ${appliedToday.site}${appliedToday.dose ? ` • ${appliedToday.dose}` : ''}</p>
+            <div class="mt-3 p-3 rounded-xl bg-surface border border-forest-border flex items-center justify-between gap-2">
+              <div class="text-xs">
+                <p class="font-semibold text-forest">Aplicação registrada</p>
+                <p class="text-muted mt-0.5">${appliedToday.site}${appliedToday.dose ? ` • ${appliedToday.dose}` : ''}</p>
               </div>
-              <button
-                type="button"
-                onclick="toggleMounjaroForm()"
-                class="text-[11px] font-semibold text-emerald-800 underline shrink-0"
-              >
+              <button type="button" onclick="toggleMounjaroForm()" class="text-xs font-semibold text-forest underline">
                 ${showMounjaroForm ? 'Fechar' : 'Editar'}
               </button>
             </div>
           ` : `
-            <div class="mt-3 pt-3 border-t border-indigo-200/70">
-              <p class="text-[11px] font-semibold text-indigo-900 mb-2">
-                Local da aplicação (sugestão de rodízio: <strong>${suggestedSite}</strong>):
-              </p>
+            <div class="mt-3 pt-3 border-t border-warm-border">
+              <p class="text-xs text-muted mb-2">Local sugerido para rodízio: <strong class="text-ink">${suggestedSite}</strong></p>
               <div class="flex flex-wrap gap-1.5 mb-3">${siteButtons}</div>
               <button
                 type="button"
                 onclick="registerTodayMounjaro()"
-                class="w-full py-3 px-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] transition text-white font-bold text-sm shadow-xs"
+                class="w-full py-2.5 px-4 rounded-xl bg-warm hover:opacity-95 active:scale-[0.99] transition text-white font-semibold text-xs"
               >
                 Registrar aplicação de hoje
               </button>
@@ -1420,35 +1691,31 @@
           ${appliedToday && showMounjaroForm ? renderManualMounjaroForm(todayKey, appliedToday.site, appliedToday.dose || '') : ''}
         `;
       } else {
-        container.className = 'rounded-3xl p-4 shadow-sm border transition-all bg-indigo-50/60 border-indigo-200/80';
-        const daysUntil = (MOUNJARO_DOW - todayDate.getDay() + 7) % 7;
-        const countdownText = daysUntil === 1
-          ? 'Falta 1 dia para a próxima aplicação (Quarta-feira)'
-          : `Faltam ${daysUntil} dias para a próxima aplicação (Quarta-feira)`;
+        container.className = 'rounded-2xl p-4 border transition-all bg-surface border-hairline';
+        const daysUntil = (targetDow - todayDate.getDay() + 7) % 7;
+        const dayName = WEEKDAYS_PT[targetDow];
+        const countdown = daysUntil === 1
+          ? `Falta 1 dia (${dayName})`
+          : `Faltam ${daysUntil} dias (${dayName})`;
 
-        const lastInfo = lastEntry
-          ? `<span class="text-emerald-700 font-semibold">✓ Última: ${formatDateBR(lastEntry.date)} — ${lastEntry.site}${lastEntry.dose ? ` (${lastEntry.dose})` : ''}</span>`
-          : `<span class="text-indigo-700/80">Nenhuma aplicação registrada ainda</span>`;
+        const lastText = lastEntry
+          ? `Última: ${formatDateBR(lastEntry.date)} — ${lastEntry.site}${lastEntry.dose ? ` (${lastEntry.dose})` : ''}`
+          : 'Nenhuma aplicação registrada';
 
         container.innerHTML = `
-          <div class="flex items-start gap-2.5">
-            <div class="w-9 h-9 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0 text-base">
-              📅
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <p class="text-[11px] font-semibold uppercase tracking-wider text-muted">Mounjaro (Tirzepatida)</p>
+              <p class="text-sm font-semibold text-ink mt-0.5 tabular-nums">${countdown}</p>
+              <p class="text-xs text-muted mt-1 tabular-nums">${lastText}</p>
             </div>
-            <div class="flex-1">
-              <div class="flex items-center justify-between gap-2">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-600">Mounjaro (Tirzepatida)</span>
-                <button
-                  type="button"
-                  onclick="toggleMounjaroForm()"
-                  class="text-[11px] font-semibold text-indigo-700 hover:text-indigo-900 underline"
-                >
-                  ${showMounjaroForm ? 'Fechar' : 'Registrar / Editar aplicação'}
-                </button>
-              </div>
-              <p class="text-sm font-bold text-indigo-950 leading-snug mt-0.5">${countdownText}</p>
-              <p class="text-[11px] mt-1">${lastInfo}</p>
-            </div>
+            <button
+              type="button"
+              onclick="toggleMounjaroForm()"
+              class="text-xs font-semibold text-forest hover:underline shrink-0 pt-0.5"
+            >
+              ${showMounjaroForm ? 'Fechar' : 'Registrar'}
+            </button>
           </div>
           ${showMounjaroForm ? renderManualMounjaroForm(todayKey, suggestedSite, '') : ''}
         `;
@@ -1457,42 +1724,24 @@
 
     function renderManualMounjaroForm(defaultDate, defaultSite, defaultDose) {
       return `
-        <form onsubmit="saveManualMounjaro(event)" class="mt-3 pt-3 border-t border-indigo-200/70 space-y-2.5 fade-in">
+        <form onsubmit="saveManualMounjaro(event)" class="mt-3 pt-3 border-t border-hairline space-y-2.5 fade-in">
           <div class="grid grid-cols-2 gap-2">
             <div>
-              <label class="block text-[10px] font-bold uppercase text-indigo-900 mb-1">Data</label>
-              <input
-                id="mounjaro-input-date"
-                type="date"
-                value="${defaultDate}"
-                required
-                class="w-full bg-white border border-indigo-200 rounded-xl px-2.5 py-2 text-xs text-gray-800 focus:outline-none focus:border-indigo-500"
-              >
+              <label class="block text-[11px] font-medium text-muted mb-1">Data</label>
+              <input id="mounjaro-input-date" type="date" value="${defaultDate}" required class="w-full bg-canvas border border-hairline rounded-xl px-2.5 py-2 text-xs text-ink focus:outline-none focus:border-forest tabular-nums">
             </div>
             <div>
-              <label class="block text-[10px] font-bold uppercase text-indigo-900 mb-1">Dose (opcional)</label>
-              <input
-                id="mounjaro-input-dose"
-                type="text"
-                value="${defaultDose}"
-                placeholder="Ex: 2,5 mg"
-                class="w-full bg-white border border-indigo-200 rounded-xl px-2.5 py-2 text-xs text-gray-800 focus:outline-none focus:border-indigo-500"
-              >
+              <label class="block text-[11px] font-medium text-muted mb-1">Dose (opcional)</label>
+              <input id="mounjaro-input-dose" type="text" value="${defaultDose}" placeholder="Ex: 2,5 mg" class="w-full bg-canvas border border-hairline rounded-xl px-2.5 py-2 text-xs text-ink focus:outline-none focus:border-forest">
             </div>
           </div>
           <div>
-            <label class="block text-[10px] font-bold uppercase text-indigo-900 mb-1">Local aplicado</label>
-            <select
-              id="mounjaro-input-site"
-              class="w-full bg-white border border-indigo-200 rounded-xl px-2.5 py-2 text-xs text-gray-800 focus:outline-none focus:border-indigo-500"
-            >
+            <label class="block text-[11px] font-medium text-muted mb-1">Local aplicado</label>
+            <select id="mounjaro-input-site" class="w-full bg-canvas border border-hairline rounded-xl px-2.5 py-2 text-xs text-ink focus:outline-none focus:border-forest">
               ${LOCAIS_APLICACAO.map(site => `<option value="${site}" ${site === defaultSite ? 'selected' : ''}>${site}</option>`).join('')}
             </select>
           </div>
-          <button
-            type="submit"
-            class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition active:scale-95"
-          >
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-forest hover:bg-forest-dark text-white font-semibold text-xs transition">
             Salvar aplicação
           </button>
         </form>
@@ -1510,19 +1759,19 @@
     }
 
     function registerTodayMounjaro() {
-      const existingIdx = mounjaroLogs.findIndex(item => item.date === todayKey);
+      const idx = mounjaroLogs.findIndex(item => item.date === todayKey);
       const entry = {
-        id: existingIdx >= 0 ? mounjaroLogs[existingIdx].id : `mj-${Date.now()}`,
+        id: idx >= 0 ? mounjaroLogs[idx].id : `mj-${Date.now()}`,
         date: todayKey,
         site: selectedMounjaroSite,
         dose: ''
       };
-      if (existingIdx >= 0) mounjaroLogs[existingIdx] = entry;
+      if (idx >= 0) mounjaroLogs[idx] = entry;
       else mounjaroLogs.push(entry);
 
       saveMounjaroLogs();
       selectedMounjaroSite = getSuggestedSite();
-      showToast('Aplicação registrada!');
+      showToast('Aplicação registrada');
       renderMounjaroCard();
     }
 
@@ -1533,20 +1782,20 @@
       const doseVal = document.getElementById('mounjaro-input-dose').value.trim();
       if (!dateVal) return;
 
-      const existingIdx = mounjaroLogs.findIndex(item => item.date === dateVal);
+      const idx = mounjaroLogs.findIndex(item => item.date === dateVal);
       const entry = {
-        id: existingIdx >= 0 ? mounjaroLogs[existingIdx].id : `mj-${Date.now()}`,
+        id: idx >= 0 ? mounjaroLogs[idx].id : `mj-${Date.now()}`,
         date: dateVal,
         site: siteVal,
         dose: doseVal
       };
-      if (existingIdx >= 0) mounjaroLogs[existingIdx] = entry;
+      if (idx >= 0) mounjaroLogs[idx] = entry;
       else mounjaroLogs.push(entry);
 
       saveMounjaroLogs();
       showMounjaroForm = false;
       selectedMounjaroSite = getSuggestedSite();
-      showToast('Aplicação salva!');
+      showToast('Aplicação salva');
       renderMounjaroCard();
     }
 
@@ -1561,22 +1810,19 @@
 
     /**
      * =========================================================================
-     * HIDRATAÇÃO E CHECK-IN DE SINTOMAS
+     * HIDRATAÇÃO & CHECK-IN
      * =========================================================================
      */
     function renderWaterCard() {
       const cups = Math.max(0, Math.min(10, todayLog.waterCups || 0));
       const ml = cups * 250;
       const pct = Math.round((cups / 10) * 100);
-
-      document.getElementById('water-amount').textContent = `${ml.toLocaleString('pt-BR')} ml`;
-      document.getElementById('water-cups').textContent = `${cups}/10 copos`;
+      document.getElementById('water-amount').textContent = `${ml.toLocaleString('pt-BR')} ml (${cups}/10)`;
       document.getElementById('water-bar').style.width = `${pct}%`;
     }
 
-    function updateWater(deltaCups) {
-      const next = Math.max(0, Math.min(10, (todayLog.waterCups || 0) + deltaCups));
-      todayLog.waterCups = next;
+    function updateWater(delta) {
+      todayLog.waterCups = Math.max(0, Math.min(10, (todayLog.waterCups || 0) + delta));
       saveAllDailyLogs();
       renderWaterCard();
     }
@@ -1584,26 +1830,25 @@
     function renderSymptoms() {
       const container = document.getElementById('symptom-buttons');
       container.innerHTML = SINTOMAS_OPCOES.map(sym => {
-        const isSelected = todayLog.symptom === sym.id;
+        const active = todayLog.symptom === sym;
         return `
           <button
             type="button"
-            onclick="selectSymptom('${sym.id}')"
-            class="py-2.5 px-2 rounded-2xl border text-center transition active:scale-95 flex flex-col items-center justify-center gap-0.5 ${
-              isSelected
-                ? 'bg-sage-600 text-white border-sage-600 shadow-xs'
-                : 'bg-cream text-gray-700 border-sage-100 hover:border-sage-300'
+            onclick="selectSymptom('${sym}')"
+            class="py-2.5 px-3 rounded-xl border text-xs font-medium transition active:scale-[0.98] ${
+              active
+                ? 'bg-forest text-white border-forest'
+                : 'bg-canvas text-ink border-hairline hover:border-forest/40'
             }"
           >
-            <span class="text-base leading-none">${sym.emoji}</span>
-            <span class="text-[11px] font-semibold leading-tight mt-1">${sym.label}</span>
+            ${sym}
           </button>
         `;
       }).join('');
     }
 
-    function selectSymptom(symId) {
-      todayLog.symptom = todayLog.symptom === symId ? null : symId;
+    function selectSymptom(sym) {
+      todayLog.symptom = todayLog.symptom === sym ? null : sym;
       saveAllDailyLogs();
       renderSymptoms();
     }
@@ -1614,11 +1859,10 @@
      * =========================================================================
      */
     function getActiveMealId() {
-      const nowMinutes = todayDate.getHours() * 60 + todayDate.getMinutes();
+      const nowMin = todayDate.getHours() * 60 + todayDate.getMinutes();
       for (let i = 0; i < PLANO_ALIMENTAR.length; i++) {
-        const meal = PLANO_ALIMENTAR[i];
-        const mealMinutes = meal.horaNum * 60 + meal.minNum;
-        if (nowMinutes <= mealMinutes + 45) return meal.id;
+        const m = PLANO_ALIMENTAR[i];
+        if (nowMin <= m.horaNum * 60 + m.minNum + 45) return m.id;
       }
       return null;
     }
@@ -1638,7 +1882,6 @@
       PLANO_ALIMENTAR.forEach(meal => {
         const isDone = !!todayLog.completedMeals[meal.id];
         const isActive = meal.id === activeMealId && !isDone;
-
         const opcoesList = meal.hasDayMode
           ? (currentDayMode === 'semana' ? meal.opcoesSemana : meal.opcoesFds)
           : meal.opcoes;
@@ -1648,39 +1891,25 @@
         const currentOption = opcoesList[activeTabIdx];
 
         const card = document.createElement('article');
-        card.className = `bg-white rounded-3xl p-4 shadow-sm border transition-all ${
-          isActive ? 'border-sage-600 ring-2 ring-sage-600/15' : 'border-sage-100'
-        } ${isDone ? 'opacity-80' : ''}`;
+        card.className = `bg-surface rounded-2xl p-4 border transition-all ${
+          isActive ? 'border-forest' : 'border-hairline'
+        } ${isDone ? 'opacity-75' : ''}`;
 
-        let badgeHtml = '';
+        let statusTag = '';
         if (isActive) {
-          badgeHtml = `<span class="text-[10px] font-bold uppercase tracking-wider bg-sage-600 text-white px-2 py-0.5 rounded-full">Agora / Próxima</span>`;
-        } else if (isDone) {
-          badgeHtml = `<span class="text-[10px] font-bold uppercase tracking-wider bg-sage-100 text-sage-800 px-2 py-0.5 rounded-full">Concluída</span>`;
+          statusTag = `<span class="text-[10px] font-semibold uppercase tracking-wider text-forest bg-forest-tint px-2 py-0.5 rounded-full">Agora</span>`;
         }
 
-        let dayModeToggleHtml = '';
+        let dayModeHtml = '';
         if (meal.hasDayMode) {
-          dayModeToggleHtml = `
-            <div class="mt-3 bg-gray-100 p-1 rounded-2xl grid grid-cols-2 gap-1">
-              <button
-                type="button"
-                onclick="setDayMode('semana')"
-                class="py-1.5 px-2 rounded-xl text-xs font-semibold transition ${
-                  currentDayMode === 'semana' ? 'bg-sage-600 text-white shadow-xs' : 'text-gray-600 hover:text-gray-900'
-                }"
-              >
-                Dia de Semana
-              </button>
-              <button
-                type="button"
-                onclick="setDayMode('fds')"
-                class="py-1.5 px-2 rounded-xl text-xs font-semibold transition ${
-                  currentDayMode === 'fds' ? 'bg-sage-600 text-white shadow-xs' : 'text-gray-600 hover:text-gray-900'
-                }"
-              >
-                Fim de Semana
-              </button>
+          dayModeHtml = `
+            <div class="mt-3 grid grid-cols-2 gap-1 bg-canvas p-1 rounded-full border border-hairline">
+              <button type="button" onclick="setDayMode('semana')" class="py-1.5 rounded-full text-xs font-semibold transition ${
+                currentDayMode === 'semana' ? 'bg-forest text-white' : 'text-muted hover:text-ink'
+              }">Dias de semana</button>
+              <button type="button" onclick="setDayMode('fds')" class="py-1.5 rounded-full text-xs font-semibold transition ${
+                currentDayMode === 'fds' ? 'bg-forest text-white' : 'text-muted hover:text-ink'
+              }">Finais de semana</button>
             </div>
           `;
         }
@@ -1688,19 +1917,13 @@
         let tabsHtml = '';
         if (opcoesList.length > 1) {
           tabsHtml = `
-            <div class="flex gap-1.5 overflow-x-auto no-scrollbar pb-1 mt-3">
+            <div class="flex gap-1.5 overflow-x-auto no-scrollbar mt-3 pb-0.5">
               ${opcoesList.map((opt, idx) => `
-                <button
-                  type="button"
-                  onclick="selectMealTab('${meal.id}', ${idx})"
-                  class="whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
-                    idx === activeTabIdx
-                      ? 'bg-sage-600 text-white shadow-xs'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }"
-                >
-                  ${opt.nome}
-                </button>
+                <button type="button" onclick="selectMealTab('${meal.id}', ${idx})" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium border transition ${
+                  idx === activeTabIdx
+                    ? 'bg-forest text-white border-forest'
+                    : 'bg-canvas text-muted border-hairline hover:text-ink'
+                }">${opt.nome}</button>
               `).join('')}
             </div>
           `;
@@ -1708,38 +1931,31 @@
 
         let itensHtml = '';
         if (currentOption.itens && currentOption.itens.length > 0) {
-          itensHtml = `<div class="mt-3 space-y-2.5">` + currentOption.itens.map((item, itemIdx) => {
+          itensHtml = `<div class="mt-3.5 space-y-2.5">` + currentOption.itens.map((item, itemIdx) => {
             const pillKey = `${meal.id}_${meal.hasDayMode ? currentDayMode : 'all'}_${activeTabIdx}_${itemIdx}`;
-            const hasMultiple = item.opcoes.length > 1;
             const selectedPill = todayLog.selectedPills[pillKey];
 
-            if (!hasMultiple) {
+            if (item.opcoes.length === 1) {
               return `
-                <div class="bg-cream rounded-2xl px-3.5 py-2.5 border border-sage-100">
-                  <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400">${item.label}</p>
-                  <p class="text-sm font-medium text-gray-800 mt-0.5">${item.opcoes[0]}</p>
+                <div class="bg-canvas rounded-xl px-3.5 py-2.5 border border-hairline/70">
+                  <p class="text-[10px] font-semibold uppercase tracking-wider text-muted">${item.label}</p>
+                  <p class="text-xs font-medium text-ink mt-0.5 leading-relaxed">${item.opcoes[0]}</p>
                 </div>
               `;
             }
 
             return `
-              <div class="bg-cream rounded-2xl p-3 border border-sage-100">
-                <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-2">${item.label}</p>
+              <div class="bg-canvas rounded-xl p-3 border border-hairline/70">
+                <p class="text-[10px] font-semibold uppercase tracking-wider text-muted mb-2">${item.label}</p>
                 <div class="flex flex-wrap gap-1.5">
                   ${item.opcoes.map((optText, optIdx) => {
-                    const isSelected = selectedPill === optIdx;
+                    const isSel = selectedPill === optIdx;
                     return `
-                      <button
-                        type="button"
-                        onclick="selectPill('${pillKey}', ${optIdx})"
-                        class="text-left text-xs px-3 py-2 rounded-xl border transition active:scale-95 ${
-                          isSelected
-                            ? 'bg-sage-600 text-white border-sage-600 font-semibold shadow-xs'
-                            : 'bg-white text-gray-700 border-sage-100 hover:border-sage-300'
-                        }"
-                      >
-                        ${optText}
-                      </button>
+                      <button type="button" onclick="selectPill('${pillKey}', ${optIdx})" class="text-left text-xs px-2.5 py-1.5 rounded-lg border transition active:scale-95 ${
+                        isSel
+                          ? 'bg-forest text-white border-forest font-medium'
+                          : 'bg-surface text-ink border-hairline hover:border-forest/40'
+                      }">${optText}</button>
                     `;
                   }).join('')}
                 </div>
@@ -1751,20 +1967,15 @@
         let supHtml = '';
         if (currentOption.suplementos && currentOption.suplementos.length > 0) {
           supHtml = `<div class="mt-3 space-y-2">` + currentOption.suplementos.map(sup => {
-            const supChecked = !!todayLog.completedSupplements[sup.id];
+            const checked = !!todayLog.completedSupplements[sup.id];
             return `
-              <label class="flex items-start gap-3 p-3 rounded-2xl border cursor-pointer transition ${
-                supChecked ? 'bg-sage-50/60 border-sage-200' : 'bg-sage-50 border-sage-200'
+              <label class="flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition ${
+                checked ? 'bg-forest-tint/60 border-forest-border' : 'bg-forest-tint border-forest-border'
               }">
-                <input
-                  type="checkbox"
-                  ${supChecked ? 'checked' : ''}
-                  onchange="toggleSupplement('${sup.id}')"
-                  class="mt-0.5 w-5 h-5 rounded-md accent-[#4E6B4C] shrink-0 cursor-pointer"
-                >
+                <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleSupplement('${sup.id}')" class="mt-0.5 w-4 h-4 rounded accent-[#3D5A47] shrink-0 cursor-pointer">
                 <div class="text-xs leading-relaxed">
-                  <span class="font-bold text-sage-800 block uppercase tracking-wide text-[10px]">${sup.titulo}</span>
-                  <span class="${supChecked ? 'line-through text-gray-400' : 'text-sage-800 font-medium'}">${sup.texto}</span>
+                  <span class="block text-[10px] font-semibold uppercase tracking-wider text-forest">${sup.titulo}</span>
+                  <span class="${checked ? 'line-through text-muted' : 'text-ink font-medium'}">${sup.texto}</span>
                 </div>
               </label>
             `;
@@ -1774,11 +1985,8 @@
         let obsHtml = '';
         if (currentOption.obs) {
           obsHtml = `
-            <div class="mt-3 bg-terracotta-50 border border-terracotta-200/70 rounded-2xl p-3 flex items-start gap-2">
-              <span class="text-terracotta-700 text-sm leading-none mt-0.5">⚠️</span>
-              <p class="text-xs text-terracotta-800 font-medium leading-relaxed">
-                <strong class="font-bold">Obs:</strong> ${currentOption.obs}
-              </p>
+            <div class="mt-3 bg-warm-bg border border-warm-border rounded-xl p-3">
+              <p class="text-xs text-warm leading-relaxed"><strong class="font-semibold">Obs:</strong> ${currentOption.obs}</p>
             </div>
           `;
         }
@@ -1786,14 +1994,16 @@
         let receitaHtml = '';
         if (currentOption.receita) {
           receitaHtml = `
-            <details class="mt-3 bg-amber-50/70 border border-amber-200/80 rounded-2xl p-3 group">
-              <summary class="text-xs font-bold text-amber-900 cursor-pointer flex items-center justify-between list-none">
-                <span>🍅 ${currentOption.receita.titulo}</span>
-                <span class="text-amber-700 group-open:rotate-180 transition-transform">▾</span>
+            <details class="mt-3 bg-canvas border border-hairline rounded-xl p-3 group">
+              <summary class="text-xs font-semibold text-ink cursor-pointer flex items-center justify-between list-none">
+                <span>${currentOption.receita.titulo}</span>
+                <svg class="w-4 h-4 text-muted group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
               </summary>
-              <div class="mt-2.5 pt-2.5 border-t border-amber-200/60 text-xs text-amber-950 space-y-2 leading-relaxed">
-                <p><strong>Ingredientes:</strong> ${currentOption.receita.ingredientes}</p>
-                <p><strong>Modo de preparo:</strong> ${currentOption.receita.preparo}</p>
+              <div class="mt-2.5 pt-2.5 border-t border-hairline text-xs text-ink/90 space-y-2 leading-relaxed">
+                <p><strong class="font-semibold text-ink">Ingredientes:</strong> ${currentOption.receita.ingredientes}</p>
+                <p><strong class="font-semibold text-ink">Modo de preparo:</strong> ${currentOption.receita.preparo}</p>
               </div>
             </details>
           `;
@@ -1803,26 +2013,27 @@
           <div class="flex items-start justify-between gap-2">
             <div>
               <div class="flex items-center gap-2">
-                <span class="text-xs font-bold text-sage-800 bg-sage-50 px-2.5 py-0.5 rounded-lg">${meal.horario}</span>
-                ${badgeHtml}
+                <span class="text-xs font-semibold text-forest tabular-nums">${meal.horario}</span>
+                ${statusTag}
               </div>
-              <h3 class="text-base font-bold text-gray-900 mt-1.5 ${isDone ? 'line-through text-gray-400' : ''}">${meal.titulo}</h3>
+              <h3 class="font-serif text-lg text-ink mt-0.5 ${isDone ? 'line-through text-muted' : ''}">${meal.titulo}</h3>
             </div>
-            <label class="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-2xl text-xs font-semibold cursor-pointer transition active:scale-95 select-none ${
+
+            <label class="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border cursor-pointer transition select-none ${
               isDone
-                ? 'bg-sage-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-sage-50 hover:text-sage-800'
+                ? 'bg-forest text-white border-forest'
+                : 'bg-canvas text-muted border-hairline hover:border-forest/40 hover:text-ink'
             }">
-              <input
-                type="checkbox"
-                ${isDone ? 'checked' : ''}
-                onchange="toggleMealDone('${meal.id}')"
-                class="sr-only"
-              >
-              <span>${isDone ? '✓ Feito' : 'Feito'}</span>
+              <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleMealDone('${meal.id}')" class="sr-only">
+              ${isDone ? `
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              ` : ''}
+              <span>${isDone ? 'Feito' : 'Marcar'}</span>
             </label>
           </div>
-          ${dayModeToggleHtml}
+          ${dayModeHtml}
           ${tabsHtml}
           ${itensHtml}
           ${supHtml}
@@ -1833,18 +2044,18 @@
         container.appendChild(card);
       });
 
-      updateProgressBar();
+      updateProgressSummary();
     }
 
-    function selectMealTab(mealId, tabIdx) {
-      todayLog.selectedTabs[mealId] = tabIdx;
+    function selectMealTab(mealId, idx) {
+      todayLog.selectedTabs[mealId] = idx;
       saveAllDailyLogs();
       renderMeals();
     }
 
-    function selectPill(pillKey, optIdx) {
-      if (todayLog.selectedPills[pillKey] === optIdx) delete todayLog.selectedPills[pillKey];
-      else todayLog.selectedPills[pillKey] = optIdx;
+    function selectPill(key, idx) {
+      if (todayLog.selectedPills[key] === idx) delete todayLog.selectedPills[key];
+      else todayLog.selectedPills[key] = idx;
       saveAllDailyLogs();
       renderMeals();
     }
@@ -1867,26 +2078,25 @@
      * =========================================================================
      */
     function getAllMarketItems() {
-      const baseItems = LISTA_MERCADO_BASE.flatMap(cat => cat.itens);
-      return [...baseItems, ...(marketState.extras || [])];
+      return [...LISTA_MERCADO_BASE.flatMap(c => c.itens), ...(marketState.extras || [])];
     }
 
     function updateMarketStats() {
-      const allItems = getAllMarketItems();
-      const total = allItems.length;
-      const inCart = allItems.filter(item => !!marketState.checked[item.id]).length;
+      const all = getAllMarketItems();
+      const total = all.length;
+      const inCart = all.filter(i => !!marketState.checked[i.id]).length;
       const pending = total - inCart;
       const pct = total > 0 ? Math.round((inCart / total) * 100) : 0;
 
-      const progressText = document.getElementById('market-progress-text');
-      const progressBar = document.getElementById('market-progress-bar');
-      const navBadge = document.getElementById('nav-market-badge');
+      const textEl = document.getElementById('market-progress-text');
+      const barEl = document.getElementById('market-progress-bar');
+      const badgeEl = document.getElementById('nav-market-badge');
 
-      if (progressText) progressText.textContent = `${inCart} de ${total} itens no carrinho`;
-      if (progressBar) progressBar.style.width = `${pct}%`;
-      if (navBadge) {
-        navBadge.textContent = pending;
-        navBadge.classList.toggle('hidden', pending === 0);
+      if (textEl) textEl.textContent = `${inCart} de ${total} itens no carrinho`;
+      if (barEl) barEl.style.width = `${pct}%`;
+      if (badgeEl) {
+        badgeEl.textContent = pending;
+        badgeEl.classList.toggle('hidden', pending === 0);
       }
     }
 
@@ -1896,14 +2106,14 @@
         const btn = document.getElementById(`filter-${f}`);
         if (!btn) return;
         btn.className = f === filter
-          ? 'py-1.5 px-2 rounded-xl text-xs font-semibold transition bg-sage-600 text-white shadow-xs'
-          : 'py-1.5 px-2 rounded-xl text-xs font-semibold transition text-gray-600 hover:text-gray-900';
+          ? 'py-1.5 rounded-full text-xs font-semibold transition bg-forest text-white'
+          : 'py-1.5 rounded-full text-xs font-semibold transition text-muted hover:text-ink';
       });
       renderMarket();
     }
 
-    function toggleMarketItem(itemId) {
-      marketState.checked[itemId] = !marketState.checked[itemId];
+    function toggleMarketItem(id) {
+      marketState.checked[id] = !marketState.checked[id];
       saveMarketState();
       renderMarket();
     }
@@ -1913,7 +2123,6 @@
       const input = document.getElementById('input-extra-item');
       const nome = input.value.trim();
       if (!nome) return;
-
       if (!marketState.extras) marketState.extras = [];
       marketState.extras.unshift({ id: `extra-${Date.now()}`, nome });
       saveMarketState();
@@ -1921,13 +2130,13 @@
       renderMarket();
     }
 
-    function removeExtraMarketItem(itemId, event) {
+    function removeExtraMarketItem(id, event) {
       if (event) {
         event.preventDefault();
         event.stopPropagation();
       }
-      marketState.extras = (marketState.extras || []).filter(item => item.id !== itemId);
-      delete marketState.checked[itemId];
+      marketState.extras = (marketState.extras || []).filter(i => i.id !== id);
+      delete marketState.checked[id];
       saveMarketState();
       renderMarket();
     }
@@ -1936,82 +2145,77 @@
       marketState.checked = {};
       saveMarketState();
       renderMarket();
-      showToast('Carrinho limpo!');
+      showToast('Carrinho limpo');
     }
 
     function renderMarket() {
       updateMarketStats();
+      ['todos', 'faltam', 'carrinho'].forEach(f => {
+        const btn = document.getElementById(`filter-${f}`);
+        if (btn) {
+          btn.className = f === currentMarketFilter
+            ? 'py-1.5 rounded-full text-xs font-semibold transition bg-forest text-white'
+            : 'py-1.5 rounded-full text-xs font-semibold transition text-muted hover:text-ink';
+        }
+      });
+
       const container = document.getElementById('market-categories-container');
-      if (!container) return;
       container.innerHTML = '';
 
       const categories = [];
       if (marketState.extras && marketState.extras.length > 0) {
-        categories.push({
-          id: 'extras',
-          titulo: 'Itens Extras',
-          icone: '📝',
-          isExtra: true,
-          itens: marketState.extras
-        });
+        categories.push({ id: 'extras', titulo: 'Itens extras', isExtra: true, itens: marketState.extras });
       }
       LISTA_MERCADO_BASE.forEach(c => categories.push(c));
 
       let renderedAny = false;
       categories.forEach(cat => {
-        const filtered = cat.itens.filter(item => {
-          const isChecked = !!marketState.checked[item.id];
-          if (currentMarketFilter === 'faltam') return !isChecked;
-          if (currentMarketFilter === 'carrinho') return isChecked;
+        const items = cat.itens.filter(i => {
+          const checked = !!marketState.checked[i.id];
+          if (currentMarketFilter === 'faltam') return !checked;
+          if (currentMarketFilter === 'carrinho') return checked;
           return true;
         });
-        if (filtered.length === 0) return;
+        if (items.length === 0) return;
         renderedAny = true;
 
-        const section = document.createElement('section');
-        section.className = 'bg-white rounded-3xl p-4 shadow-sm border border-sage-100';
-
-        const badgeHtml = cat.badge
-          ? `<span class="text-[10px] font-bold uppercase tracking-wider bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">${cat.badge}</span>`
-          : '';
-
-        section.innerHTML = `
-          <div class="flex items-center justify-between gap-2 mb-3">
-            <div class="flex items-center gap-2">
-              <span class="text-lg leading-none">${cat.icone}</span>
-              <h3 class="text-sm font-bold text-gray-900">${cat.titulo}</h3>
-            </div>
-            ${badgeHtml}
+        const sec = document.createElement('section');
+        sec.className = 'bg-surface border border-hairline rounded-2xl p-4';
+        sec.innerHTML = `
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-serif text-base text-ink">${cat.titulo}</h3>
+            ${cat.badge ? `<span class="text-[10px] font-semibold uppercase tracking-wider text-forest bg-forest-tint px-2 py-0.5 rounded-full">${cat.badge}</span>` : ''}
           </div>
           <div class="space-y-2">
-            ${filtered.map(item => {
-              const isChecked = !!marketState.checked[item.id];
-              const removeBtn = cat.isExtra
-                ? `<button type="button" onclick="removeExtraMarketItem('${item.id}', event)" aria-label="Remover" class="w-7 h-7 rounded-xl bg-gray-100 hover:bg-red-50 text-gray-400 hover:text-red-500 flex items-center justify-center text-xs shrink-0 transition">✕</button>`
-                : '';
+            ${items.map(item => {
+              const checked = !!marketState.checked[item.id];
               return `
-                <label class="flex items-center gap-3 p-3 rounded-2xl border cursor-pointer transition active:scale-[0.99] select-none ${
-                  isChecked ? 'bg-sage-50/70 border-sage-200' : 'bg-cream border-sage-100 hover:border-sage-300'
+                <label class="flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition select-none ${
+                  checked ? 'bg-forest-tint/50 border-forest-border' : 'bg-canvas border-hairline/80 hover:border-forest/40'
                 }">
-                  <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleMarketItem('${item.id}')" class="w-6 h-6 rounded-lg accent-[#7C9A7A] shrink-0 cursor-pointer">
-                  <span class="flex-1 text-sm leading-snug ${isChecked ? 'line-through text-gray-400' : 'text-gray-800 font-medium'}">${item.nome}</span>
-                  ${removeBtn}
+                  <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleMarketItem('${item.id}')" class="w-4 h-4 rounded accent-[#3D5A47] shrink-0 cursor-pointer">
+                  <span class="flex-1 text-xs leading-snug ${checked ? 'line-through text-muted' : 'text-ink font-medium'}">${item.nome}</span>
+                  ${cat.isExtra ? `
+                    <button type="button" onclick="removeExtraMarketItem('${item.id}', event)" aria-label="Remover" class="w-6 h-6 rounded-lg text-muted hover:text-warm flex items-center justify-center">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                      </svg>
+                    </button>
+                  ` : ''}
                 </label>
               `;
             }).join('')}
           </div>
         `;
-        container.appendChild(section);
+        container.appendChild(sec);
       });
 
       if (!renderedAny) {
-        const msg = currentMarketFilter === 'faltam'
-          ? 'Tudo certo! Todos os itens já estão no carrinho.'
-          : 'Nenhum item no carrinho ainda. Toque nos itens para marcar.';
         container.innerHTML = `
-          <div class="bg-white rounded-3xl p-8 text-center border border-sage-100 shadow-xs">
-            <p class="text-2xl mb-2">${currentMarketFilter === 'faltam' ? '🎉' : '🛒'}</p>
-            <p class="text-sm font-semibold text-gray-700">${msg}</p>
+          <div class="bg-surface border border-hairline rounded-2xl p-8 text-center">
+            <p class="text-xs font-medium text-muted">
+              ${currentMarketFilter === 'faltam' ? 'Todos os itens já estão no carrinho.' : 'Nenhum item marcado no carrinho ainda.'}
+            </p>
           </div>
         `;
       }
@@ -2019,147 +2223,113 @@
 
     /**
      * =========================================================================
-     * ABA 3: HISTÓRICO (RESUMO MÉDICO, MOUNJARO E DIÁRIO)
+     * ABA 3: HISTÓRICO
      * =========================================================================
      */
     function getRecentDateKeys(limit = 14) {
-      return Object.keys(allDailyLogs)
-        .sort((a, b) => b.localeCompare(a))
-        .slice(0, limit);
+      return Object.keys(allDailyLogs).sort((a, b) => b.localeCompare(a)).slice(0, limit);
     }
 
     function renderHistory() {
       const recentKeys = getRecentDateKeys(14);
       const totalDays = recentKeys.length;
-
       let sumWaterMl = 0;
       let sumMeals = 0;
-      const symptomCounts = { 'Normal': 0, 'Pouco apetite': 0, 'Enjoo': 0 };
+      const symCounts = { 'Normal': 0, 'Pouco apetite': 0, 'Enjoo': 0, 'Cansaço': 0 };
 
       recentKeys.forEach(k => {
         const log = allDailyLogs[k] || createEmptyDayLog();
         sumWaterMl += (log.waterCups || 0) * 250;
         sumMeals += PLANO_ALIMENTAR.filter(m => log.completedMeals && log.completedMeals[m.id]).length;
-        if (log.symptom && symptomCounts[log.symptom] !== undefined) {
-          symptomCounts[log.symptom]++;
-        }
+        if (log.symptom && symCounts[log.symptom] !== undefined) symCounts[log.symptom]++;
       });
 
       const avgWater = totalDays > 0 ? Math.round(sumWaterMl / totalDays) : 0;
       const avgMeals = totalDays > 0 ? (sumMeals / totalDays).toFixed(1).replace('.', ',') : '0';
+      const sortedMj = getSortedMounjaroLogs();
 
-      // 3 Mini-cards de Resumo
-      const summaryEl = document.getElementById('history-summary-cards');
-      summaryEl.innerHTML = `
-        <div class="bg-cream rounded-2xl p-3 border border-sage-100 text-center">
-          <p class="text-[10px] font-bold uppercase text-gray-400">Média Água</p>
-          <p class="text-sm font-bold text-sky-700 mt-1">${avgWater.toLocaleString('pt-BR')} ml</p>
-          <p class="text-[10px] text-gray-400 mt-0.5">por dia</p>
+      document.getElementById('history-summary-cards').innerHTML = `
+        <div class="bg-canvas border border-hairline rounded-xl p-3">
+          <p class="text-[10px] font-semibold uppercase tracking-wider text-muted">Média de água</p>
+          <p class="text-base font-semibold text-forest tabular-nums mt-1">${avgWater.toLocaleString('pt-BR')} ml</p>
         </div>
-        <div class="bg-cream rounded-2xl p-3 border border-sage-100 text-center">
-          <p class="text-[10px] font-bold uppercase text-gray-400">Refeições</p>
-          <p class="text-sm font-bold text-sage-800 mt-1">${avgMeals}/7</p>
-          <p class="text-[10px] text-gray-400 mt-0.5">${totalDays} ${totalDays === 1 ? 'dia' : 'dias'}</p>
+        <div class="bg-canvas border border-hairline rounded-xl p-3">
+          <p class="text-[10px] font-semibold uppercase tracking-wider text-muted">Adesão média</p>
+          <p class="text-base font-semibold text-ink tabular-nums mt-1">${avgMeals}/7 refeições</p>
         </div>
-        <div class="bg-cream rounded-2xl p-3 border border-sage-100 text-center">
-          <p class="text-[10px] font-bold uppercase text-gray-400">Sintomas</p>
-          <p class="text-[11px] font-semibold text-gray-700 mt-1 leading-tight">
-            😊 ${symptomCounts['Normal']} • 🍽️ ${symptomCounts['Pouco apetite']} • 🤢 ${symptomCounts['Enjoo']}
+        <div class="bg-canvas border border-hairline rounded-xl p-3">
+          <p class="text-[10px] font-semibold uppercase tracking-wider text-muted">Doses Mounjaro</p>
+          <p class="text-base font-semibold text-ink tabular-nums mt-1">${sortedMj.length} registradas</p>
+        </div>
+        <div class="bg-canvas border border-hairline rounded-xl p-3">
+          <p class="text-[10px] font-semibold uppercase tracking-wider text-muted">Bem-estar</p>
+          <p class="text-[11px] font-medium text-ink mt-1 leading-snug tabular-nums">
+            Normal: ${symCounts['Normal']} • Enjoo: ${symCounts['Enjoo']}
           </p>
-          <p class="text-[10px] text-gray-400 mt-0.5">registros</p>
         </div>
       `;
 
-      // Lista de Aplicações de Mounjaro
-      const sortedMj = getSortedMounjaroLogs();
+      // Linha do tempo Mounjaro
       document.getElementById('mounjaro-count-badge').textContent = sortedMj.length;
       const mjListEl = document.getElementById('history-mounjaro-list');
-
       if (sortedMj.length === 0) {
-        mjListEl.innerHTML = `<p class="text-xs text-gray-400 text-center py-3">Nenhuma aplicação registrada ainda.</p>`;
+        mjListEl.innerHTML = `<p class="text-xs text-muted py-2">Nenhuma aplicação registrada ainda.</p>`;
       } else {
         mjListEl.innerHTML = sortedMj.map(item => `
-          <div class="flex items-center justify-between gap-2 bg-indigo-50/60 border border-indigo-100 rounded-2xl px-3.5 py-2.5">
+          <div class="flex items-center justify-between gap-2 bg-canvas border border-hairline rounded-xl px-3.5 py-2.5">
             <div>
-              <p class="text-xs font-bold text-indigo-950">${formatDateBR(item.date)} — ${item.site}</p>
-              ${item.dose ? `<p class="text-[11px] text-indigo-700">Dose: ${item.dose}</p>` : ''}
+              <p class="text-xs font-semibold text-ink tabular-nums">${formatDateBR(item.date)} — ${item.site}</p>
+              ${item.dose ? `<p class="text-[11px] text-muted">Dose: ${item.dose}</p>` : ''}
             </div>
-            <button
-              type="button"
-              onclick="removeMounjaroLog('${item.id}')"
-              aria-label="Remover aplicação"
-              class="w-7 h-7 rounded-xl bg-white hover:bg-red-50 text-gray-400 hover:text-red-500 border border-indigo-100 flex items-center justify-center text-xs transition shrink-0"
-            >
-              ✕
+            <button type="button" onclick="removeMounjaroLog('${item.id}')" aria-label="Remover" class="w-7 h-7 rounded-lg text-muted hover:text-warm flex items-center justify-center">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
             </button>
           </div>
         `).join('');
       }
 
-      // Diário dos Últimos Dias
+      // Diário dos últimos dias
       const dailyListEl = document.getElementById('history-daily-list');
-      const allSortedKeys = Object.keys(allDailyLogs).sort((a, b) => b.localeCompare(a));
-
-      if (allSortedKeys.length === 0) {
-        dailyListEl.innerHTML = `<p class="text-xs text-gray-400 text-center py-6">Nenhum dia registrado ainda.</p>`;
-        return;
-      }
-
-      dailyListEl.innerHTML = allSortedKeys.map(dateKey => {
+      const allKeys = Object.keys(allDailyLogs).sort((a, b) => b.localeCompare(a));
+      dailyListEl.innerHTML = allKeys.map(dateKey => {
         const log = allDailyLogs[dateKey] || createEmptyDayLog();
-        const mealsDoneList = PLANO_ALIMENTAR.filter(m => log.completedMeals && log.completedMeals[m.id]);
+        const mealsDone = PLANO_ALIMENTAR.filter(m => log.completedMeals && log.completedMeals[m.id]);
         const supKeys = Object.keys(SUPLEMENTOS_MAP);
-        const supDoneList = supKeys.filter(id => log.completedSupplements && log.completedSupplements[id]);
+        const supsDone = supKeys.filter(id => log.completedSupplements && log.completedSupplements[id]);
         const waterMl = (log.waterCups || 0) * 250;
-        const waterPct = Math.min(100, Math.round((waterMl / 2500) * 100));
-
-        const symObj = SINTOMAS_OPCOES.find(s => s.id === log.symptom);
-        const symBadge = symObj
-          ? `<span class="text-[10px] font-semibold bg-sage-50 text-sage-800 border border-sage-200 px-2 py-0.5 rounded-full">${symObj.emoji} ${symObj.label}</span>`
-          : `<span class="text-[10px] font-medium bg-gray-100 text-gray-400 px-2 py-0.5 rounded-full">Sem check-in</span>`;
-
-        const isTodayLabel = dateKey === todayKey ? ' (Hoje)' : '';
+        const isToday = dateKey === todayKey ? ' (Hoje)' : '';
 
         return `
-          <details class="bg-white rounded-3xl p-4 shadow-sm border border-sage-100 group">
+          <details class="bg-surface border border-hairline rounded-2xl p-4 group">
             <summary class="list-none cursor-pointer">
               <div class="flex items-center justify-between gap-2">
-                <span class="text-sm font-bold text-gray-900 capitalize">${formatFullDateBR(dateKey)}${isTodayLabel}</span>
-                ${symBadge}
+                <span class="text-sm font-semibold text-ink capitalize">${formatFullDateBR(dateKey)}${isToday}</span>
+                <span class="text-[11px] font-medium px-2.5 py-0.5 rounded-full ${
+                  log.symptom ? 'bg-forest-tint text-forest' : 'bg-canvas text-muted'
+                }">${log.symptom || 'Sem check-in'}</span>
               </div>
-
-              <div class="grid grid-cols-3 gap-2 mt-3 text-xs">
-                <div class="bg-cream rounded-xl p-2 border border-sage-100">
-                  <span class="block text-[10px] text-gray-400 font-semibold">Água</span>
-                  <span class="font-bold text-sky-700">${waterMl.toLocaleString('pt-BR')} ml</span>
-                  <div class="w-full h-1 bg-gray-200 rounded-full mt-1 overflow-hidden">
-                    <div class="h-full bg-sky-500 rounded-full" style="width: ${waterPct}%"></div>
-                  </div>
-                </div>
-                <div class="bg-cream rounded-xl p-2 border border-sage-100">
-                  <span class="block text-[10px] text-gray-400 font-semibold">Refeições</span>
-                  <span class="font-bold text-sage-800">${mealsDoneList.length}/${PLANO_ALIMENTAR.length}</span>
-                </div>
-                <div class="bg-cream rounded-xl p-2 border border-sage-100">
-                  <span class="block text-[10px] text-gray-400 font-semibold">Suplementos</span>
-                  <span class="font-bold text-sage-800">${supDoneList.length}/${supKeys.length}</span>
-                </div>
+              <div class="flex items-center gap-4 mt-2 text-xs text-muted tabular-nums">
+                <span>Água: <strong class="text-ink">${waterMl.toLocaleString('pt-BR')} ml</strong></span>
+                <span>Refeições: <strong class="text-ink">${mealsDone.length}/7</strong></span>
+                <span>Supl.: <strong class="text-ink">${supsDone.length}/${supKeys.length}</strong></span>
               </div>
             </summary>
 
-            <div class="mt-3 pt-3 border-t border-sage-100 space-y-2.5 text-xs">
+            <div class="mt-3 pt-3 border-t border-hairline space-y-2.5 text-xs">
               <div>
-                <p class="font-bold text-gray-700 mb-1">Refeições marcadas:</p>
-                ${mealsDoneList.length > 0
-                  ? `<div class="flex flex-wrap gap-1.5">${mealsDoneList.map(m => `<span class="bg-sage-50 text-sage-800 px-2.5 py-1 rounded-xl font-medium">✓ ${m.horario} ${m.titulo}</span>`).join('')}</div>`
-                  : `<p class="text-gray-400">Nenhuma refeição marcada.</p>`
+                <p class="text-[10px] font-semibold uppercase tracking-wider text-muted mb-1">Refeições concluídas</p>
+                ${mealsDone.length > 0
+                  ? `<p class="text-ink leading-relaxed">${mealsDone.map(m => `${m.horario} ${m.titulo}`).join(' • ')}</p>`
+                  : `<p class="text-muted">Nenhuma refeição marcada.</p>`
                 }
               </div>
               <div>
-                <p class="font-bold text-gray-700 mb-1">Suplementos tomados:</p>
-                ${supDoneList.length > 0
-                  ? `<div class="flex flex-wrap gap-1.5">${supDoneList.map(id => `<span class="bg-indigo-50 text-indigo-800 px-2.5 py-1 rounded-xl font-medium">✓ ${SUPLEMENTOS_MAP[id]}</span>`).join('')}</div>`
-                  : `<p class="text-gray-400">Nenhum suplemento marcado.</p>`
+                <p class="text-[10px] font-semibold uppercase tracking-wider text-muted mb-1">Suplementos</p>
+                ${supsDone.length > 0
+                  ? `<p class="text-ink leading-relaxed">${supsDone.map(id => SUPLEMENTOS_MAP[id]).join(' • ')}</p>`
+                  : `<p class="text-muted">Nenhum suplemento marcado.</p>`
                 }
               </div>
             </div>
@@ -2173,35 +2343,34 @@
       const totalDays = recentKeys.length;
       let sumWaterMl = 0;
       let sumMeals = 0;
-      const symptomCounts = { 'Normal': 0, 'Pouco apetite': 0, 'Enjoo': 0 };
+      const symCounts = { 'Normal': 0, 'Pouco apetite': 0, 'Enjoo': 0, 'Cansaço': 0 };
 
       recentKeys.forEach(k => {
         const log = allDailyLogs[k] || createEmptyDayLog();
         sumWaterMl += (log.waterCups || 0) * 250;
         sumMeals += PLANO_ALIMENTAR.filter(m => log.completedMeals && log.completedMeals[m.id]).length;
-        if (log.symptom && symptomCounts[log.symptom] !== undefined) symptomCounts[log.symptom]++;
+        if (log.symptom && symCounts[log.symptom] !== undefined) symCounts[log.symptom]++;
       });
 
       const avgWater = totalDays > 0 ? Math.round(sumWaterMl / totalDays) : 0;
       const avgMeals = totalDays > 0 ? (sumMeals / totalDays).toFixed(1).replace('.', ',') : '0';
-
       const sortedMj = getSortedMounjaroLogs().slice(0, 6);
       const mjLines = sortedMj.length > 0
         ? sortedMj.map(m => `- ${formatDateBR(m.date)}: ${m.site}${m.dose ? ` (${m.dose})` : ''}`).join('\n')
         : '- Nenhuma aplicação registrada';
 
       const report = [
-        `📋 *RESUMO DE ACOMPANHAMENTO — POLIANA*`,
+        `RESUMO DE ACOMPANHAMENTO — ${currentUser.name.toUpperCase()}`,
         `Período: últimos ${totalDays} ${totalDays === 1 ? 'dia registrado' : 'dias registrados'}`,
         ``,
-        `💧 *Hidratação:* média de ${avgWater.toLocaleString('pt-BR')} ml/dia`,
-        `🍽️ *Refeições:* média de ${avgMeals}/7 por dia`,
-        `🩺 *Como se sentiu:* Normal (${symptomCounts['Normal']}) | Pouco apetite (${symptomCounts['Pouco apetite']}) | Enjoo (${symptomCounts['Enjoo']})`,
+        `Hidratação: média de ${avgWater.toLocaleString('pt-BR')} ml/dia`,
+        `Refeições: média de ${avgMeals}/7 por dia`,
+        `Bem-estar: Normal (${symCounts['Normal']}) | Pouco apetite (${symCounts['Pouco apetite']}) | Enjoo (${symCounts['Enjoo']}) | Cansaço (${symCounts['Cansaço']})`,
         ``,
-        `💉 *Últimas aplicações de Mounjaro (Quartas-feiras):*`,
+        `Últimas aplicações de Mounjaro:`,
         mjLines,
         ``,
-        `Enviado pelo app Plano Poliana`
+        `Gerado pelo NutriDia`
       ].join('\n');
 
       copyTextToClipboard(report);
@@ -2209,13 +2378,15 @@
 
     /**
      * =========================================================================
-     * MODAL NUTRICIONISTA
+     * MODAIS (NUTRICIONISTA E PERFIL)
      * =========================================================================
      */
     const modalNutri = document.getElementById('modal-nutri');
-    document.getElementById('btn-nutri-info').addEventListener('click', () => {
+    const modalProfile = document.getElementById('modal-profile');
+
+    function openNutriModal() {
       modalNutri.classList.remove('hidden');
-    });
+    }
     function closeNutriModal() {
       modalNutri.classList.add('hidden');
     }
@@ -2223,17 +2394,38 @@
       if (e.target === modalNutri) closeNutriModal();
     });
 
+    function openProfileModal() {
+      document.getElementById('profile-modal-name').textContent = currentUser.name;
+      document.getElementById('select-mounjaro-day').value = String(userSettings.mounjaroDay ?? 3);
+      modalProfile.classList.remove('hidden');
+    }
+    function closeProfileModal() {
+      modalProfile.classList.add('hidden');
+    }
+    modalProfile.addEventListener('click', (e) => {
+      if (e.target === modalProfile) closeProfileModal();
+    });
+
+    function updateMounjaroDay(val) {
+      userSettings.mounjaroDay = Number(val);
+      saveSettings();
+      renderMounjaroCard();
+      showToast('Dia do Mounjaro atualizado');
+    }
+
     /**
      * =========================================================================
      * INICIALIZAÇÃO
      * =========================================================================
      */
-    initHeader();
-    renderMounjaroCard();
-    renderWaterCard();
-    renderSymptoms();
-    renderMeals();
-    updateMarketStats();
+    (function bootstrap() {
+      const lastUser = localStorage.getItem('nutridia_last_user');
+      if (lastUser && PROFILES[lastUser]) {
+        enterApp(lastUser);
+      } else {
+        showAuthScreen();
+      }
+    })();
   </script>
 </body>
 </html>
