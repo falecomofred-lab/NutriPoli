@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <link rel="icon" type="image/png" href="icon.png">
-  <link rel="apple-touch-icon" href="icon.png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Plano Poliana</title>
@@ -12,8 +10,12 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Plano Poliana">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#2E6F5E">
+  <meta name="theme-color" content="#7C9A7A">
   <meta name="description" content="Plano Alimentar de Poliana - Acompanhamento diário e Mounjaro">
+
+  <!-- Ícones do App (PWA / Tela Inicial) -->
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="apple-touch-icon" href="icon.png">
 
   <!-- Fonte Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,14 +33,15 @@
           },
           colors: {
             sage: {
-              50: '#F2F7F5',
-              100: '#DFECE7',
-              200: '#BFD9CF',
-              600: '#2E6F5E',
-              700: '#24584A',
-              800: '#1B4338',
+              50: '#F3F7F2',
+              100: '#E3ECE2',
+              200: '#C7DAC5',
+              300: '#A4C2A1',
+              600: '#7C9A7A',
+              700: '#648062',
+              800: '#4E654C',
             },
-            cream: '#F7F8F6',
+            cream: '#F7F9F7',
             terracotta: {
               50: '#FDF6F0',
               100: '#FAE8D8',
@@ -78,7 +81,7 @@
 <body class="font-sans antialiased min-h-screen flex justify-center">
 
   <!-- Container Principal Mobile-First -->
-  <div id="app" class="w-full max-w-[480px] min-h-screen bg-cream shadow-xl flex flex-col relative">
+  <div id="app" class="w-full max-w-[480px] min-h-screen bg-cream shadow-xl flex flex-col relative pb-20">
 
     <!-- CABEÇALHO -->
     <header class="bg-sage-600 text-white rounded-b-3xl px-5 pt-6 pb-5 shadow-md sticky top-0 z-20">
@@ -96,12 +99,12 @@
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
-          <span>Nutri</span>
+          <span>Nutricionista</span>
         </button>
       </div>
 
-      <!-- Barra de Progresso das Refeições -->
-      <div class="mt-4 bg-white/15 rounded-2xl p-3 backdrop-blur-sm">
+      <!-- Barra de Progresso das Refeições (visível na aba Cardápio) -->
+      <div id="header-meal-progress" class="mt-4 bg-white/15 rounded-2xl p-3 backdrop-blur-sm">
         <div class="flex items-center justify-between text-xs font-medium mb-1.5">
           <span>Refeições concluídas hoje</span>
           <span id="progress-text" class="font-bold">0/7 refeições</span>
@@ -112,8 +115,8 @@
       </div>
     </header>
 
-    <!-- CONTEÚDO PRINCIPAL -->
-    <main class="flex-1 px-4 pt-4 pb-8 space-y-4">
+    <!-- TELA 1: CARDÁPIO -->
+    <main id="view-cardapio" class="flex-1 px-4 pt-4 pb-6 space-y-4 fade-in">
 
       <!-- MÓDULO MOUNJARO (TIRZEPATIDA) — TODA QUARTA-FEIRA -->
       <section id="mounjaro-card" class="rounded-3xl p-4 shadow-sm border transition-all bg-indigo-50/70 border-indigo-200/80">
@@ -175,6 +178,94 @@
 
     </main>
 
+    <!-- TELA 2: MERCADO (LISTA DE COMPRAS INTELIGENTE) -->
+    <main id="view-mercado" class="hidden flex-1 px-4 pt-4 pb-6 space-y-4 fade-in">
+
+      <!-- Card Dica Mounjaro -->
+      <section class="bg-indigo-50/80 border border-indigo-200/80 rounded-3xl p-4 shadow-xs flex items-start gap-3">
+        <div class="w-9 h-9 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shrink-0 text-base shadow-xs">
+          💡
+        </div>
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-700">Foco Mounjaro</span>
+          <p class="text-xs text-indigo-950 font-medium leading-relaxed mt-0.5">
+            Priorize as proteínas magras (para preservar massa magra) e compre frutas em menor quantidade para evitar desperdício com a saciedade.
+          </p>
+        </div>
+      </section>
+
+      <!-- Resumo do Carrinho, Filtros e Limpar -->
+      <section class="bg-white rounded-3xl p-4 shadow-sm border border-gray-100 space-y-3">
+        <div class="flex items-center justify-between gap-2">
+          <div>
+            <h2 class="text-sm font-bold text-gray-900">Lista de Compras</h2>
+            <p id="market-progress-text" class="text-xs text-sage-700 font-semibold mt-0.5">0 de 0 itens no carrinho</p>
+          </div>
+          <button
+            type="button"
+            onclick="clearMarketCart()"
+            class="px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-red-50 hover:text-red-600 active:scale-95 transition text-xs font-semibold text-gray-600"
+          >
+            Limpar carrinho
+          </button>
+        </div>
+
+        <div class="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
+          <div id="market-progress-bar" class="h-full bg-sage-600 rounded-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+
+        <!-- Filtros rápidos -->
+        <div class="grid grid-cols-3 gap-1.5 bg-gray-100 p-1 rounded-2xl">
+          <button
+            type="button"
+            id="filter-todos"
+            onclick="setMarketFilter('todos')"
+            class="py-1.5 px-2 rounded-xl text-xs font-semibold transition bg-sage-600 text-white shadow-xs"
+          >
+            Todos
+          </button>
+          <button
+            type="button"
+            id="filter-faltam"
+            onclick="setMarketFilter('faltam')"
+            class="py-1.5 px-2 rounded-xl text-xs font-semibold transition text-gray-600 hover:text-gray-900"
+          >
+            Faltam
+          </button>
+          <button
+            type="button"
+            id="filter-carrinho"
+            onclick="setMarketFilter('carrinho')"
+            class="py-1.5 px-2 rounded-xl text-xs font-semibold transition text-gray-600 hover:text-gray-900"
+          >
+            No carrinho
+          </button>
+        </div>
+
+        <!-- Adicionar item extra -->
+        <form onsubmit="addExtraMarketItem(event)" class="flex gap-2 pt-1">
+          <input
+            id="input-extra-item"
+            type="text"
+            placeholder="+ Adicionar item extra (ex: água com gás)"
+            class="flex-1 bg-cream border border-gray-200 focus:border-sage-600 focus:outline-none rounded-2xl px-3.5 py-2.5 text-xs text-gray-800 placeholder-gray-400"
+          >
+          <button
+            type="submit"
+            class="px-4 py-2.5 rounded-2xl bg-sage-600 hover:bg-sage-700 active:scale-95 transition text-white font-bold text-xs shrink-0 shadow-xs"
+          >
+            Adicionar
+          </button>
+        </form>
+      </section>
+
+      <!-- Lista de Corredores do Mercado -->
+      <div id="market-categories-container" class="space-y-4">
+        <!-- Renderizado via JS -->
+      </div>
+
+    </main>
+
     <!-- RODAPÉ OBRIGATÓRIO -->
     <footer class="mt-auto py-5 px-4 text-center border-t border-gray-200/70">
       <a
@@ -186,6 +277,43 @@
         tecnologia Venure.com.br
       </a>
     </footer>
+
+    <!-- BARRA DE NAVEGAÇÃO INFERIOR FIXA (BOTTOM TAB BAR) -->
+    <nav aria-label="Navegação Principal" class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white/95 backdrop-blur-md border-t border-gray-200 px-4 py-2 z-30 shadow-[0_-4px_16px_rgba(0,0,0,0.04)]">
+      <div class="grid grid-cols-2 gap-2">
+        <button
+          type="button"
+          id="nav-btn-cardapio"
+          onclick="switchView('cardapio')"
+          class="flex flex-col items-center justify-center py-1.5 rounded-2xl transition active:scale-95 bg-sage-50 text-sage-700"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2M7 2v20M21 15V2v0a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/>
+          </svg>
+          <span class="text-[11px] font-bold mt-0.5">Cardápio</span>
+        </button>
+
+        <button
+          type="button"
+          id="nav-btn-mercado"
+          onclick="switchView('mercado')"
+          class="relative flex flex-col items-center justify-center py-1.5 rounded-2xl transition active:scale-95 text-gray-500 hover:bg-gray-50"
+        >
+          <div class="relative">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+            <span
+              id="nav-market-badge"
+              class="absolute -top-1.5 -right-3 min-w-[18px] h-[18px] px-1 rounded-full bg-sage-600 text-white text-[10px] font-bold flex items-center justify-center shadow-xs"
+            >
+              0
+            </span>
+          </div>
+          <span class="text-[11px] font-bold mt-0.5">Mercado</span>
+        </button>
+      </div>
+    </nav>
   </div>
 
   <!-- MODAL: DADOS DO NUTRICIONISTA -->
@@ -795,6 +923,96 @@
 
     /**
      * =========================================================================
+     * DADOS DA LISTA DE COMPRAS (ORGANIZADA POR CORREDOR DO MERCADO)
+     * =========================================================================
+     */
+    const LISTA_MERCADO_BASE = [
+      {
+        id: 'acougue',
+        titulo: 'Açougue & Ovos',
+        icone: '🥩',
+        badge: 'Prioridade Mounjaro',
+        itens: [
+          { id: 'm-bovino', nome: 'Filé bovino magro (moído e para assar)' },
+          { id: 'm-frango', nome: 'Filé de frango (peito)' },
+          { id: 'm-peixe', nome: 'Filé de peixe' },
+          { id: 'm-camarao', nome: 'Filé de camarão' },
+          { id: 'm-ovos', nome: 'Ovos de galinha' }
+        ]
+      },
+      {
+        id: 'frutas',
+        titulo: 'Hortifruti — Frutas',
+        icone: '🍌',
+        itens: [
+          { id: 'm-banana-prata', nome: 'Banana prata' },
+          { id: 'm-banana-terra', nome: 'Banana da terra' },
+          { id: 'm-maca', nome: 'Maçã' },
+          { id: 'm-mamao', nome: 'Mamão' },
+          { id: 'm-morango', nome: 'Morango' },
+          { id: 'm-melao-melancia', nome: 'Melão / Melancia' },
+          { id: 'm-abacaxi', nome: 'Abacaxi' },
+          { id: 'm-outras-frutas', nome: 'Outras frutas do plano (Kiwi, Laranja, Pera, Goiaba, Ameixa, Pitaya, Uva sem semente)' },
+          { id: 'm-abacate', nome: 'Abacate (para vitamina)' },
+          { id: 'm-limao', nome: 'Limão (tempero da salada)' }
+        ]
+      },
+      {
+        id: 'legumes',
+        titulo: 'Hortifruti — Legumes & Temperos',
+        icone: '🥗',
+        itens: [
+          { id: 'm-salada', nome: 'Folhas para salada crua' },
+          { id: 'm-legumes-vapor', nome: 'Legumes para vapor (brócolis, cenoura, abobrinha, etc.)' },
+          { id: 'm-molho-base', nome: 'Tomate, cebola e alho (molho do fim de semana)' },
+          { id: 'm-manjericao', nome: 'Manjericão fresco' }
+        ]
+      },
+      {
+        id: 'raizes',
+        titulo: 'Raízes & Carboidratos',
+        icone: '🍠',
+        itens: [
+          { id: 'm-batata-doce', nome: 'Batata doce' },
+          { id: 'm-batata-inglesa', nome: 'Batata inglesa' },
+          { id: 'm-raizes', nome: 'Cará / Inhame / Macaxeira' },
+          { id: 'm-cuscuz', nome: 'Cuscuz de milho (flocão)' },
+          { id: 'm-arroz', nome: 'Arroz branco' },
+          { id: 'm-feijao', nome: 'Feijão (carioca, macassar, preto ou verde)' },
+          { id: 'm-macarrao', nome: 'Macarrão (fim de semana)' },
+          { id: 'm-aveia', nome: 'Aveia em flocos finos' },
+          { id: 'm-pao', nome: 'Pão francês' }
+        ]
+      },
+      {
+        id: 'laticinios',
+        titulo: 'Laticínios & Mercearia',
+        icone: '🧀',
+        itens: [
+          { id: 'm-coalho', nome: 'Queijo coalho' },
+          { id: 'm-iogurte', nome: 'Iogurte Zero (Pense Zero, Activia, Corpus, Itambé, Nestlé ou Molico)' },
+          { id: 'm-leite-po', nome: 'Leite desnatado em pó' },
+          { id: 'm-cafe', nome: 'Café (sem açúcar)' },
+          { id: 'm-canela', nome: 'Canela em pó' },
+          { id: 'm-azeite', nome: 'Azeite de oliva extra virgem' }
+        ]
+      },
+      {
+        id: 'farmacia',
+        titulo: 'Farmácia & Suplementos',
+        icone: '💊',
+        itens: [
+          { id: 'm-creatina', nome: 'Creatina (Dux ou Vitafor)' },
+          { id: 'm-omega', nome: 'Omegafor Plus (Vitafor)' },
+          { id: 'm-manip-desjejum', nome: 'Manipulado Desjejum' },
+          { id: 'm-manip-poscafe', nome: 'Manipulado Pós-Café' },
+          { id: 'm-mounjaro', nome: 'Caneta Mounjaro (conferir estoque para quarta-feira)' }
+        ]
+      }
+    ];
+
+    /**
+     * =========================================================================
      * UTILITÁRIOS DE DATA E ARMAZENAMENTO LOCAL (localStorage)
      * =========================================================================
      */
@@ -861,6 +1079,27 @@
       }
     }
 
+    function loadMarketState() {
+      try {
+        const raw = localStorage.getItem('plano_poliana_mercado');
+        if (raw) return JSON.parse(raw);
+      } catch (e) {
+        console.error('Erro ao ler estado do mercado:', e);
+      }
+      return {
+        checked: {},
+        extras: [] // [{ id: 'extra-...', nome: '...' }]
+      };
+    }
+
+    function saveMarketState() {
+      try {
+        localStorage.setItem('plano_poliana_mercado', JSON.stringify(marketState));
+      } catch (e) {
+        console.error('Erro ao salvar estado do mercado:', e);
+      }
+    }
+
     /**
      * =========================================================================
      * ESTADO INICIAL
@@ -871,10 +1110,45 @@
     const isWednesday = todayDate.getDay() === MOUNJARO_DOW;
     const isWeekendAuto = todayDate.getDay() === 0 || todayDate.getDay() === 6;
 
+    let currentView = 'cardapio';
     let currentDayMode = isWeekendAuto ? 'fds' : 'semana';
+    let currentMarketFilter = 'todos';
     let dailyState = loadDailyState(todayKey);
     let mounjaroLog = loadMounjaroLog();
+    let marketState = loadMarketState();
     let showManualMounjaroEdit = false;
+
+    /**
+     * =========================================================================
+     * NAVEGAÇÃO ENTRE ABAS (CARDÁPIO / MERCADO)
+     * =========================================================================
+     */
+    function switchView(viewName) {
+      currentView = viewName;
+      const viewCardapio = document.getElementById('view-cardapio');
+      const viewMercado = document.getElementById('view-mercado');
+      const headerProgress = document.getElementById('header-meal-progress');
+      const btnCardapio = document.getElementById('nav-btn-cardapio');
+      const btnMercado = document.getElementById('nav-btn-mercado');
+
+      if (viewName === 'cardapio') {
+        viewCardapio.classList.remove('hidden');
+        viewMercado.classList.add('hidden');
+        headerProgress.classList.remove('hidden');
+
+        btnCardapio.className = 'flex flex-col items-center justify-center py-1.5 rounded-2xl transition active:scale-95 bg-sage-50 text-sage-700';
+        btnMercado.className = 'relative flex flex-col items-center justify-center py-1.5 rounded-2xl transition active:scale-95 text-gray-500 hover:bg-gray-50';
+      } else {
+        viewCardapio.classList.add('hidden');
+        viewMercado.classList.remove('hidden');
+        headerProgress.classList.add('hidden');
+
+        btnMercado.className = 'relative flex flex-col items-center justify-center py-1.5 rounded-2xl transition active:scale-95 bg-sage-50 text-sage-700';
+        btnCardapio.className = 'flex flex-col items-center justify-center py-1.5 rounded-2xl transition active:scale-95 text-gray-500 hover:bg-gray-50';
+        renderMarket();
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
     /**
      * =========================================================================
@@ -1110,15 +1384,6 @@
 
     function toggleManualMounjaroEdit() {
       showManualMounjaroEdit = !showManualMounjaroEdit;
-      renderMounjaroCard();
-    }
-
-    function selectMounjaroSite(site) {
-      const current = mounjaroLog[todayKey] || { applied: true, site: null };
-      current.site = current.site === site ? null : site;
-      if (current.site) current.applied = true;
-      mounjaroLog[todayKey] = current;
-      saveMounjaroLog();
       renderMounjaroCard();
     }
 
@@ -1422,6 +1687,197 @@
 
     /**
      * =========================================================================
+     * TELA 2: MERCADO (LISTA DE COMPRAS INTELIGENTE)
+     * =========================================================================
+     */
+    function getAllMarketItems() {
+      const baseItems = LISTA_MERCADO_BASE.flatMap(cat => cat.itens);
+      return [...baseItems, ...(marketState.extras || [])];
+    }
+
+    function updateMarketStats() {
+      const allItems = getAllMarketItems();
+      const total = allItems.length;
+      const inCart = allItems.filter(item => !!marketState.checked[item.id]).length;
+      const pending = total - inCart;
+      const pct = total > 0 ? Math.round((inCart / total) * 100) : 0;
+
+      const progressText = document.getElementById('market-progress-text');
+      const progressBar = document.getElementById('market-progress-bar');
+      const navBadge = document.getElementById('nav-market-badge');
+
+      if (progressText) progressText.textContent = `${inCart} de ${total} itens no carrinho`;
+      if (progressBar) progressBar.style.width = `${pct}%`;
+
+      if (navBadge) {
+        navBadge.textContent = pending;
+        if (pending === 0) {
+          navBadge.classList.add('hidden');
+        } else {
+          navBadge.classList.remove('hidden');
+        }
+      }
+    }
+
+    function setMarketFilter(filter) {
+      currentMarketFilter = filter;
+      ['todos', 'faltam', 'carrinho'].forEach(f => {
+        const btn = document.getElementById(`filter-${f}`);
+        if (!btn) return;
+        if (f === filter) {
+          btn.className = 'py-1.5 px-2 rounded-xl text-xs font-semibold transition bg-sage-600 text-white shadow-xs';
+        } else {
+          btn.className = 'py-1.5 px-2 rounded-xl text-xs font-semibold transition text-gray-600 hover:text-gray-900';
+        }
+      });
+      renderMarket();
+    }
+
+    function toggleMarketItem(itemId) {
+      marketState.checked[itemId] = !marketState.checked[itemId];
+      saveMarketState();
+      renderMarket();
+    }
+
+    function addExtraMarketItem(event) {
+      event.preventDefault();
+      const input = document.getElementById('input-extra-item');
+      const nome = input.value.trim();
+      if (!nome) return;
+
+      const newItem = {
+        id: `extra-${Date.now()}`,
+        nome
+      };
+      if (!marketState.extras) marketState.extras = [];
+      marketState.extras.unshift(newItem);
+      saveMarketState();
+      input.value = '';
+      renderMarket();
+    }
+
+    function removeExtraMarketItem(itemId, event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      marketState.extras = (marketState.extras || []).filter(item => item.id !== itemId);
+      delete marketState.checked[itemId];
+      saveMarketState();
+      renderMarket();
+    }
+
+    function clearMarketCart() {
+      marketState.checked = {};
+      saveMarketState();
+      renderMarket();
+    }
+
+    function renderMarket() {
+      updateMarketStats();
+      const container = document.getElementById('market-categories-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const categoriesToRender = [];
+
+      // Se houver itens extras, exibe primeiro para acesso rápido
+      if (marketState.extras && marketState.extras.length > 0) {
+        categoriesToRender.push({
+          id: 'extras',
+          titulo: 'Itens Extras',
+          icone: '📝',
+          isExtra: true,
+          itens: marketState.extras
+        });
+      }
+
+      LISTA_MERCADO_BASE.forEach(cat => categoriesToRender.push(cat));
+
+      let renderedAnyItem = false;
+
+      categoriesToRender.forEach(cat => {
+        const filteredItems = cat.itens.filter(item => {
+          const isChecked = !!marketState.checked[item.id];
+          if (currentMarketFilter === 'faltam') return !isChecked;
+          if (currentMarketFilter === 'carrinho') return isChecked;
+          return true;
+        });
+
+        if (filteredItems.length === 0) return;
+        renderedAnyItem = true;
+
+        const section = document.createElement('section');
+        section.className = 'bg-white rounded-3xl p-4 shadow-sm border border-gray-100';
+
+        const badgeHtml = cat.badge
+          ? `<span class="text-[10px] font-bold uppercase tracking-wider bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">${cat.badge}</span>`
+          : '';
+
+        const itemsHtml = filteredItems.map(item => {
+          const isChecked = !!marketState.checked[item.id];
+          const removeBtnHtml = cat.isExtra
+            ? `<button
+                type="button"
+                onclick="removeExtraMarketItem('${item.id}', event)"
+                aria-label="Remover item"
+                class="w-7 h-7 rounded-xl bg-gray-100 hover:bg-red-50 text-gray-400 hover:text-red-500 flex items-center justify-center text-xs shrink-0 transition"
+              >✕</button>`
+            : '';
+
+          return `
+            <label class="flex items-center gap-3 p-3 rounded-2xl border cursor-pointer transition active:scale-[0.99] select-none ${
+              isChecked
+                ? 'bg-sage-50/70 border-sage-200'
+                : 'bg-cream border-gray-100 hover:border-sage-300'
+            }">
+              <input
+                type="checkbox"
+                ${isChecked ? 'checked' : ''}
+                onchange="toggleMarketItem('${item.id}')"
+                class="w-6 h-6 rounded-lg accent-[#7C9A7A] shrink-0 cursor-pointer"
+              >
+              <span class="flex-1 text-sm leading-snug ${
+                isChecked ? 'line-through text-gray-400 font-normal' : 'text-gray-800 font-medium'
+              }">
+                ${item.nome}
+              </span>
+              ${removeBtnHtml}
+            </label>
+          `;
+        }).join('');
+
+        section.innerHTML = `
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-lg leading-none">${cat.icone}</span>
+              <h3 class="text-sm font-bold text-gray-900">${cat.titulo}</h3>
+            </div>
+            ${badgeHtml}
+          </div>
+          <div class="space-y-2">
+            ${itemsHtml}
+          </div>
+        `;
+
+        container.appendChild(section);
+      });
+
+      if (!renderedAnyItem) {
+        const emptyMsg = currentMarketFilter === 'faltam'
+          ? 'Tudo certo! Todos os itens já estão no carrinho.'
+          : 'Nenhum item no carrinho ainda. Toque nos itens para marcar.';
+        container.innerHTML = `
+          <div class="bg-white rounded-3xl p-8 text-center border border-gray-100 shadow-xs">
+            <p class="text-2xl mb-2">${currentMarketFilter === 'faltam' ? '🎉' : '🛒'}</p>
+            <p class="text-sm font-semibold text-gray-700">${emptyMsg}</p>
+          </div>
+        `;
+      }
+    }
+
+    /**
+     * =========================================================================
      * MODAL NUTRICIONISTA
      * =========================================================================
      */
@@ -1445,6 +1901,7 @@
     renderMounjaroCard();
     renderWaterCard();
     renderMeals();
+    updateMarketStats();
   </script>
 </body>
 </html>
