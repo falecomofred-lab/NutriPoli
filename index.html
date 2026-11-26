@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Plano Poliana</title>
+
+  <!-- Meta tags para experiência de Web App (PWA) no iOS e Android -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Plano Poliana">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#2E6F5E">
+  <meta name="description" content="Plano Alimentar de Poliana - Acompanhamento diário e Mounjaro">
+
+  <!-- Fonte Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          colors: {
+            sage: {
+              50: '#F2F7F5',
+              100: '#DFECE7',
+              200: '#BFD9CF',
+              600: '#2E6F5E',
+              700: '#24584A',
+              800: '#1B4338',
+            },
+            cream: '#F7F8F6',
+            terracotta: {
+              50: '#FDF6F0',
+              100: '#FAE8D8',
+              200: '#F3CFAF',
+              700: '#A6542B',
+              800: '#854221',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html, body {
+      background-color: #ECEEE9;
+      color: #1F2937;
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior-y: none;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .fade-in {
+      animation: fadeIn 0.2s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="font-sans antialiased min-h-screen flex justify-center">
+
+  <!-- Container Principal Mobile-First -->
+  <div id="app" class="w-full max-w-[480px] min-h-screen bg-cream shadow-xl flex flex-col relative">
+
+    <!-- CABEÇALHO -->
+    <header class="bg-sage-600 text-white rounded-b-3xl px-5 pt-6 pb-5 shadow-md sticky top-0 z-20">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <p id="date-display" class="text-sage-100 text-xs font-medium capitalize"></p>
+          <h1 id="greeting-display" class="text-xl font-bold tracking-tight mt-0.5">Olá, Poliana</h1>
+        </div>
+        <button
+          id="btn-nutri-info"
+          type="button"
+          aria-label="Dados do Nutricionista"
+          class="bg-white/15 hover:bg-white/25 active:scale-95 transition px-3 py-2 rounded-2xl flex items-center gap-1.5 text-xs font-medium backdrop-blur-sm"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span>Nutri</span>
+        </button>
+      </div>
+
+      <!-- Barra de Progresso das Refeições -->
+      <div class="mt-4 bg-white/15 rounded-2xl p-3 backdrop-blur-sm">
+        <div class="flex items-center justify-between text-xs font-medium mb-1.5">
+          <span>Refeições concluídas hoje</span>
+          <span id="progress-text" class="font-bold">0/7 refeições</span>
+        </div>
+        <div class="w-full h-2 bg-black/20 rounded-full overflow-hidden">
+          <div id="progress-bar" class="h-full bg-white rounded-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="flex-1 px-4 pt-4 pb-8 space-y-4">
+
+      <!-- MÓDULO MOUNJARO (TIRZEPATIDA) — TODA QUARTA-FEIRA -->
+      <section id="mounjaro-card" class="rounded-3xl p-4 shadow-sm border transition-all bg-indigo-50/70 border-indigo-200/80">
+        <!-- Renderizado dinamicamente via JS -->
+      </section>
+
+      <!-- CONTADOR DE ÁGUA COMPACTO -->
+      <section class="bg-white rounded-3xl p-4 shadow-sm border border-gray-100">
+        <div class="flex items-center justify-between gap-2 mb-2.5">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-sm font-bold text-gray-800 leading-tight">Hidratação</h2>
+              <p class="text-[11px] text-gray-500">Meta: 2.500 ml (10 copos)</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <span id="water-amount" class="text-sm font-bold text-sky-700">0 ml</span>
+            <span id="water-cups" class="block text-[11px] text-gray-400">0/10 copos</span>
+          </div>
+        </div>
+
+        <div class="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden mb-3">
+          <div id="water-bar" class="h-full bg-sky-500 rounded-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <button
+            type="button"
+            onclick="updateWater(-250)"
+            class="py-2.5 px-3 rounded-2xl bg-gray-100 hover:bg-gray-200 active:scale-95 transition text-gray-700 font-semibold text-xs"
+          >
+            − 250 ml
+          </button>
+          <button
+            type="button"
+            onclick="updateWater(250)"
+            class="py-2.5 px-3 rounded-2xl bg-sky-500 hover:bg-sky-600 active:scale-95 transition text-white font-semibold text-xs shadow-xs"
+          >
+            + 250 ml (1 copo)
+          </button>
+        </div>
+      </section>
+
+      <!-- LISTA DE REFEIÇÕES DO PLANO -->
+      <section aria-label="Plano Alimentar">
+        <div class="flex items-center justify-between px-1 mb-2.5">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-gray-400">Cardápio do Dia</h2>
+          <span class="text-[11px] text-sage-600 font-medium">Toque nas opções para marcar</span>
+        </div>
+        <div id="meals-container" class="space-y-4">
+          <!-- Renderizado via JS -->
+        </div>
+      </section>
+
+    </main>
+
+    <!-- RODAPÉ OBRIGATÓRIO -->
+    <footer class="mt-auto py-5 px-4 text-center border-t border-gray-200/70">
+      <a
+        href="https://venure.com.br"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center justify-center text-xs font-medium text-gray-400 hover:text-sage-600 transition"
+      >
+        tecnologia Venure.com.br
+      </a>
+    </footer>
+  </div>
+
+  <!-- MODAL: DADOS DO NUTRICIONISTA -->
+  <div id="modal-nutri" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-[400px] rounded-3xl p-6 shadow-2xl fade-in relative">
+      <button
+        type="button"
+        onclick="closeNutriModal()"
+        aria-label="Fechar"
+        class="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 transition"
+      >
+        ✕
+      </button>
+
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-12 h-12 rounded-2xl bg-sage-50 text-sage-600 flex items-center justify-center font-bold text-lg shrink-0">
+          JI
+        </div>
+        <div>
+          <span class="text-[11px] font-semibold uppercase tracking-wider text-sage-600">Nutricionista</span>
+          <h2 class="text-base font-bold text-gray-900 leading-tight">João Igor Correia Ferreira da Silva</h2>
+        </div>
+      </div>
+
+      <div class="space-y-2 text-sm text-gray-700 bg-cream rounded-2xl p-4 border border-gray-100">
+        <p><span class="font-semibold text-gray-900">CRN:</span> 32010</p>
+        <p><span class="font-semibold text-gray-900">Paciente:</span> Poliana</p>
+        <p><span class="font-semibold text-gray-900">Data do plano:</span> 17/11/2026</p>
+        <p><span class="font-semibold text-gray-900">Endereço:</span> Rua 15 de novembro, 121 Clínica, Gravatá</p>
+        <p><span class="font-semibold text-gray-900">Telefone:</span> <a href="tel:35330910" class="text-sage-600 underline font-medium">3533-0910</a></p>
+      </div>
+
+      <button
+        type="button"
+        onclick="closeNutriModal()"
+        class="w-full mt-5 py-3 rounded-2xl bg-sage-600 hover:bg-sage-700 text-white font-semibold text-sm transition active:scale-95"
+      >
+        Fechar
+      </button>
+    </div>
+  </div>
+
+  <!-- SCRIPT PRINCIPAL -->
+  <script>
+    /**
+     * =========================================================================
+     * DADOS DO PLANO ALIMENTAR (100% FIEL NA ÍNTEGRA)
+     * =========================================================================
+     */
+    const PLANO_ALIMENTAR = [
+      {
+        id: 'desjejum',
+        horario: '06:00',
+        horaNum: 6,
+        minNum: 0,
+        titulo: 'Desjejum',
+        opcoes: [
+          {
+            nome: 'Principal',
+            itens: [],
+            suplementos: [
+              {
+                id: 'sup-desjejum-manipulado',
+                titulo: 'Manipulado (Desjejum)',
+                texto: 'TOMAR 01 DOSE DO MANIPULADO: GLUTAMINA + INULINA + CHÁ VERDE + CAVALINHA + OPUNTIA FICUS + HIBISCUS + CAPSIATE + GENGIBRE + CAFEÍNA + CITRUS SINENSIS (NO DESJEJUM)'
+              },
+              {
+                id: 'sup-desjejum-creatina',
+                titulo: 'Creatina (escolher 1)',
+                texto: 'CREATINA - DUX (6g) OU CREATINA - VITAFOR (6g)'
+              }
+            ],
+            obs: 'DILUIR O SACHÊ COM A CREATINA EM 150ML DE ÁGUA GELADA.'
+          }
+        ]
+      },
+      {
+        id: 'pre-treino',
+        horario: '06:30',
+        horaNum: 6,
+        minNum: 30,
+        titulo: 'Refeição pré treino',
+        opcoes: [
+          {
+            nome: 'Principal',
+            itens: [
+              { label: 'Pré-treino', opcoes: ['Banana prata assada em frigideira antiaderente (80g)'] }
+            ],
+            obs: 'POLVILHAR A BANANA PRATA COM CANELA EM PÓ.'
+          },
+          {
+            nome: 'Substituição 1',
+            itens: [
+              {
+                label: 'Fruta (escolha 1)',
+                opcoes: [
+                  'Ameixa fresca (1 unid.)',
+                  'Abacaxi (100g)',
+                  'Banana prata (80g)',
+                  'Goiaba (1 unid.)',
+                  'Kiwi (1 unid.)',
+                  'Laranja (1 unid.)',
+                  'Maçã (1 unid.)',
+                  'Mamão (100g)',
+                  'Melão (120g)',
+                  'Melancia (150g)',
+                  'Morango (100g)',
+                  'Pera (1 unid.)',
+                  'Pitaya (150g)',
+                  'Uva sem semente (80g)'
+                ]
+              }
+            ]
+          },
+          {
+            nome: 'Substituição 2',
+            itens: [
+              { label: 'Pré-treino', opcoes: ['Banana da terra cozida (100g)'] }
+            ],
+            obs: 'POLVILHAR A BANANA DA TERRA COM CANELA EM PÓ.'
+          }
+        ]
+      },
+      {
+        id: 'cafe-manha',
+        horario: '08:30',
+        horaNum: 8,
+        minNum: 30,
+        titulo: 'Café da manhã',
+        opcoes: [
+          {
+            nome: 'Principal',
+            itens: [
+              {
+                label: 'Proteína (escolha 1)',
+                opcoes: [
+                  'Filé de bovino magro moído (100g)',
+                  'Filé de frango desfiado (100g)',
+                  'Ovo de galinha (3 unid.)',
+                  'Ovo de galinha (2 unid.) + Queijo coalho assado em frigideira antiaderente (40g)'
+                ]
+              },
+              { label: 'Carboidrato', opcoes: ['Cuscuz de milho (60g)'] },
+              { label: 'Bebida', opcoes: ['Café (1 xícara de café)'] }
+            ],
+            suplementos: [
+              {
+                id: 'sup-cafe-manipulado',
+                titulo: 'Manipulado (Pós-café)',
+                texto: 'TOMAR 01 DOSE DO MANIPULADO: GARCINIA CAMBOGIA + MOROSIL + OPUNTIA (APÓS O CAFÉ DA MANHÃ)'
+              }
+            ],
+            obs: 'OVOS: MEXIDOS/COZIDOS/OMELETE. NÃO ADOÇAR O CAFÉ!'
+          },
+          {
+            nome: 'Substituição 1',
+            itens: [
+              {
+                label: 'Proteína (escolha 1)',
+                opcoes: [
+                  'Filé de bovino magro moído (100g)',
+                  'Filé de frango desfiado (100g)',
+                  'Ovo de galinha (3 unid.)',
+                  'Ovo de galinha (2 unid.) + Queijo coalho assado em frigideira antiaderente (30g)'
+                ]
+              },
+              { label: 'Carboidrato', opcoes: ['Batata doce cozida (80g)'] },
+              { label: 'Bebida', opcoes: ['Café (1 xícara de café)'] }
+            ],
+            suplementos: [
+              {
+                id: 'sup-cafe-manipulado',
+                titulo: 'Manipulado (Pós-café)',
+                texto: 'TOMAR 01 DOSE DO MANIPULADO: GARCINIA CAMBOGIA + MOROSIL + OPUNTIA (APÓS O CAFÉ DA MANHÃ)'
+              }
+            ],
+            obs: 'OVOS: MEXIDOS/COZIDOS/OMELETE. NÃO ADOÇAR O CAFÉ!'
+          },
+          {
+            nome: 'Substituição 2',
+            itens: [
+              {
+                label: 'Proteína (escolha 1)',
+                opcoes: [
+                  'Filé de bovino magro moído (100g)',
+                  'Filé de frango desfiado (100g)',
+                  'Ovo de galinha (3 unid.)',
+                  'Ovo de galinha (2 unid.) + Queijo coalho assado em frigideira antiaderente (30g)'
+                ]
+              },
+              { label: 'Carboidrato', opcoes: ['Banana da terra cozida (100g)'] },
+              { label: 'Bebida', opcoes: ['Café (1 xícara de café)'] }
+            ],
+            suplementos: [
+              {
+                id: 'sup-cafe-manipulado',
+                titulo: 'Manipulado (Pós-café)',
+                texto: 'TOMAR 01 DOSE DO MANIPULADO: GARCINIA CAMBOGIA + MOROSIL + OPUNTIA (APÓS O CAFÉ DA MANHÃ)'
+              }
+            ],
+            obs: 'OVOS: MEXIDOS/COZIDOS/OMELETE. POLVILHAR A BANANA DA TERRA COM CANELA EM PÓ. NÃO ADOÇAR O CAFÉ!'
+          },
+          {
+            nome: 'Substituição 3',
+            itens: [
+              {
+                label: 'Proteína (escolha 1)',
+                opcoes: [
+                  'Filé de bovino magro moído (100g)',
+                  'Filé de frango desfiado (100g)',
+                  'Ovo de galinha (3 unid.)',
+                  'Ovo de galinha (2 unid.) + Queijo coalho assado em frigideira antiaderente (30g)'
+                ]
+              },
+              {
+                label: 'Carboidrato (escolha 1)',
+                opcoes: [
+                  'Cará cozido (120g)',
+                  'Inhame cozido (120g)',
+                  'Macaxeira cozida (120g)'
+                ]
+              },
+              { label: 'Bebida', opcoes: ['Café (1 xícara de café)'] }
+            ],
+            suplementos: [
+              {
+                id: 'sup-cafe-manipulado',
+                titulo: 'Manipulado (Pós-café)',
+                texto: 'TOMAR 01 DOSE DO MANIPULADO: GARCINIA CAMBOGIA + MOROSIL + OPUNTIA (APÓS O CAFÉ DA MANHÃ)'
+              }
+            ],
+            obs: 'OVOS: MEXIDOS/COZIDOS/OMELETE. NÃO ADOÇAR O CAFÉ!'
+          },
+          {
+            nome: 'Substituição 4',
+            itens: [
+              {
+                label: 'Proteína (escolha 1)',
+                opcoes: [
+                  'Filé de bovino magro moído (100g)',
+                  'Filé de frango desfiado (100g)',
+                  'Ovo de galinha (3 unid.)',
+                  'Ovo de galinha (2 unid.) + Queijo coalho assado em frigideira antiaderente (40g)'
+                ]
+              },
+              { label: 'Carboidrato', opcoes: ['Pão francês (1 unid.)'] },
+              { label: 'Bebida', opcoes: ['Café (1 xícara de café)'] }
+            ],
+            suplementos: [
+              {
+                id: 'sup-cafe-manipulado',
+                titulo: 'Manipulado (Pós-café)',
+                texto: 'TOMAR 01 DOSE DO MANIPULADO: GARCINIA CAMBOGIA + MOROSIL + OPUNTIA (APÓS O CAFÉ DA MANHÃ)'
+              }
+            ],
+            obs: 'OVOS: MEXIDOS. NÃO ADOÇAR O CAFÉ!'
+          }
+        ]
+      },
+      {
+        id: 'almoco',
+        horario: '12:00',
+        horaNum: 12,
+        minNum: 0,
+        titulo: 'Almoço',
+        hasDayMode: true,
+        opcoesSemana: [
+          {
+            nome: 'Principal',
+            itens: [
+              {
+                label: 'Proteína (escolha 1)',
+                opcoes: [
+                  'Filé bovino magro assado (100g)',
+                  'Filé de frango assado (100g)',
+                  'Filé de peixe assado (120g)',
+                  'Filé de camarão assado (120g)'
+                ]
+              },
+              { label: 'Acompanhamento', opcoes: ['Legumes ao vapor (150g)'] },
+              { label: 'Salada', opcoes: ['Salada crua à vontade'] }
+            ],
+            suplementos: [
+              {
+                id: 'sup-almoco-omega',
+                titulo: 'Suplemento (Pós-almoço)',
+                texto: 'TOMAR 02 CÁPSULAS DE OMEGAFOR PLUS - VITAFOR (APÓS O ALMOÇO)'
+              }
+            ],
+            obs: 'TEMPERAR A SALADA: AZEITE DE OLIVA EXTRA VIRGEM E LIMÃO.'
+          }
+        ],
+        opcoesFds: [
+          {
+            nome: 'Principal',
+            itens: [
+              {
+                label: 'Proteína (escolha 1)',
+                opcoes: [
+                  'Filé bovino magro assado (100g)',
+                  'Filé de frango assado (100g)',
+                  'Filé de peixe assado (120g)',
+                  'Filé de camarão assado (120g)'
+                ]
+              },
+              { label: 'Carboidrato', opcoes: ['Arroz branco cozido (80g)'] },
+              {
+                label: 'Leguminosa (escolha 1)',
+                opcoes: [
+                  'Feijão carioca cozido (80g)',
+                  'Feijão macassar cozido (80g)',
+                  'Feijão preto cozido (80g)',
+                  'Feijão verde cozido (80g)'
+                ]
+              },
+              { label: 'Salada', opcoes: ['Salada crua à vontade'] }
+            ],
+            suplementos: [
+              {
+                id: 'sup-almoco-omega',
+                titulo: 'Suplemento (Pós-almoço)',
+                texto: 'TOMAR 02 CÁPSULAS DE OMEGAFOR PLUS - VITAFOR (APÓS O ALMOÇO)'
+              }
+            ],
+            obs: 'TEMPERAR A SALADA: AZEITE DE OLIVA EXTRA VIRGEM E LIMÃO.'
+          },
+          {
+            nome: 'Substituição 1',
+            itens: [
+              {
+                label: 'Proteína (escolha 1)',
+                opcoes: [
+                  'Filé bovino magro assado (100g)',
+                  'Filé de frango assado (100g)',
+                  'Filé de peixe assado (120g)',
+                  'Filé de camarão assado (120g)'
+                ]
+              },
+              {
+                label: 'Carboidrato (escolha 1)',
+                opcoes: [
+                  'Batata inglesa cozida (150g)',
+                  'Macarrão cozido (150g)'
+                ]
+              },
+              { label: 'Salada', opcoes: ['Salada crua à vontade'] }
+            ],
+            suplementos: [
+              {
+                id: 'sup-almoco-omega',
+                titulo: 'Suplemento (Pós-almoço)',
+                texto: 'TOMAR 02 CÁPSULAS DE OMEGAFOR PLUS - VITAFOR (APÓS O ALMOÇO)'
+              }
+            ],
+            obs: 'TEMPERAR A SALADA: AZEITE DE OLIVA EXTRA VIRGEM E LIMÃO.',
+            receita: {
+              titulo: 'MOLHO PARA O MACARRÃO',
+              ingredientes: 'Tomate em cubos, manjericão fresco picado, azeite extra virgem, dente de alho e cebola picada em cubos.',
+              preparo: 'Coloque o alho amassado, a cebola e o azeite numa panela e refogue até dourar. Depois, adicione o tomate e refogue por aproximadamente 15 minutos ou até que desmanchem. Separe metade dessa receita, bata no liquidificador e depois junte à receita novamente. Assim ficará com uns pedaços moles de tomate no meio do molho. Se preferir, bata tudo. Por último, adicione o manjericão.'
+            }
+          }
+        ]
+      },
+      {
+        id: 'lanche-tarde',
+        horario: '15:00',
+        horaNum: 15,
+        minNum: 0,
+        titulo: 'Lanche da tarde',
+        opcoes: [
+          {
+            nome: 'Principal',
+            itens: [
+              {
+                label: 'Fruta (escolha 1)',
+                opcoes: [
+                  'Ameixa fresca (1 unid.)',
+                  'Abacaxi (100g)',
+                  'Banana prata (80g)',
+                  'Goiaba (1 unid.)',
+                  'Kiwi (1 unid.)',
+                  'Laranja (1 unid.)',
+                  'Maçã (1 unid.)',
+                  'Mamão (100g)',
+                  'Melão (120g)',
+                  'Melancia (150g)',
+                  'Morango (100g)',
+                  'Pera (1 unid.)',
+                  'Pitaya (150g)',
+                  'Uva sem semente (80g)'
+                ]
+              },
+              {
+                label: 'Laticínio (escolha 1)',
+                opcoes: [
+                  'Iogurte PENSE ZERO - Batavo (170g)',
+                  'Iogurte ACTIVIA ZERO - Danone (170g)',
+                  'Iogurte CORPUS ZERO - Danone (170g)',
+                  'Iogurte ZERO - Itambé (170g)',
+                  'Iogurte ZERO - Nestlé (170g)',
+                  'Iogurte TRIPLO ZERO - Molico (170g)'
+                ]
+              }
+            ]
+          },
+          {
+            nome: 'Substituição 1',
+            itens: [
+              {
+                label: 'Fruta 1 (escolha 1)',
+                opcoes: [
+                  'Ameixa fresca (1 unid.)',
+                  'Goiaba (1 unid.)',
+                  'Kiwi (1 unid.)',
+                  'Laranja (1 unid.)',
+                  'Maçã (1 unid.)',
+                  'Pera (1 unid.)'
+                ]
+              },
+              {
+                label: 'Fruta 2 (escolha 1)',
+                opcoes: [
+                  'Abacaxi (100g)',
+                  'Banana prata (80g)',
+                  'Mamão (100g)',
+                  'Melão (120g)',
+                  'Melancia (150g)',
+                  'Morango (100g)',
+                  'Pitaya (150g)',
+                  'Uva sem semente (80g)'
+                ]
+              }
+            ]
+          },
+          {
+            nome: 'Substituição 2',
+            itens: [
+              { label: 'Base', opcoes: ['Leite desnatado em pó (40g)'] },
+              { label: 'Fibra', opcoes: ['Aveia em flocos finos (20g)'] },
+              { label: 'Fruta base', opcoes: ['Banana prata (80g)'] },
+              {
+                label: 'Fruta adicional (escolha 1)',
+                opcoes: [
+                  'Abacate (60g)',
+                  'Maçã (1 unid.)',
+                  'Mamão (100g)',
+                  'Morango (80g)'
+                ]
+              }
+            ],
+            obs: 'LIQUIDIFICAR EM 200ML DE ÁGUA GELADA. NÃO ADOÇAR A VITAMINA!'
+          }
+        ]
+      },
+      {
+        id: 'jantar',
+        horario: '18:30',
+        horaNum: 18,
+        minNum: 30,
+        titulo: 'Jantar',
+        opcoes: [
+          {
+            nome: 'Principal',
+            itens: [
+              {
+                label: 'Proteína (escolha 1)',
+                opcoes: [
+                  'Filé bovino magro assado (100g)',
+                  'Filé de frango assado (100g)',
+                  'Filé de peixe assado (120g)',
+                  'Ovo de galinha (3 unid.)',
+                  'Ovo de galinha (2 unid.) + Queijo coalho assado em frigideira antiaderente (40g)'
+                ]
+              },
+              { label: 'Carboidrato', opcoes: ['Cuscuz de milho (80g)'] }
+            ],
+            obs: 'OVOS: MEXIDOS/COZIDOS/OMELETE.'
+          },
+          {
+            nome: 'Substituição 1',
+            itens: [
+              {
+                label: 'Proteína (escolha 1)',
+                opcoes: [
+                  'Filé bovino magro assado (100g)',
+                  'Filé de frango assado (100g)',
+                  'Filé de peixe assado (120g)',
+                  'Ovo de galinha (3 unid.)',
+                  'Ovo de galinha (2 unid.) + Queijo coalho assado em frigideira antiaderente (40g)'
+                ]
+              },
+              { label: 'Carboidrato', opcoes: ['Batata doce cozida (100g)'] }
+            ],
+            obs: 'OVOS: MEXIDOS/COZIDOS/OMELETE.'
+          },
+          {
+            nome: 'Substituição 2',
+            itens: [
+              {
+                label: 'Proteína (escolha 1)',
+                opcoes: [
+                  'Filé bovino magro assado (100g)',
+                  'Filé de frango assado (100g)',
+                  'Filé de peixe assado (120g)',
+                  'Ovo de galinha (3 unid.)',
+                  'Ovo de galinha (2 unid.) + Queijo coalho assado em frigideira antiaderente (40g)'
+                ]
+              },
+              { label: 'Carboidrato', opcoes: ['Banana da terra cozida (120g)'] }
+            ],
+            obs: 'OVOS: MEXIDOS/COZIDOS/OMELETE.'
+          },
+          {
+            nome: 'Substituição 3',
+            itens: [
+              {
+                label: 'Proteína (escolha 1)',
+                opcoes: [
+                  'Filé bovino magro assado (100g)',
+                  'Filé de frango assado (100g)',
+                  'Filé de peixe assado (120g)',
+                  'Ovo de galinha (3 unid.)',
+                  'Ovo de galinha (2 unid.) + Queijo coalho assado em frigideira antiaderente (40g)'
+                ]
+              },
+              {
+                label: 'Carboidrato (escolha 1)',
+                opcoes: [
+                  'Batata inglesa cozida (150g)',
+                  'Cará cozido (150g)',
+                  'Inhame cozido (150g)',
+                  'Macaxeira cozida (150g)'
+                ]
+              }
+            ],
+            obs: 'OVOS: MEXIDOS/COZIDOS/OMELETE.'
+          }
+        ]
+      },
+      {
+        id: 'ceia',
+        horario: '22:00',
+        horaNum: 22,
+        minNum: 0,
+        titulo: 'Ceia',
+        opcoes: [
+          {
+            nome: 'Principal',
+            itens: [
+              {
+                label: 'Fruta (escolha 1)',
+                opcoes: [
+                  'Ameixa fresca (1 unid.)',
+                  'Abacaxi (100g)',
+                  'Banana prata (80g)',
+                  'Goiaba (1 unid.)',
+                  'Kiwi (1 unid.)',
+                  'Laranja (1 unid.)',
+                  'Maçã (1 unid.)',
+                  'Mamão (100g)',
+                  'Melão (120g)',
+                  'Melancia (150g)',
+                  'Morango (100g)',
+                  'Pera (1 unid.)',
+                  'Uva sem semente (80g)'
+                ]
+              }
+            ]
+          },
+          {
+            nome: 'Substituição 1',
+            itens: [
+              {
+                label: 'Laticínio (escolha 1)',
+                opcoes: [
+                  'Iogurte PENSE ZERO - Batavo (170g)',
+                  'Iogurte ACTIVIA ZERO - Danone (170g)',
+                  'Iogurte CORPUS ZERO - Danone (170g)',
+                  'Iogurte ZERO - Itambé (170g)',
+                  'Iogurte ZERO - Nestlé (170g)',
+                  'Iogurte TRIPLO ZERO - Molico (170g)'
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ];
+
+    const LOCAIS_APLICACAO = [
+      'Abdômen Direito',
+      'Abdômen Esquerdo',
+      'Coxa Direita',
+      'Coxa Esquerda',
+      'Braço Direito',
+      'Braço Esquerdo'
+    ];
+
+    const SINTOMAS_OPCOES = [
+      { id: 'normal', label: 'Normal', emoji: '😊' },
+      { id: 'pouco-apetite', label: 'Pouco apetite', emoji: '🍽️' },
+      { id: 'enjoo', label: 'Enjoo', emoji: '🤢' }
+    ];
+
+    const WATER_GOAL = 2500;
+    const MOUNJARO_DOW = 3; // Quarta-feira (0=Dom, 1=Seg, 2=Ter, 3=Qua)
+
+    /**
+     * =========================================================================
+     * UTILITÁRIOS DE DATA E ARMAZENAMENTO LOCAL (localStorage)
+     * =========================================================================
+     */
+    function getDateKey(dateObj) {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const d = String(dateObj.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function getLastWednesdayKey(referenceDate) {
+      const d = new Date(referenceDate);
+      const diff = (d.getDay() - MOUNJARO_DOW + 7) % 7;
+      d.setDate(d.getDate() - diff);
+      return getDateKey(d);
+    }
+
+    function formatShortDateBR(dateKey) {
+      const [y, m, d] = dateKey.split('-');
+      return `${d}/${m}`;
+    }
+
+    function loadDailyState(dateKey) {
+      try {
+        const raw = localStorage.getItem(`plano_poliana_dia_${dateKey}`);
+        if (raw) return JSON.parse(raw);
+      } catch (e) {
+        console.error('Erro ao ler estado diário:', e);
+      }
+      return {
+        completedMeals: {},
+        completedSupplements: {},
+        selectedTabs: {},
+        selectedPills: {},
+        waterMl: 0,
+        symptom: null
+      };
+    }
+
+    function saveDailyState() {
+      try {
+        localStorage.setItem(`plano_poliana_dia_${todayKey}`, JSON.stringify(dailyState));
+      } catch (e) {
+        console.error('Erro ao salvar estado diário:', e);
+      }
+    }
+
+    function loadMounjaroLog() {
+      try {
+        const raw = localStorage.getItem('plano_poliana_mounjaro_log');
+        if (raw) return JSON.parse(raw);
+      } catch (e) {
+        console.error('Erro ao ler log do Mounjaro:', e);
+      }
+      // Estrutura: { "2026-11-25": { applied: true, site: "Abdômen Esquerdo" } }
+      return {};
+    }
+
+    function saveMounjaroLog() {
+      try {
+        localStorage.setItem('plano_poliana_mounjaro_log', JSON.stringify(mounjaroLog));
+      } catch (e) {
+        console.error('Erro ao salvar log do Mounjaro:', e);
+      }
+    }
+
+    /**
+     * =========================================================================
+     * ESTADO INICIAL
+     * =========================================================================
+     */
+    const todayDate = new Date();
+    const todayKey = getDateKey(todayDate);
+    const isWednesday = todayDate.getDay() === MOUNJARO_DOW;
+    const isWeekendAuto = todayDate.getDay() === 0 || todayDate.getDay() === 6;
+
+    let currentDayMode = isWeekendAuto ? 'fds' : 'semana';
+    let dailyState = loadDailyState(todayKey);
+    let mounjaroLog = loadMounjaroLog();
+    let showManualMounjaroEdit = false;
+
+    /**
+     * =========================================================================
+     * CABEÇALHO E PROGRESSO
+     * =========================================================================
+     */
+    function initHeader() {
+      const hour = todayDate.getHours();
+      let saudacao = 'Boa noite, Poliana';
+      if (hour >= 5 && hour < 12) {
+        saudacao = 'Bom dia, Poliana';
+      } else if (hour >= 12 && hour < 18) {
+        saudacao = 'Boa tarde, Poliana';
+      }
+      document.getElementById('greeting-display').textContent = saudacao;
+
+      const formattedDate = todayDate.toLocaleDateString('pt-BR', {
+        weekday: 'long',
+        day: '2-digit',
+        month: 'long'
+      });
+      document.getElementById('date-display').textContent = formattedDate;
+    }
+
+    function updateProgressBar() {
+      const total = PLANO_ALIMENTAR.length;
+      const done = PLANO_ALIMENTAR.filter(m => dailyState.completedMeals[m.id]).length;
+      const pct = Math.round((done / total) * 100);
+
+      document.getElementById('progress-text').textContent = `${done}/${total} refeições`;
+      document.getElementById('progress-bar').style.width = `${pct}%`;
+    }
+
+    /**
+     * =========================================================================
+     * MÓDULO MOUNJARO (QUARTA-FEIRA) + CHECK-IN DIÁRIO
+     * =========================================================================
+     */
+    function renderMounjaroCard() {
+      const container = document.getElementById('mounjaro-card');
+      const todayLog = mounjaroLog[todayKey] || { applied: false, site: null };
+      const lastWedKey = getLastWednesdayKey(todayDate);
+      const lastWedLog = mounjaroLog[lastWedKey];
+
+      let headerBlock = '';
+
+      if (isWednesday) {
+        // HOJE É QUARTA-FEIRA: Banner destacado + botão grande + rodízio de local
+        container.className = 'rounded-3xl p-4 shadow-sm border-2 transition-all bg-indigo-50 border-indigo-400';
+
+        headerBlock = `
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex items-center gap-2.5">
+              <div class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                </svg>
+              </div>
+              <div>
+                <span class="inline-block text-[10px] font-bold uppercase tracking-wider bg-indigo-600 text-white px-2 py-0.5 rounded-full">Mounjaro • Tirzepatida</span>
+                <h2 class="text-sm font-bold text-indigo-950 mt-0.5">Hoje é dia de Mounjaro! (Quarta-feira)</h2>
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onclick="toggleMounjaroToday()"
+            class="w-full mt-3 py-3 px-4 rounded-2xl font-bold text-sm transition active:scale-98 flex items-center justify-center gap-2 shadow-xs ${
+              todayLog.applied
+                ? 'bg-emerald-600 text-white'
+                : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+            }"
+          >
+            <span>${todayLog.applied ? '✓ Dose aplicada hoje' : 'Marcar dose aplicada hoje'}</span>
+          </button>
+
+          <div class="mt-3 pt-3 border-t border-indigo-200/70">
+            <p class="text-[11px] font-semibold text-indigo-900 mb-2">Local da aplicação (rodízio):</p>
+            <div class="flex flex-wrap gap-1.5">
+              ${LOCAIS_APLICACAO.map(site => {
+                const isSelected = todayLog.site === site;
+                return `
+                  <button
+                    type="button"
+                    onclick="selectMounjaroSite('${site}')"
+                    class="px-2.5 py-1.5 rounded-xl text-xs font-medium border transition active:scale-95 ${
+                      isSelected
+                        ? 'bg-indigo-600 text-white border-indigo-600 font-semibold'
+                        : 'bg-white text-indigo-900 border-indigo-200 hover:border-indigo-400'
+                    }"
+                  >
+                    ${site}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      } else {
+        // NÃO É QUARTA-FEIRA: Contagem regressiva + status da última quarta
+        container.className = 'rounded-3xl p-4 shadow-sm border transition-all bg-indigo-50/60 border-indigo-200/80';
+
+        const todayDow = todayDate.getDay();
+        const daysUntil = (MOUNJARO_DOW - todayDow + 7) % 7;
+        const countdownText = daysUntil === 1
+          ? 'Falta 1 dia para a próxima aplicação — Quarta-feira'
+          : `Faltam ${daysUntil} dias para a próxima aplicação — Quarta-feira`;
+
+        const lastDoseStatus = lastWedLog && lastWedLog.applied
+          ? `<span class="text-emerald-700 font-semibold">✓ Última quarta (${formatShortDateBR(lastWedKey)}) registrada${lastWedLog.site ? ` (${lastWedLog.site})` : ''}</span>`
+          : `<span class="text-indigo-700/80">Última quarta (${formatShortDateBR(lastWedKey)}): sem registro</span>`;
+
+        const manualEditPanel = showManualMounjaroEdit ? `
+          <div class="mt-3 pt-3 border-t border-indigo-200/70 space-y-2.5 fade-in">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-[11px] font-semibold text-indigo-900">Dose de quarta (${formatShortDateBR(lastWedKey)}):</span>
+              <button
+                type="button"
+                onclick="toggleMounjaroDate('${lastWedKey}')"
+                class="px-3 py-1.5 rounded-xl text-xs font-bold transition active:scale-95 ${
+                  lastWedLog && lastWedLog.applied
+                    ? 'bg-emerald-600 text-white'
+                    : 'bg-indigo-600 text-white'
+                }"
+              >
+                ${lastWedLog && lastWedLog.applied ? '✓ Aplicada' : 'Marcar como aplicada'}
+              </button>
+            </div>
+            <div>
+              <p class="text-[11px] font-semibold text-indigo-900 mb-1.5">Local aplicado (rodízio):</p>
+              <div class="flex flex-wrap gap-1.5">
+                ${LOCAIS_APLICACAO.map(site => {
+                  const isSelected = lastWedLog && lastWedLog.site === site;
+                  return `
+                    <button
+                      type="button"
+                      onclick="selectMounjaroSiteForDate('${lastWedKey}', '${site}')"
+                      class="px-2.5 py-1.5 rounded-xl text-xs font-medium border transition active:scale-95 ${
+                        isSelected
+                          ? 'bg-indigo-600 text-white border-indigo-600 font-semibold'
+                          : 'bg-white text-indigo-900 border-indigo-200 hover:border-indigo-400'
+                      }"
+                    >
+                      ${site}
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          </div>
+        ` : '';
+
+        headerBlock = `
+          <div class="flex items-start gap-2.5">
+            <div class="w-9 h-9 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-600">Mounjaro (Tirzepatida)</span>
+                <button
+                  type="button"
+                  onclick="toggleManualMounjaroEdit()"
+                  class="text-[11px] font-semibold text-indigo-600 hover:text-indigo-800 underline"
+                >
+                  ${showManualMounjaroEdit ? 'Fechar' : 'Registrar / Editar'}
+                </button>
+              </div>
+              <p class="text-sm font-bold text-indigo-950 leading-snug mt-0.5">${countdownText}</p>
+              <p class="text-[11px] mt-1">${lastDoseStatus}</p>
+            </div>
+          </div>
+          ${manualEditPanel}
+        `;
+      }
+
+      // Check-in rápido diário: "Como estou hoje?"
+      const checkinBlock = `
+        <div class="mt-3.5 pt-3 border-t border-indigo-200/60">
+          <p class="text-[11px] font-semibold text-indigo-900/80 mb-2">Como estou hoje?</p>
+          <div class="grid grid-cols-3 gap-2">
+            ${SINTOMAS_OPCOES.map(sym => {
+              const isSelected = dailyState.symptom === sym.id;
+              return `
+                <button
+                  type="button"
+                  onclick="selectSymptom('${sym.id}')"
+                  class="py-2 px-2 rounded-2xl border text-center transition active:scale-95 flex flex-col items-center justify-center gap-0.5 ${
+                    isSelected
+                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
+                      : 'bg-white text-gray-700 border-indigo-100 hover:border-indigo-300'
+                  }"
+                >
+                  <span class="text-base leading-none">${sym.emoji}</span>
+                  <span class="text-[11px] font-semibold leading-tight mt-0.5">${sym.label}</span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = headerBlock + checkinBlock;
+    }
+
+    function toggleMounjaroToday() {
+      toggleMounjaroDate(todayKey);
+    }
+
+    function toggleMounjaroDate(dateKey) {
+      const current = mounjaroLog[dateKey] || { applied: false, site: null };
+      current.applied = !current.applied;
+      mounjaroLog[dateKey] = current;
+      saveMounjaroLog();
+      renderMounjaroCard();
+    }
+
+    function selectMounjaroSite(site) {
+      selectMounjaroSiteForDate(todayKey, site);
+    }
+
+    function selectMounjaroSiteForDate(dateKey, site) {
+      const current = mounjaroLog[dateKey] || { applied: true, site: null };
+      current.site = current.site === site ? null : site;
+      if (current.site) current.applied = true;
+      mounjaroLog[dateKey] = current;
+      saveMounjaroLog();
+      renderMounjaroCard();
+    }
+
+    function toggleManualMounjaroEdit() {
+      showManualMounjaroEdit = !showManualMounjaroEdit;
+      renderMounjaroCard();
+    }
+
+    function selectMounjaroSite(site) {
+      const current = mounjaroLog[todayKey] || { applied: true, site: null };
+      current.site = current.site === site ? null : site;
+      if (current.site) current.applied = true;
+      mounjaroLog[todayKey] = current;
+      saveMounjaroLog();
+      renderMounjaroCard();
+    }
+
+    function selectSymptom(symId) {
+      dailyState.symptom = dailyState.symptom === symId ? null : symId;
+      saveDailyState();
+      renderMounjaroCard();
+    }
+
+    /**
+     * =========================================================================
+     * CONTADOR DE ÁGUA
+     * =========================================================================
+     */
+    function renderWaterCard() {
+      const ml = dailyState.waterMl || 0;
+      const cups = Math.round(ml / 250);
+      const pct = Math.min(100, Math.round((ml / WATER_GOAL) * 100));
+
+      document.getElementById('water-amount').textContent = `${ml.toLocaleString('pt-BR')} ml`;
+      document.getElementById('water-cups').textContent = `${cups}/10 copos`;
+      document.getElementById('water-bar').style.width = `${pct}%`;
+    }
+
+    function updateWater(delta) {
+      dailyState.waterMl = Math.max(0, (dailyState.waterMl || 0) + delta);
+      saveDailyState();
+      renderWaterCard();
+    }
+
+    /**
+     * =========================================================================
+     * MOTOR DE REFEIÇÕES
+     * =========================================================================
+     */
+    function getActiveMealId() {
+      const nowMinutes = todayDate.getHours() * 60 + todayDate.getMinutes();
+      for (let i = 0; i < PLANO_ALIMENTAR.length; i++) {
+        const meal = PLANO_ALIMENTAR[i];
+        const mealMinutes = meal.horaNum * 60 + meal.minNum;
+        if (nowMinutes <= mealMinutes + 45) {
+          return meal.id;
+        }
+      }
+      return null;
+    }
+
+    function setDayMode(mode) {
+      currentDayMode = mode;
+      dailyState.selectedTabs['almoco'] = 0;
+      saveDailyState();
+      renderMeals();
+    }
+
+    function renderMeals() {
+      const container = document.getElementById('meals-container');
+      const activeMealId = getActiveMealId();
+      container.innerHTML = '';
+
+      PLANO_ALIMENTAR.forEach(meal => {
+        const isDone = !!dailyState.completedMeals[meal.id];
+        const isActive = meal.id === activeMealId && !isDone;
+
+        const opcoesList = meal.hasDayMode
+          ? (currentDayMode === 'semana' ? meal.opcoesSemana : meal.opcoesFds)
+          : meal.opcoes;
+
+        let activeTabIdx = dailyState.selectedTabs[meal.id] || 0;
+        if (activeTabIdx >= opcoesList.length) activeTabIdx = 0;
+        const currentOption = opcoesList[activeTabIdx];
+
+        const card = document.createElement('article');
+        card.className = `bg-white rounded-3xl p-4 shadow-sm border transition-all ${
+          isActive ? 'border-sage-600 ring-2 ring-sage-600/15' : 'border-gray-100'
+        } ${isDone ? 'opacity-80' : ''}`;
+
+        // Badge de status
+        let badgeHtml = '';
+        if (isActive) {
+          badgeHtml = `<span class="text-[10px] font-bold uppercase tracking-wider bg-sage-600 text-white px-2 py-0.5 rounded-full">Agora / Próxima</span>`;
+        } else if (isDone) {
+          badgeHtml = `<span class="text-[10px] font-bold uppercase tracking-wider bg-sage-100 text-sage-700 px-2 py-0.5 rounded-full">Concluída</span>`;
+        }
+
+        // Toggle Dia de Semana vs Fim de Semana (exclusivo no card do Almoço)
+        let dayModeToggleHtml = '';
+        if (meal.hasDayMode) {
+          dayModeToggleHtml = `
+            <div class="mt-3 bg-gray-100 p-1 rounded-2xl grid grid-cols-2 gap-1">
+              <button
+                type="button"
+                onclick="setDayMode('semana')"
+                class="py-1.5 px-2 rounded-xl text-xs font-semibold transition ${
+                  currentDayMode === 'semana'
+                    ? 'bg-sage-600 text-white shadow-xs'
+                    : 'text-gray-600 hover:text-gray-900'
+                }"
+              >
+                Dia de Semana
+              </button>
+              <button
+                type="button"
+                onclick="setDayMode('fds')"
+                class="py-1.5 px-2 rounded-xl text-xs font-semibold transition ${
+                  currentDayMode === 'fds'
+                    ? 'bg-sage-600 text-white shadow-xs'
+                    : 'text-gray-600 hover:text-gray-900'
+                }"
+              >
+                Fim de Semana
+              </button>
+            </div>
+          `;
+        }
+
+        // Abas de substituição
+        let tabsHtml = '';
+        if (opcoesList.length > 1) {
+          tabsHtml = `
+            <div class="flex gap-1.5 overflow-x-auto no-scrollbar pb-1 mt-3">
+              ${opcoesList.map((opt, idx) => `
+                <button
+                  type="button"
+                  onclick="selectMealTab('${meal.id}', ${idx})"
+                  class="whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                    idx === activeTabIdx
+                      ? 'bg-sage-600 text-white shadow-xs'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }"
+                >
+                  ${opt.nome}
+                </button>
+              `).join('')}
+            </div>
+          `;
+        }
+
+        // Itens alimentares
+        let itensHtml = '';
+        if (currentOption.itens && currentOption.itens.length > 0) {
+          itensHtml = `<div class="mt-3 space-y-2.5">` + currentOption.itens.map((item, itemIdx) => {
+            const pillKey = `${meal.id}_${meal.hasDayMode ? currentDayMode : 'all'}_${activeTabIdx}_${itemIdx}`;
+            const hasMultiple = item.opcoes.length > 1;
+            const selectedPill = dailyState.selectedPills[pillKey];
+
+            if (!hasMultiple) {
+              return `
+                <div class="bg-cream rounded-2xl px-3.5 py-2.5 border border-gray-100">
+                  <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400">${item.label}</p>
+                  <p class="text-sm font-medium text-gray-800 mt-0.5">${item.opcoes[0]}</p>
+                </div>
+              `;
+            }
+
+            return `
+              <div class="bg-cream rounded-2xl p-3 border border-gray-100">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-2">${item.label}</p>
+                <div class="flex flex-wrap gap-1.5">
+                  ${item.opcoes.map((optText, optIdx) => {
+                    const isSelected = selectedPill === optIdx;
+                    return `
+                      <button
+                        type="button"
+                        onclick="selectPill('${pillKey}', ${optIdx})"
+                        class="text-left text-xs px-3 py-2 rounded-xl border transition active:scale-95 ${
+                          isSelected
+                            ? 'bg-sage-600 text-white border-sage-600 font-semibold shadow-xs'
+                            : 'bg-white text-gray-700 border-gray-200 hover:border-sage-300'
+                        }"
+                      >
+                        ${optText}
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            `;
+          }).join('') + `</div>`;
+        }
+
+        // Suplementos e Manipulados com checkbox individual
+        let supHtml = '';
+        if (currentOption.suplementos && currentOption.suplementos.length > 0) {
+          supHtml = `<div class="mt-3 space-y-2">` + currentOption.suplementos.map(sup => {
+            const supChecked = !!dailyState.completedSupplements[sup.id];
+            return `
+              <label class="flex items-start gap-3 p-3 rounded-2xl border cursor-pointer transition ${
+                supChecked
+                  ? 'bg-sage-50/60 border-sage-200'
+                  : 'bg-sage-50 border-sage-200/80'
+              }">
+                <input
+                  type="checkbox"
+                  ${supChecked ? 'checked' : ''}
+                  onchange="toggleSupplement('${sup.id}')"
+                  class="mt-0.5 w-5 h-5 rounded-md accent-[#2E6F5E] shrink-0 cursor-pointer"
+                >
+                <div class="text-xs leading-relaxed">
+                  <span class="font-bold text-sage-800 block uppercase tracking-wide text-[10px]">${sup.titulo}</span>
+                  <span class="${supChecked ? 'line-through text-gray-400' : 'text-sage-800 font-medium'}">${sup.texto}</span>
+                </div>
+              </label>
+            `;
+          }).join('') + `</div>`;
+        }
+
+        // Observações
+        let obsHtml = '';
+        if (currentOption.obs) {
+          obsHtml = `
+            <div class="mt-3 bg-terracotta-50 border border-terracotta-200/70 rounded-2xl p-3 flex items-start gap-2">
+              <span class="text-terracotta-700 text-sm leading-none mt-0.5">⚠️</span>
+              <p class="text-xs text-terracotta-800 font-medium leading-relaxed">
+                <strong class="font-bold">Obs:</strong> ${currentOption.obs}
+              </p>
+            </div>
+          `;
+        }
+
+        // Receita expansível (accordion)
+        let receitaHtml = '';
+        if (currentOption.receita) {
+          receitaHtml = `
+            <details class="mt-3 bg-amber-50/70 border border-amber-200/80 rounded-2xl p-3 group">
+              <summary class="text-xs font-bold text-amber-900 cursor-pointer flex items-center justify-between list-none">
+                <span>🍅 Receita: ${currentOption.receita.titulo}</span>
+                <span class="text-amber-700 group-open:rotate-180 transition-transform">▾</span>
+              </summary>
+              <div class="mt-2.5 pt-2.5 border-t border-amber-200/60 text-xs text-amber-950 space-y-2 leading-relaxed">
+                <p><strong>Ingredientes:</strong> ${currentOption.receita.ingredientes}</p>
+                <p><strong>Modo de preparo:</strong> ${currentOption.receita.preparo}</p>
+              </div>
+            </details>
+          `;
+        }
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-sage-600 bg-sage-50 px-2.5 py-0.5 rounded-lg">${meal.horario}</span>
+                ${badgeHtml}
+              </div>
+              <h3 class="text-base font-bold text-gray-900 mt-1.5 ${isDone ? 'line-through text-gray-400' : ''}">${meal.titulo}</h3>
+            </div>
+            <label class="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-2xl text-xs font-semibold cursor-pointer transition active:scale-95 select-none ${
+              isDone
+                ? 'bg-sage-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-sage-50 hover:text-sage-700'
+            }">
+              <input
+                type="checkbox"
+                ${isDone ? 'checked' : ''}
+                onchange="toggleMealDone('${meal.id}')"
+                class="sr-only"
+              >
+              <span>${isDone ? '✓ Feito' : 'Feito'}</span>
+            </label>
+          </div>
+          ${dayModeToggleHtml}
+          ${tabsHtml}
+          ${itensHtml}
+          ${supHtml}
+          ${obsHtml}
+          ${receitaHtml}
+        `;
+
+        container.appendChild(card);
+      });
+
+      updateProgressBar();
+    }
+
+    function selectMealTab(mealId, tabIdx) {
+      dailyState.selectedTabs[mealId] = tabIdx;
+      saveDailyState();
+      renderMeals();
+    }
+
+    function selectPill(pillKey, optIdx) {
+      if (dailyState.selectedPills[pillKey] === optIdx) {
+        delete dailyState.selectedPills[pillKey];
+      } else {
+        dailyState.selectedPills[pillKey] = optIdx;
+      }
+      saveDailyState();
+      renderMeals();
+    }
+
+    function toggleMealDone(mealId) {
+      dailyState.completedMeals[mealId] = !dailyState.completedMeals[mealId];
+      saveDailyState();
+      renderMeals();
+    }
+
+    function toggleSupplement(supId) {
+      dailyState.completedSupplements[supId] = !dailyState.completedSupplements[supId];
+      saveDailyState();
+      renderMeals();
+    }
+
+    /**
+     * =========================================================================
+     * MODAL NUTRICIONISTA
+     * =========================================================================
+     */
+    const modalNutri = document.getElementById('modal-nutri');
+    document.getElementById('btn-nutri-info').addEventListener('click', () => {
+      modalNutri.classList.remove('hidden');
+    });
+    function closeNutriModal() {
+      modalNutri.classList.add('hidden');
+    }
+    modalNutri.addEventListener('click', (e) => {
+      if (e.target === modalNutri) closeNutriModal();
+    });
+
+    /**
+     * =========================================================================
+     * INICIALIZAÇÃO
+     * =========================================================================
+     */
+    initHeader();
+    renderMounjaroCard();
+    renderWaterCard();
+    renderMeals();
+  </script>
+</body>
+</html>
