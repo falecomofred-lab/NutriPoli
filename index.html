@@ -5,19 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Plano Poliana</title>
 
-  <!-- Meta tags para experiência de Web App (PWA) no iOS e Android -->
+  <!-- Metadados PWA -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Plano Poliana">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#7C9A7A">
-  <meta name="description" content="Plano Alimentar de Poliana - Acompanhamento diário e Mounjaro">
+  <meta name="description" content="Plano Alimentar de Poliana - Acompanhamento diário, Mercado e Mounjaro">
 
-  <!-- Ícones do App (PWA / Tela Inicial) -->
+  <!-- Ícones do App (Tela Inicial) -->
   <link rel="icon" type="image/png" href="icon.png">
   <link rel="apple-touch-icon" href="icon.png">
 
-  <!-- Fonte Inter -->
+  <!-- Google Fonts: Inter (com fallback seguro) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -34,12 +34,12 @@
           colors: {
             sage: {
               50: '#F3F7F2',
-              100: '#E3ECE2',
-              200: '#C7DAC5',
-              300: '#A4C2A1',
+              100: '#E6ECE6',
+              200: '#C9D8C8',
+              300: '#A5BFA3',
               600: '#7C9A7A',
-              700: '#648062',
-              800: '#4E654C',
+              700: '#628060',
+              800: '#4E6B4C',
             },
             cream: '#F7F9F7',
             terracotta: {
@@ -57,7 +57,7 @@
 
   <style>
     html, body {
-      background-color: #ECEEE9;
+      background-color: #ECEFE9;
       color: #1F2937;
       -webkit-tap-highlight-color: transparent;
       overscroll-behavior-y: none;
@@ -80,7 +80,7 @@
 </head>
 <body class="font-sans antialiased min-h-screen flex justify-center">
 
-  <!-- Container Principal Mobile-First -->
+  <!-- Container Mobile-First -->
   <div id="app" class="w-full max-w-[480px] min-h-screen bg-cream shadow-xl flex flex-col relative pb-20">
 
     <!-- CABEÇALHO -->
@@ -103,7 +103,7 @@
         </button>
       </div>
 
-      <!-- Barra de Progresso das Refeições (visível na aba Cardápio) -->
+      <!-- Barra de Progresso das Refeições (visível apenas na aba Cardápio) -->
       <div id="header-meal-progress" class="mt-4 bg-white/15 rounded-2xl p-3 backdrop-blur-sm">
         <div class="flex items-center justify-between text-xs font-medium mb-1.5">
           <span>Refeições concluídas hoje</span>
@@ -115,16 +115,18 @@
       </div>
     </header>
 
-    <!-- TELA 1: CARDÁPIO -->
+    <!-- =================================================================== -->
+    <!-- ABA 1: CARDÁPIO                                                     -->
+    <!-- =================================================================== -->
     <main id="view-cardapio" class="flex-1 px-4 pt-4 pb-6 space-y-4 fade-in">
 
-      <!-- MÓDULO MOUNJARO (TIRZEPATIDA) — TODA QUARTA-FEIRA -->
+      <!-- Card Mounjaro (toda quarta-feira) -->
       <section id="mounjaro-card" class="rounded-3xl p-4 shadow-sm border transition-all bg-indigo-50/70 border-indigo-200/80">
-        <!-- Renderizado dinamicamente via JS -->
+        <!-- Renderizado via JS -->
       </section>
 
-      <!-- CONTADOR DE ÁGUA COMPACTO -->
-      <section class="bg-white rounded-3xl p-4 shadow-sm border border-gray-100">
+      <!-- Card Compacto de Hidratação -->
+      <section class="bg-white rounded-3xl p-4 shadow-sm border border-sage-100">
         <div class="flex items-center justify-between gap-2 mb-2.5">
           <div class="flex items-center gap-2.5">
             <div class="w-9 h-9 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
@@ -150,14 +152,14 @@
         <div class="grid grid-cols-2 gap-2.5">
           <button
             type="button"
-            onclick="updateWater(-250)"
+            onclick="updateWater(-1)"
             class="py-2.5 px-3 rounded-2xl bg-gray-100 hover:bg-gray-200 active:scale-95 transition text-gray-700 font-semibold text-xs"
           >
             − 250 ml
           </button>
           <button
             type="button"
-            onclick="updateWater(250)"
+            onclick="updateWater(1)"
             class="py-2.5 px-3 rounded-2xl bg-sky-500 hover:bg-sky-600 active:scale-95 transition text-white font-semibold text-xs shadow-xs"
           >
             + 250 ml (1 copo)
@@ -165,11 +167,19 @@
         </div>
       </section>
 
-      <!-- LISTA DE REFEIÇÕES DO PLANO -->
+      <!-- Check-in rápido: Como você está hoje? -->
+      <section class="bg-white rounded-3xl p-4 shadow-sm border border-sage-100">
+        <p class="text-xs font-bold text-gray-800 mb-2.5">Como você está hoje?</p>
+        <div id="symptom-buttons" class="grid grid-cols-3 gap-2">
+          <!-- Renderizado via JS -->
+        </div>
+      </section>
+
+      <!-- Lista das 7 Refeições -->
       <section aria-label="Plano Alimentar">
         <div class="flex items-center justify-between px-1 mb-2.5">
           <h2 class="text-xs font-bold uppercase tracking-wider text-gray-400">Cardápio do Dia</h2>
-          <span class="text-[11px] text-sage-600 font-medium">Toque nas opções para marcar</span>
+          <span class="text-[11px] text-sage-800 font-medium">Toque nas opções para marcar</span>
         </div>
         <div id="meals-container" class="space-y-4">
           <!-- Renderizado via JS -->
@@ -178,28 +188,30 @@
 
     </main>
 
-    <!-- TELA 2: MERCADO (LISTA DE COMPRAS INTELIGENTE) -->
+    <!-- =================================================================== -->
+    <!-- ABA 2: MERCADO                                                      -->
+    <!-- =================================================================== -->
     <main id="view-mercado" class="hidden flex-1 px-4 pt-4 pb-6 space-y-4 fade-in">
 
-      <!-- Card Dica Mounjaro -->
+      <!-- Dica Mounjaro -->
       <section class="bg-indigo-50/80 border border-indigo-200/80 rounded-3xl p-4 shadow-xs flex items-start gap-3">
         <div class="w-9 h-9 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shrink-0 text-base shadow-xs">
           💡
         </div>
         <div>
-          <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-700">Foco Mounjaro</span>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-700">Dica Mounjaro</span>
           <p class="text-xs text-indigo-950 font-medium leading-relaxed mt-0.5">
-            Priorize as proteínas magras (para preservar massa magra) e compre frutas em menor quantidade para evitar desperdício com a saciedade.
+            Priorize proteínas magras e boa hidratação; evite comprar ultraprocessados gordurosos que aumentam o enjoo.
           </p>
         </div>
       </section>
 
-      <!-- Resumo do Carrinho, Filtros e Limpar -->
-      <section class="bg-white rounded-3xl p-4 shadow-sm border border-gray-100 space-y-3">
+      <!-- Progresso, Filtros e Adicionar Extra -->
+      <section class="bg-white rounded-3xl p-4 shadow-sm border border-sage-100 space-y-3">
         <div class="flex items-center justify-between gap-2">
           <div>
             <h2 class="text-sm font-bold text-gray-900">Lista de Compras</h2>
-            <p id="market-progress-text" class="text-xs text-sage-700 font-semibold mt-0.5">0 de 0 itens no carrinho</p>
+            <p id="market-progress-text" class="text-xs text-sage-800 font-semibold mt-0.5">0 de 0 itens no carrinho</p>
           </div>
           <button
             type="button"
@@ -214,7 +226,6 @@
           <div id="market-progress-bar" class="h-full bg-sage-600 rounded-full transition-all duration-300" style="width: 0%"></div>
         </div>
 
-        <!-- Filtros rápidos -->
         <div class="grid grid-cols-3 gap-1.5 bg-gray-100 p-1 rounded-2xl">
           <button
             type="button"
@@ -242,50 +253,114 @@
           </button>
         </div>
 
-        <!-- Adicionar item extra -->
         <form onsubmit="addExtraMarketItem(event)" class="flex gap-2 pt-1">
           <input
             id="input-extra-item"
             type="text"
             placeholder="+ Adicionar item extra (ex: água com gás)"
-            class="flex-1 bg-cream border border-gray-200 focus:border-sage-600 focus:outline-none rounded-2xl px-3.5 py-2.5 text-xs text-gray-800 placeholder-gray-400"
+            class="flex-1 bg-cream border border-sage-100 focus:border-sage-600 focus:outline-none rounded-2xl px-3.5 py-2.5 text-xs text-gray-800 placeholder-gray-400"
           >
           <button
             type="submit"
-            class="px-4 py-2.5 rounded-2xl bg-sage-600 hover:bg-sage-700 active:scale-95 transition text-white font-bold text-xs shrink-0 shadow-xs"
+            class="px-4 py-2.5 rounded-2xl bg-sage-600 hover:bg-sage-800 active:scale-95 transition text-white font-bold text-xs shrink-0 shadow-xs"
           >
             Adicionar
           </button>
         </form>
       </section>
 
-      <!-- Lista de Corredores do Mercado -->
+      <!-- Corredores -->
       <div id="market-categories-container" class="space-y-4">
         <!-- Renderizado via JS -->
       </div>
 
     </main>
 
-    <!-- RODAPÉ OBRIGATÓRIO -->
-    <footer class="mt-auto py-5 px-4 text-center border-t border-gray-200/70">
+    <!-- =================================================================== -->
+    <!-- ABA 3: HISTÓRICO (EVOLUÇÃO E CONSULTA MÉDICA)                       -->
+    <!-- =================================================================== -->
+    <main id="view-historico" class="hidden flex-1 px-4 pt-4 pb-6 space-y-4 fade-in">
+
+      <!-- Privacidade -->
+      <section class="bg-sage-50 border border-sage-200 rounded-3xl p-4 flex items-start gap-3">
+        <div class="w-9 h-9 rounded-2xl bg-sage-600 text-white flex items-center justify-center shrink-0 text-base">
+          🔒
+        </div>
+        <div>
+          <h2 class="text-sm font-bold text-sage-800">Seu diário privado</h2>
+          <p class="text-xs text-sage-800/80 leading-relaxed mt-0.5">
+            Todos os seus registros ficam salvos com privacidade no próprio celular. À meia-noite o cardápio começa limpo, mas seus dias anteriores continuam guardados aqui para a consulta médica.
+          </p>
+        </div>
+      </section>
+
+      <!-- Resumo para a Consulta -->
+      <section class="bg-white rounded-3xl p-4 shadow-sm border border-sage-100 space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-bold text-gray-900">Resumo para a Consulta</h2>
+          <span class="text-[11px] text-gray-400 font-medium">Últimos 14 dias</span>
+        </div>
+
+        <div id="history-summary-cards" class="grid grid-cols-3 gap-2">
+          <!-- Renderizado via JS -->
+        </div>
+
+        <button
+          type="button"
+          onclick="copyDoctorReport()"
+          class="w-full py-3 px-4 rounded-2xl bg-sage-600 hover:bg-sage-800 active:scale-[0.99] transition text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+          </svg>
+          <span>Copiar resumo para a médica (WhatsApp)</span>
+        </button>
+      </section>
+
+      <!-- Aplicações de Mounjaro -->
+      <section class="bg-white rounded-3xl p-4 shadow-sm border border-sage-100">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-bold text-gray-900">Aplicações de Mounjaro (Quartas-feiras)</h3>
+          <span id="mounjaro-count-badge" class="text-[11px] font-bold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full">0</span>
+        </div>
+        <div id="history-mounjaro-list" class="space-y-2">
+          <!-- Renderizado via JS -->
+        </div>
+      </section>
+
+      <!-- Diário dos Últimos Dias -->
+      <section>
+        <div class="flex items-center justify-between px-1 mb-2.5">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400">Diário dos Últimos Dias</h3>
+          <span class="text-[11px] text-sage-800 font-medium">Toque no dia para ver detalhes</span>
+        </div>
+        <div id="history-daily-list" class="space-y-3">
+          <!-- Renderizado via JS -->
+        </div>
+      </section>
+
+    </main>
+
+    <!-- RODAPÉ DISCRETO EM TODAS AS ABAS -->
+    <footer class="mt-auto py-5 px-4 text-center border-t border-sage-100">
       <a
         href="https://venure.com.br"
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-flex items-center justify-center text-xs font-medium text-gray-400 hover:text-sage-600 transition"
+        class="inline-flex items-center justify-center text-xs font-medium text-gray-400 hover:text-sage-800 transition"
       >
         tecnologia Venure.com.br
       </a>
     </footer>
 
-    <!-- BARRA DE NAVEGAÇÃO INFERIOR FIXA (BOTTOM TAB BAR) -->
-    <nav aria-label="Navegação Principal" class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white/95 backdrop-blur-md border-t border-gray-200 px-4 py-2 z-30 shadow-[0_-4px_16px_rgba(0,0,0,0.04)]">
-      <div class="grid grid-cols-2 gap-2">
+    <!-- BARRA DE NAVEGAÇÃO INFERIOR FIXA (3 ABAS) -->
+    <nav aria-label="Navegação Principal" class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white/95 backdrop-blur-md border-t border-sage-100 px-3 py-2 z-30 shadow-[0_-4px_16px_rgba(0,0,0,0.04)]">
+      <div class="grid grid-cols-3 gap-1.5">
         <button
           type="button"
           id="nav-btn-cardapio"
           onclick="switchView('cardapio')"
-          class="flex flex-col items-center justify-center py-1.5 rounded-2xl transition active:scale-95 bg-sage-50 text-sage-700"
+          class="flex flex-col items-center justify-center py-1.5 rounded-2xl transition active:scale-95 bg-sage-50 text-sage-800"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2M7 2v20M21 15V2v0a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/>
@@ -312,8 +387,28 @@
           </div>
           <span class="text-[11px] font-bold mt-0.5">Mercado</span>
         </button>
+
+        <button
+          type="button"
+          id="nav-btn-historico"
+          onclick="switchView('historico')"
+          class="flex flex-col items-center justify-center py-1.5 rounded-2xl transition active:scale-95 text-gray-500 hover:bg-gray-50"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+          <span class="text-[11px] font-bold mt-0.5">Histórico</span>
+        </button>
       </div>
     </nav>
+
+    <!-- TOAST DE CONFIRMAÇÃO -->
+    <div
+      id="toast"
+      class="hidden fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white text-xs font-semibold px-4 py-2.5 rounded-2xl shadow-lg fade-in"
+    >
+      Resumo copiado!
+    </div>
   </div>
 
   <!-- MODAL: DADOS DO NUTRICIONISTA -->
@@ -329,7 +424,7 @@
       </button>
 
       <div class="flex items-center gap-3 mb-4">
-        <div class="w-12 h-12 rounded-2xl bg-sage-50 text-sage-600 flex items-center justify-center font-bold text-lg shrink-0">
+        <div class="w-12 h-12 rounded-2xl bg-sage-50 text-sage-800 flex items-center justify-center font-bold text-lg shrink-0">
           JI
         </div>
         <div>
@@ -338,18 +433,18 @@
         </div>
       </div>
 
-      <div class="space-y-2 text-sm text-gray-700 bg-cream rounded-2xl p-4 border border-gray-100">
+      <div class="space-y-2 text-sm text-gray-700 bg-cream rounded-2xl p-4 border border-sage-100">
         <p><span class="font-semibold text-gray-900">CRN:</span> 32010</p>
         <p><span class="font-semibold text-gray-900">Paciente:</span> Poliana</p>
         <p><span class="font-semibold text-gray-900">Data do plano:</span> 17/11/2026</p>
         <p><span class="font-semibold text-gray-900">Endereço:</span> Rua 15 de novembro, 121 Clínica, Gravatá</p>
-        <p><span class="font-semibold text-gray-900">Telefone:</span> <a href="tel:35330910" class="text-sage-600 underline font-medium">3533-0910</a></p>
+        <p><span class="font-semibold text-gray-900">Telefone:</span> <a href="tel:35330910" class="text-sage-800 underline font-medium">3533-0910</a></p>
       </div>
 
       <button
         type="button"
         onclick="closeNutriModal()"
-        class="w-full mt-5 py-3 rounded-2xl bg-sage-600 hover:bg-sage-700 text-white font-semibold text-sm transition active:scale-95"
+        class="w-full mt-5 py-3 rounded-2xl bg-sage-600 hover:bg-sage-800 text-white font-semibold text-sm transition active:scale-95"
       >
         Fechar
       </button>
@@ -410,18 +505,18 @@
               {
                 label: 'Fruta (escolha 1)',
                 opcoes: [
-                  'Ameixa fresca (1 unid.)',
+                  'Ameixa fresca (1 un)',
                   'Abacaxi (100g)',
                   'Banana prata (80g)',
-                  'Goiaba (1 unid.)',
-                  'Kiwi (1 unid.)',
-                  'Laranja (1 unid.)',
-                  'Maçã (1 unid.)',
+                  'Goiaba (1 un)',
+                  'Kiwi (1 un)',
+                  'Laranja (1 un)',
+                  'Maçã (1 un)',
                   'Mamão (100g)',
                   'Melão (120g)',
                   'Melancia (150g)',
                   'Morango (100g)',
-                  'Pera (1 unid.)',
+                  'Pera (1 un)',
                   'Pitaya (150g)',
                   'Uva sem semente (80g)'
                 ]
@@ -452,12 +547,12 @@
                 opcoes: [
                   'Filé de bovino magro moído (100g)',
                   'Filé de frango desfiado (100g)',
-                  'Ovo de galinha (3 unid.)',
-                  'Ovo de galinha (2 unid.) + Queijo coalho assado em frigideira antiaderente (40g)'
+                  'Ovo de galinha (3 un)',
+                  'Ovo de galinha (2 un) + Queijo coalho assado em frigideira antiaderente (40g)'
                 ]
               },
               { label: 'Carboidrato', opcoes: ['Cuscuz de milho (60g)'] },
-              { label: 'Bebida', opcoes: ['Café (1 xícara de café)'] }
+              { label: 'Bebida', opcoes: ['Café (1 xícara)'] }
             ],
             suplementos: [
               {
@@ -476,12 +571,12 @@
                 opcoes: [
                   'Filé de bovino magro moído (100g)',
                   'Filé de frango desfiado (100g)',
-                  'Ovo de galinha (3 unid.)',
-                  'Ovo de galinha (2 unid.) + Queijo coalho assado em frigideira antiaderente (30g)'
+                  'Ovo de galinha (3 un)',
+                  'Ovo de galinha (2 un) + Queijo coalho assado em frigideira antiaderente (30g)'
                 ]
               },
               { label: 'Carboidrato', opcoes: ['Batata doce cozida (80g)'] },
-              { label: 'Bebida', opcoes: ['Café (1 xícara de café)'] }
+              { label: 'Bebida', opcoes: ['Café (1 xícara)'] }
             ],
             suplementos: [
               {
@@ -500,12 +595,12 @@
                 opcoes: [
                   'Filé de bovino magro moído (100g)',
                   'Filé de frango desfiado (100g)',
-                  'Ovo de galinha (3 unid.)',
-                  'Ovo de galinha (2 unid.) + Queijo coalho assado em frigideira antiaderente (30g)'
+                  'Ovo de galinha (3 un)',
+                  'Ovo de galinha (2 un) + Queijo coalho assado em frigideira antiaderente (30g)'
                 ]
               },
               { label: 'Carboidrato', opcoes: ['Banana da terra cozida (100g)'] },
-              { label: 'Bebida', opcoes: ['Café (1 xícara de café)'] }
+              { label: 'Bebida', opcoes: ['Café (1 xícara)'] }
             ],
             suplementos: [
               {
@@ -524,8 +619,8 @@
                 opcoes: [
                   'Filé de bovino magro moído (100g)',
                   'Filé de frango desfiado (100g)',
-                  'Ovo de galinha (3 unid.)',
-                  'Ovo de galinha (2 unid.) + Queijo coalho assado em frigideira antiaderente (30g)'
+                  'Ovo de galinha (3 un)',
+                  'Ovo de galinha (2 un) + Queijo coalho assado em frigideira antiaderente (30g)'
                 ]
               },
               {
@@ -536,7 +631,7 @@
                   'Macaxeira cozida (120g)'
                 ]
               },
-              { label: 'Bebida', opcoes: ['Café (1 xícara de café)'] }
+              { label: 'Bebida', opcoes: ['Café (1 xícara)'] }
             ],
             suplementos: [
               {
@@ -555,12 +650,12 @@
                 opcoes: [
                   'Filé de bovino magro moído (100g)',
                   'Filé de frango desfiado (100g)',
-                  'Ovo de galinha (3 unid.)',
-                  'Ovo de galinha (2 unid.) + Queijo coalho assado em frigideira antiaderente (40g)'
+                  'Ovo de galinha (3 un)',
+                  'Ovo de galinha (2 un) + Queijo coalho assado em frigideira antiaderente (40g)'
                 ]
               },
-              { label: 'Carboidrato', opcoes: ['Pão francês (1 unid.)'] },
-              { label: 'Bebida', opcoes: ['Café (1 xícara de café)'] }
+              { label: 'Carboidrato', opcoes: ['Pão francês (1 un)'] },
+              { label: 'Bebida', opcoes: ['Café (1 xícara)'] }
             ],
             suplementos: [
               {
@@ -670,8 +765,8 @@
             ],
             obs: 'TEMPERAR A SALADA: AZEITE DE OLIVA EXTRA VIRGEM E LIMÃO.',
             receita: {
-              titulo: 'MOLHO PARA O MACARRÃO',
-              ingredientes: 'Tomate em cubos, manjericão fresco picado, azeite extra virgem, dente de alho e cebola picada em cubos.',
+              titulo: 'Ver receita do Molho para Macarrão',
+              ingredientes: 'Tomate em cubos, manjericão fresco picado, azeite extra virgem, dente de alho e cebola picados em cubos.',
               preparo: 'Coloque o alho amassado, a cebola e o azeite numa panela e refogue até dourar. Depois, adicione o tomate e refogue por aproximadamente 15 minutos ou até que desmanchem. Separe metade dessa receita, bata no liquidificador e depois junte à receita novamente. Assim ficará com uns pedaços moles de tomate no meio do molho. Se preferir, bata tudo. Por último, adicione o manjericão.'
             }
           }
@@ -690,31 +785,31 @@
               {
                 label: 'Fruta (escolha 1)',
                 opcoes: [
-                  'Ameixa fresca (1 unid.)',
+                  'Ameixa fresca (1 un)',
                   'Abacaxi (100g)',
                   'Banana prata (80g)',
-                  'Goiaba (1 unid.)',
-                  'Kiwi (1 unid.)',
-                  'Laranja (1 unid.)',
-                  'Maçã (1 unid.)',
+                  'Goiaba (1 un)',
+                  'Kiwi (1 un)',
+                  'Laranja (1 un)',
+                  'Maçã (1 un)',
                   'Mamão (100g)',
                   'Melão (120g)',
                   'Melancia (150g)',
                   'Morango (100g)',
-                  'Pera (1 unid.)',
+                  'Pera (1 un)',
                   'Pitaya (150g)',
                   'Uva sem semente (80g)'
                 ]
               },
               {
-                label: 'Laticínio (escolha 1)',
+                label: 'Iogurte 170g (escolha 1)',
                 opcoes: [
-                  'Iogurte PENSE ZERO - Batavo (170g)',
-                  'Iogurte ACTIVIA ZERO - Danone (170g)',
-                  'Iogurte CORPUS ZERO - Danone (170g)',
-                  'Iogurte ZERO - Itambé (170g)',
-                  'Iogurte ZERO - Nestlé (170g)',
-                  'Iogurte TRIPLO ZERO - Molico (170g)'
+                  'PENSE ZERO - Batavo (170g)',
+                  'ACTIVIA ZERO - Danone (170g)',
+                  'CORPUS ZERO - Danone (170g)',
+                  'ZERO - Itambé (170g)',
+                  'ZERO - Nestlé (170g)',
+                  'TRIPLO ZERO - Molico (170g)'
                 ]
               }
             ]
@@ -725,12 +820,12 @@
               {
                 label: 'Fruta 1 (escolha 1)',
                 opcoes: [
-                  'Ameixa fresca (1 unid.)',
-                  'Goiaba (1 unid.)',
-                  'Kiwi (1 unid.)',
-                  'Laranja (1 unid.)',
-                  'Maçã (1 unid.)',
-                  'Pera (1 unid.)'
+                  'Ameixa fresca (1 un)',
+                  'Goiaba (1 un)',
+                  'Kiwi (1 un)',
+                  'Laranja (1 un)',
+                  'Maçã (1 un)',
+                  'Pera (1 un)'
                 ]
               },
               {
@@ -749,7 +844,7 @@
             ]
           },
           {
-            nome: 'Substituição 2',
+            nome: 'Substituição 2 (Vitamina)',
             itens: [
               { label: 'Base', opcoes: ['Leite desnatado em pó (40g)'] },
               { label: 'Fibra', opcoes: ['Aveia em flocos finos (20g)'] },
@@ -758,7 +853,7 @@
                 label: 'Fruta adicional (escolha 1)',
                 opcoes: [
                   'Abacate (60g)',
-                  'Maçã (1 unid.)',
+                  'Maçã (1 un)',
                   'Mamão (100g)',
                   'Morango (80g)'
                 ]
@@ -784,8 +879,8 @@
                   'Filé bovino magro assado (100g)',
                   'Filé de frango assado (100g)',
                   'Filé de peixe assado (120g)',
-                  'Ovo de galinha (3 unid.)',
-                  'Ovo de galinha (2 unid.) + Queijo coalho assado em frigideira antiaderente (40g)'
+                  'Ovo de galinha (3 un)',
+                  'Ovo de galinha (2 un) + Queijo coalho assado em frigideira antiaderente (40g)'
                 ]
               },
               { label: 'Carboidrato', opcoes: ['Cuscuz de milho (80g)'] }
@@ -801,8 +896,8 @@
                   'Filé bovino magro assado (100g)',
                   'Filé de frango assado (100g)',
                   'Filé de peixe assado (120g)',
-                  'Ovo de galinha (3 unid.)',
-                  'Ovo de galinha (2 unid.) + Queijo coalho assado em frigideira antiaderente (40g)'
+                  'Ovo de galinha (3 un)',
+                  'Ovo de galinha (2 un) + Queijo coalho assado em frigideira antiaderente (40g)'
                 ]
               },
               { label: 'Carboidrato', opcoes: ['Batata doce cozida (100g)'] }
@@ -818,8 +913,8 @@
                   'Filé bovino magro assado (100g)',
                   'Filé de frango assado (100g)',
                   'Filé de peixe assado (120g)',
-                  'Ovo de galinha (3 unid.)',
-                  'Ovo de galinha (2 unid.) + Queijo coalho assado em frigideira antiaderente (40g)'
+                  'Ovo de galinha (3 un)',
+                  'Ovo de galinha (2 un) + Queijo coalho assado em frigideira antiaderente (40g)'
                 ]
               },
               { label: 'Carboidrato', opcoes: ['Banana da terra cozida (120g)'] }
@@ -835,8 +930,8 @@
                   'Filé bovino magro assado (100g)',
                   'Filé de frango assado (100g)',
                   'Filé de peixe assado (120g)',
-                  'Ovo de galinha (3 unid.)',
-                  'Ovo de galinha (2 unid.) + Queijo coalho assado em frigideira antiaderente (40g)'
+                  'Ovo de galinha (3 un)',
+                  'Ovo de galinha (2 un) + Queijo coalho assado em frigideira antiaderente (40g)'
                 ]
               },
               {
@@ -866,18 +961,18 @@
               {
                 label: 'Fruta (escolha 1)',
                 opcoes: [
-                  'Ameixa fresca (1 unid.)',
+                  'Ameixa fresca (1 un)',
                   'Abacaxi (100g)',
                   'Banana prata (80g)',
-                  'Goiaba (1 unid.)',
-                  'Kiwi (1 unid.)',
-                  'Laranja (1 unid.)',
-                  'Maçã (1 unid.)',
+                  'Goiaba (1 un)',
+                  'Kiwi (1 un)',
+                  'Laranja (1 un)',
+                  'Maçã (1 un)',
                   'Mamão (100g)',
                   'Melão (120g)',
                   'Melancia (150g)',
                   'Morango (100g)',
-                  'Pera (1 unid.)',
+                  'Pera (1 un)',
                   'Uva sem semente (80g)'
                 ]
               }
@@ -887,14 +982,14 @@
             nome: 'Substituição 1',
             itens: [
               {
-                label: 'Laticínio (escolha 1)',
+                label: 'Iogurte 170g (escolha 1)',
                 opcoes: [
-                  'Iogurte PENSE ZERO - Batavo (170g)',
-                  'Iogurte ACTIVIA ZERO - Danone (170g)',
-                  'Iogurte CORPUS ZERO - Danone (170g)',
-                  'Iogurte ZERO - Itambé (170g)',
-                  'Iogurte ZERO - Nestlé (170g)',
-                  'Iogurte TRIPLO ZERO - Molico (170g)'
+                  'PENSE ZERO - Batavo (170g)',
+                  'ACTIVIA ZERO - Danone (170g)',
+                  'CORPUS ZERO - Danone (170g)',
+                  'ZERO - Itambé (170g)',
+                  'ZERO - Nestlé (170g)',
+                  'TRIPLO ZERO - Molico (170g)'
                 ]
               }
             ]
@@ -902,6 +997,13 @@
         ]
       }
     ];
+
+    const SUPLEMENTOS_MAP = {
+      'sup-desjejum-manipulado': 'Manipulado Desjejum',
+      'sup-desjejum-creatina': 'Creatina (6g)',
+      'sup-cafe-manipulado': 'Manipulado Pós-Café',
+      'sup-almoco-omega': 'Omegafor Plus (2 cáps.)'
+    };
 
     const LOCAIS_APLICACAO = [
       'Abdômen Direito',
@@ -913,25 +1015,17 @@
     ];
 
     const SINTOMAS_OPCOES = [
-      { id: 'normal', label: 'Normal', emoji: '😊' },
-      { id: 'pouco-apetite', label: 'Pouco apetite', emoji: '🍽️' },
-      { id: 'enjoo', label: 'Enjoo', emoji: '🤢' }
+      { id: 'Normal', label: 'Normal', emoji: '😊' },
+      { id: 'Pouco apetite', label: 'Pouco apetite', emoji: '🍽️' },
+      { id: 'Enjoo', label: 'Enjoo', emoji: '🤢' }
     ];
 
-    const WATER_GOAL = 2500;
-    const MOUNJARO_DOW = 3; // Quarta-feira (0=Dom, 1=Seg, 2=Ter, 3=Qua)
-
-    /**
-     * =========================================================================
-     * DADOS DA LISTA DE COMPRAS (ORGANIZADA POR CORREDOR DO MERCADO)
-     * =========================================================================
-     */
     const LISTA_MERCADO_BASE = [
       {
         id: 'acougue',
-        titulo: 'Açougue & Ovos',
+        titulo: 'Açougue, Peixaria e Ovos',
         icone: '🥩',
-        badge: 'Prioridade Mounjaro',
+        badge: 'Prioridade Proteína',
         itens: [
           { id: 'm-bovino', nome: 'Filé bovino magro (moído e para assar)' },
           { id: 'm-frango', nome: 'Filé de frango (peito)' },
@@ -942,7 +1036,7 @@
       },
       {
         id: 'frutas',
-        titulo: 'Hortifruti — Frutas',
+        titulo: 'Hortifruti (Frutas da dieta)',
         icone: '🍌',
         itens: [
           { id: 'm-banana-prata', nome: 'Banana prata' },
@@ -952,25 +1046,25 @@
           { id: 'm-morango', nome: 'Morango' },
           { id: 'm-melao-melancia', nome: 'Melão / Melancia' },
           { id: 'm-abacaxi', nome: 'Abacaxi' },
-          { id: 'm-outras-frutas', nome: 'Outras frutas do plano (Kiwi, Laranja, Pera, Goiaba, Ameixa, Pitaya, Uva sem semente)' },
-          { id: 'm-abacate', nome: 'Abacate (para vitamina)' },
-          { id: 'm-limao', nome: 'Limão (tempero da salada)' }
+          { id: 'm-outras-frutas', nome: 'Outras frutas (Ameixa, Goiaba, Kiwi, Laranja, Pera, Pitaya, Uva sem semente)' },
+          { id: 'm-abacate', nome: 'Abacate (para vitamina)' }
         ]
       },
       {
         id: 'legumes',
-        titulo: 'Hortifruti — Legumes & Temperos',
+        titulo: 'Hortifruti (Legumes, Salada e Temperos do molho)',
         icone: '🥗',
         itens: [
           { id: 'm-salada', nome: 'Folhas para salada crua' },
           { id: 'm-legumes-vapor', nome: 'Legumes para vapor (brócolis, cenoura, abobrinha, etc.)' },
+          { id: 'm-limao', nome: 'Limão (tempero da salada)' },
           { id: 'm-molho-base', nome: 'Tomate, cebola e alho (molho do fim de semana)' },
           { id: 'm-manjericao', nome: 'Manjericão fresco' }
         ]
       },
       {
         id: 'raizes',
-        titulo: 'Raízes & Carboidratos',
+        titulo: 'Raízes e Carboidratos',
         icone: '🍠',
         itens: [
           { id: 'm-batata-doce', nome: 'Batata doce' },
@@ -986,7 +1080,7 @@
       },
       {
         id: 'laticinios',
-        titulo: 'Laticínios & Mercearia',
+        titulo: 'Laticínios e Mercearia',
         icone: '🧀',
         itens: [
           { id: 'm-coalho', nome: 'Queijo coalho' },
@@ -999,7 +1093,7 @@
       },
       {
         id: 'farmacia',
-        titulo: 'Farmácia & Suplementos',
+        titulo: 'Farmácia e Suplementos',
         icone: '💊',
         itens: [
           { id: 'm-creatina', nome: 'Creatina (Dux ou Vitafor)' },
@@ -1011,11 +1105,19 @@
       }
     ];
 
+    const MOUNJARO_DOW = 3; // Quarta-feira
+
     /**
      * =========================================================================
-     * UTILITÁRIOS DE DATA E ARMAZENAMENTO LOCAL (localStorage)
+     * PERSISTÊNCIA DE DADOS (localStorage)
      * =========================================================================
      */
+    const STORAGE_KEYS = {
+      DAILY: 'poliana_daily_logs',
+      MOUNJARO: 'poliana_mounjaro_logs',
+      MARKET: 'poliana_market_state'
+    };
+
     function getDateKey(dateObj) {
       const y = dateObj.getFullYear();
       const m = String(dateObj.getMonth() + 1).padStart(2, '0');
@@ -1023,86 +1125,93 @@
       return `${y}-${m}-${d}`;
     }
 
-    function getLastWednesdayKey(referenceDate) {
-      const d = new Date(referenceDate);
-      const diff = (d.getDay() - MOUNJARO_DOW + 7) % 7;
-      d.setDate(d.getDate() - diff);
-      return getDateKey(d);
-    }
-
-    function formatShortDateBR(dateKey) {
+    function formatDateBR(dateKey) {
+      if (!dateKey || !dateKey.includes('-')) return dateKey || '';
       const [y, m, d] = dateKey.split('-');
-      return `${d}/${m}`;
+      return `${d}/${m}/${y}`;
     }
 
-    function loadDailyState(dateKey) {
-      try {
-        const raw = localStorage.getItem(`plano_poliana_dia_${dateKey}`);
-        if (raw) return JSON.parse(raw);
-      } catch (e) {
-        console.error('Erro ao ler estado diário:', e);
-      }
+    function formatFullDateBR(dateKey) {
+      const [y, m, d] = dateKey.split('-').map(Number);
+      const dt = new Date(y, m - 1, d);
+      return dt.toLocaleDateString('pt-BR', {
+        weekday: 'short',
+        day: '2-digit',
+        month: 'short'
+      });
+    }
+
+    function createEmptyDayLog() {
       return {
         completedMeals: {},
         completedSupplements: {},
         selectedTabs: {},
         selectedPills: {},
-        waterMl: 0,
+        waterCups: 0,
         symptom: null
       };
     }
 
-    function saveDailyState() {
+    function loadAllDailyLogs() {
       try {
-        localStorage.setItem(`plano_poliana_dia_${todayKey}`, JSON.stringify(dailyState));
-      } catch (e) {
-        console.error('Erro ao salvar estado diário:', e);
-      }
-    }
-
-    function loadMounjaroLog() {
-      try {
-        const raw = localStorage.getItem('plano_poliana_mounjaro_log');
+        const raw = localStorage.getItem(STORAGE_KEYS.DAILY);
         if (raw) return JSON.parse(raw);
       } catch (e) {
-        console.error('Erro ao ler log do Mounjaro:', e);
+        console.error('Erro ao carregar daily logs:', e);
       }
-      // Estrutura: { "2026-11-25": { applied: true, site: "Abdômen Esquerdo" } }
       return {};
     }
 
-    function saveMounjaroLog() {
+    function saveAllDailyLogs() {
       try {
-        localStorage.setItem('plano_poliana_mounjaro_log', JSON.stringify(mounjaroLog));
+        localStorage.setItem(STORAGE_KEYS.DAILY, JSON.stringify(allDailyLogs));
       } catch (e) {
-        console.error('Erro ao salvar log do Mounjaro:', e);
+        console.error('Erro ao salvar daily logs:', e);
+      }
+    }
+
+    function loadMounjaroLogs() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEYS.MOUNJARO);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) return parsed;
+        }
+      } catch (e) {
+        console.error('Erro ao carregar mounjaro logs:', e);
+      }
+      return [];
+    }
+
+    function saveMounjaroLogs() {
+      try {
+        localStorage.setItem(STORAGE_KEYS.MOUNJARO, JSON.stringify(mounjaroLogs));
+      } catch (e) {
+        console.error('Erro ao salvar mounjaro logs:', e);
       }
     }
 
     function loadMarketState() {
       try {
-        const raw = localStorage.getItem('plano_poliana_mercado');
+        const raw = localStorage.getItem(STORAGE_KEYS.MARKET);
         if (raw) return JSON.parse(raw);
       } catch (e) {
-        console.error('Erro ao ler estado do mercado:', e);
+        console.error('Erro ao carregar market state:', e);
       }
-      return {
-        checked: {},
-        extras: [] // [{ id: 'extra-...', nome: '...' }]
-      };
+      return { checked: {}, extras: [] };
     }
 
     function saveMarketState() {
       try {
-        localStorage.setItem('plano_poliana_mercado', JSON.stringify(marketState));
+        localStorage.setItem(STORAGE_KEYS.MARKET, JSON.stringify(marketState));
       } catch (e) {
-        console.error('Erro ao salvar estado do mercado:', e);
+        console.error('Erro ao salvar market state:', e);
       }
     }
 
     /**
      * =========================================================================
-     * ESTADO INICIAL
+     * ESTADO EM MEMÓRIA
      * =========================================================================
      */
     const todayDate = new Date();
@@ -1113,40 +1222,97 @@
     let currentView = 'cardapio';
     let currentDayMode = isWeekendAuto ? 'fds' : 'semana';
     let currentMarketFilter = 'todos';
-    let dailyState = loadDailyState(todayKey);
-    let mounjaroLog = loadMounjaroLog();
+    let showMounjaroForm = false;
+
+    let allDailyLogs = loadAllDailyLogs();
+    if (!allDailyLogs[todayKey]) {
+      allDailyLogs[todayKey] = createEmptyDayLog();
+      saveAllDailyLogs();
+    }
+    let todayLog = allDailyLogs[todayKey];
+    let mounjaroLogs = loadMounjaroLogs();
     let marketState = loadMarketState();
-    let showManualMounjaroEdit = false;
+
+    // Sugestão de local para o formulário do Mounjaro
+    let selectedMounjaroSite = getSuggestedSite();
+
+    function getSortedMounjaroLogs() {
+      return [...mounjaroLogs].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+    }
+
+    function getSuggestedSite() {
+      const sorted = getSortedMounjaroLogs();
+      if (sorted.length === 0) return LOCAIS_APLICACAO[0];
+      const lastSite = sorted[0].site;
+      const idx = LOCAIS_APLICACAO.indexOf(lastSite);
+      if (idx === -1) return LOCAIS_APLICACAO[0];
+      return LOCAIS_APLICACAO[(idx + 1) % LOCAIS_APLICACAO.length];
+    }
 
     /**
      * =========================================================================
-     * NAVEGAÇÃO ENTRE ABAS (CARDÁPIO / MERCADO)
+     * TOAST & CLIPBOARD
+     * =========================================================================
+     */
+    let toastTimer = null;
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        el.classList.add('hidden');
+      }, 2400);
+    }
+
+    function copyTextToClipboard(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'fixed';
+      textarea.style.top = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showToast('Resumo copiado!');
+      } catch (err) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => showToast('Resumo copiado!'));
+        }
+      }
+      document.body.removeChild(textarea);
+    }
+
+    /**
+     * =========================================================================
+     * NAVEGAÇÃO ENTRE ABAS (CARDÁPIO / MERCADO / HISTÓRICO)
      * =========================================================================
      */
     function switchView(viewName) {
       currentView = viewName;
-      const viewCardapio = document.getElementById('view-cardapio');
-      const viewMercado = document.getElementById('view-mercado');
+      const views = ['cardapio', 'mercado', 'historico'];
       const headerProgress = document.getElementById('header-meal-progress');
-      const btnCardapio = document.getElementById('nav-btn-cardapio');
-      const btnMercado = document.getElementById('nav-btn-mercado');
 
-      if (viewName === 'cardapio') {
-        viewCardapio.classList.remove('hidden');
-        viewMercado.classList.add('hidden');
-        headerProgress.classList.remove('hidden');
+      views.forEach(v => {
+        const mainEl = document.getElementById(`view-${v}`);
+        const navBtn = document.getElementById(`nav-btn-${v}`);
+        const isActive = v === viewName;
 
-        btnCardapio.className = 'flex flex-col items-center justify-center py-1.5 rounded-2xl transition active:scale-95 bg-sage-50 text-sage-700';
-        btnMercado.className = 'relative flex flex-col items-center justify-center py-1.5 rounded-2xl transition active:scale-95 text-gray-500 hover:bg-gray-50';
-      } else {
-        viewCardapio.classList.add('hidden');
-        viewMercado.classList.remove('hidden');
-        headerProgress.classList.add('hidden');
+        if (mainEl) mainEl.classList.toggle('hidden', !isActive);
+        if (navBtn) {
+          navBtn.className = isActive
+            ? 'relative flex flex-col items-center justify-center py-1.5 rounded-2xl transition active:scale-95 bg-sage-50 text-sage-800'
+            : 'relative flex flex-col items-center justify-center py-1.5 rounded-2xl transition active:scale-95 text-gray-500 hover:bg-gray-50';
+        }
+      });
 
-        btnMercado.className = 'relative flex flex-col items-center justify-center py-1.5 rounded-2xl transition active:scale-95 bg-sage-50 text-sage-700';
-        btnCardapio.className = 'flex flex-col items-center justify-center py-1.5 rounded-2xl transition active:scale-95 text-gray-500 hover:bg-gray-50';
-        renderMarket();
+      if (headerProgress) {
+        headerProgress.classList.toggle('hidden', viewName !== 'cardapio');
       }
+
+      if (viewName === 'mercado') renderMarket();
+      if (viewName === 'historico') renderHistory();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -1158,265 +1324,293 @@
     function initHeader() {
       const hour = todayDate.getHours();
       let saudacao = 'Boa noite, Poliana';
-      if (hour >= 5 && hour < 12) {
-        saudacao = 'Bom dia, Poliana';
-      } else if (hour >= 12 && hour < 18) {
-        saudacao = 'Boa tarde, Poliana';
-      }
-      document.getElementById('greeting-display').textContent = saudacao;
+      if (hour >= 5 && hour < 12) saudacao = 'Bom dia, Poliana';
+      else if (hour >= 12 && hour < 18) saudacao = 'Boa tarde, Poliana';
 
-      const formattedDate = todayDate.toLocaleDateString('pt-BR', {
+      document.getElementById('greeting-display').textContent = saudacao;
+      document.getElementById('date-display').textContent = todayDate.toLocaleDateString('pt-BR', {
         weekday: 'long',
         day: '2-digit',
         month: 'long'
       });
-      document.getElementById('date-display').textContent = formattedDate;
     }
 
     function updateProgressBar() {
       const total = PLANO_ALIMENTAR.length;
-      const done = PLANO_ALIMENTAR.filter(m => dailyState.completedMeals[m.id]).length;
+      const done = PLANO_ALIMENTAR.filter(m => todayLog.completedMeals[m.id]).length;
       const pct = Math.round((done / total) * 100);
-
       document.getElementById('progress-text').textContent = `${done}/${total} refeições`;
       document.getElementById('progress-bar').style.width = `${pct}%`;
     }
 
     /**
      * =========================================================================
-     * MÓDULO MOUNJARO (QUARTA-FEIRA) + CHECK-IN DIÁRIO
+     * MÓDULO MOUNJARO (QUARTA-FEIRA)
      * =========================================================================
      */
     function renderMounjaroCard() {
       const container = document.getElementById('mounjaro-card');
-      const todayLog = mounjaroLog[todayKey] || { applied: false, site: null };
-      const lastWedKey = getLastWednesdayKey(todayDate);
-      const lastWedLog = mounjaroLog[lastWedKey];
-
-      let headerBlock = '';
+      const sorted = getSortedMounjaroLogs();
+      const lastEntry = sorted[0] || null;
+      const appliedToday = sorted.find(item => item.date === todayKey) || null;
+      const suggestedSite = getSuggestedSite();
 
       if (isWednesday) {
-        // HOJE É QUARTA-FEIRA: Banner destacado + botão grande + rodízio de local
         container.className = 'rounded-3xl p-4 shadow-sm border-2 transition-all bg-indigo-50 border-indigo-400';
 
-        headerBlock = `
-          <div class="flex items-start justify-between gap-2">
-            <div class="flex items-center gap-2.5">
-              <div class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
-                </svg>
-              </div>
-              <div>
-                <span class="inline-block text-[10px] font-bold uppercase tracking-wider bg-indigo-600 text-white px-2 py-0.5 rounded-full">Mounjaro • Tirzepatida</span>
-                <h2 class="text-sm font-bold text-indigo-950 mt-0.5">Hoje é dia de Mounjaro! (Quarta-feira)</h2>
-              </div>
-            </div>
-          </div>
+        const siteButtons = LOCAIS_APLICACAO.map(site => {
+          const isSelected = selectedMounjaroSite === site;
+          const isSuggested = site === suggestedSite && !appliedToday;
+          return `
+            <button
+              type="button"
+              onclick="chooseMounjaroSite('${site}')"
+              class="px-2.5 py-1.5 rounded-xl text-xs font-medium border transition active:scale-95 ${
+                isSelected
+                  ? 'bg-indigo-600 text-white border-indigo-600 font-semibold'
+                  : 'bg-white text-indigo-900 border-indigo-200 hover:border-indigo-400'
+              }"
+            >
+              ${site}${isSuggested ? ' ★' : ''}
+            </button>
+          `;
+        }).join('');
 
-          <button
-            type="button"
-            onclick="toggleMounjaroToday()"
-            class="w-full mt-3 py-3 px-4 rounded-2xl font-bold text-sm transition active:scale-98 flex items-center justify-center gap-2 shadow-xs ${
-              todayLog.applied
-                ? 'bg-emerald-600 text-white'
-                : 'bg-indigo-600 hover:bg-indigo-700 text-white'
-            }"
-          >
-            <span>${todayLog.applied ? '✓ Dose aplicada hoje' : 'Marcar dose aplicada hoje'}</span>
-          </button>
-
-          <div class="mt-3 pt-3 border-t border-indigo-200/70">
-            <p class="text-[11px] font-semibold text-indigo-900 mb-2">Local da aplicação (rodízio):</p>
-            <div class="flex flex-wrap gap-1.5">
-              ${LOCAIS_APLICACAO.map(site => {
-                const isSelected = todayLog.site === site;
-                return `
-                  <button
-                    type="button"
-                    onclick="selectMounjaroSite('${site}')"
-                    class="px-2.5 py-1.5 rounded-xl text-xs font-medium border transition active:scale-95 ${
-                      isSelected
-                        ? 'bg-indigo-600 text-white border-indigo-600 font-semibold'
-                        : 'bg-white text-indigo-900 border-indigo-200 hover:border-indigo-400'
-                    }"
-                  >
-                    ${site}
-                  </button>
-                `;
-              }).join('')}
-            </div>
-          </div>
-        `;
-      } else {
-        // NÃO É QUARTA-FEIRA: Contagem regressiva + status da última quarta
-        container.className = 'rounded-3xl p-4 shadow-sm border transition-all bg-indigo-50/60 border-indigo-200/80';
-
-        const todayDow = todayDate.getDay();
-        const daysUntil = (MOUNJARO_DOW - todayDow + 7) % 7;
-        const countdownText = daysUntil === 1
-          ? 'Falta 1 dia para a próxima aplicação — Quarta-feira'
-          : `Faltam ${daysUntil} dias para a próxima aplicação — Quarta-feira`;
-
-        const lastDoseStatus = lastWedLog && lastWedLog.applied
-          ? `<span class="text-emerald-700 font-semibold">✓ Última quarta (${formatShortDateBR(lastWedKey)}) registrada${lastWedLog.site ? ` (${lastWedLog.site})` : ''}</span>`
-          : `<span class="text-indigo-700/80">Última quarta (${formatShortDateBR(lastWedKey)}): sem registro</span>`;
-
-        const manualEditPanel = showManualMounjaroEdit ? `
-          <div class="mt-3 pt-3 border-t border-indigo-200/70 space-y-2.5 fade-in">
-            <div class="flex items-center justify-between gap-2">
-              <span class="text-[11px] font-semibold text-indigo-900">Dose de quarta (${formatShortDateBR(lastWedKey)}):</span>
-              <button
-                type="button"
-                onclick="toggleMounjaroDate('${lastWedKey}')"
-                class="px-3 py-1.5 rounded-xl text-xs font-bold transition active:scale-95 ${
-                  lastWedLog && lastWedLog.applied
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-indigo-600 text-white'
-                }"
-              >
-                ${lastWedLog && lastWedLog.applied ? '✓ Aplicada' : 'Marcar como aplicada'}
-              </button>
+        container.innerHTML = `
+          <div class="flex items-center gap-2.5">
+            <div class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+              💉
             </div>
             <div>
-              <p class="text-[11px] font-semibold text-indigo-900 mb-1.5">Local aplicado (rodízio):</p>
-              <div class="flex flex-wrap gap-1.5">
-                ${LOCAIS_APLICACAO.map(site => {
-                  const isSelected = lastWedLog && lastWedLog.site === site;
-                  return `
-                    <button
-                      type="button"
-                      onclick="selectMounjaroSiteForDate('${lastWedKey}', '${site}')"
-                      class="px-2.5 py-1.5 rounded-xl text-xs font-medium border transition active:scale-95 ${
-                        isSelected
-                          ? 'bg-indigo-600 text-white border-indigo-600 font-semibold'
-                          : 'bg-white text-indigo-900 border-indigo-200 hover:border-indigo-400'
-                      }"
-                    >
-                      ${site}
-                    </button>
-                  `;
-                }).join('')}
-              </div>
+              <span class="inline-block text-[10px] font-bold uppercase tracking-wider bg-indigo-600 text-white px-2 py-0.5 rounded-full">Mounjaro • Tirzepatida</span>
+              <h2 class="text-sm font-bold text-indigo-950 mt-0.5">Hoje é dia de Mounjaro!</h2>
             </div>
           </div>
-        ` : '';
 
-        headerBlock = `
+          ${appliedToday ? `
+            <div class="mt-3 p-3 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-2">
+              <div class="text-xs text-emerald-900">
+                <p class="font-bold">✓ Aplicação de hoje registrada</p>
+                <p class="text-[11px] text-emerald-700 mt-0.5">Local: ${appliedToday.site}${appliedToday.dose ? ` • ${appliedToday.dose}` : ''}</p>
+              </div>
+              <button
+                type="button"
+                onclick="toggleMounjaroForm()"
+                class="text-[11px] font-semibold text-emerald-800 underline shrink-0"
+              >
+                ${showMounjaroForm ? 'Fechar' : 'Editar'}
+              </button>
+            </div>
+          ` : `
+            <div class="mt-3 pt-3 border-t border-indigo-200/70">
+              <p class="text-[11px] font-semibold text-indigo-900 mb-2">
+                Local da aplicação (sugestão de rodízio: <strong>${suggestedSite}</strong>):
+              </p>
+              <div class="flex flex-wrap gap-1.5 mb-3">${siteButtons}</div>
+              <button
+                type="button"
+                onclick="registerTodayMounjaro()"
+                class="w-full py-3 px-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] transition text-white font-bold text-sm shadow-xs"
+              >
+                Registrar aplicação de hoje
+              </button>
+            </div>
+          `}
+
+          ${appliedToday && showMounjaroForm ? renderManualMounjaroForm(todayKey, appliedToday.site, appliedToday.dose || '') : ''}
+        `;
+      } else {
+        container.className = 'rounded-3xl p-4 shadow-sm border transition-all bg-indigo-50/60 border-indigo-200/80';
+        const daysUntil = (MOUNJARO_DOW - todayDate.getDay() + 7) % 7;
+        const countdownText = daysUntil === 1
+          ? 'Falta 1 dia para a próxima aplicação (Quarta-feira)'
+          : `Faltam ${daysUntil} dias para a próxima aplicação (Quarta-feira)`;
+
+        const lastInfo = lastEntry
+          ? `<span class="text-emerald-700 font-semibold">✓ Última: ${formatDateBR(lastEntry.date)} — ${lastEntry.site}${lastEntry.dose ? ` (${lastEntry.dose})` : ''}</span>`
+          : `<span class="text-indigo-700/80">Nenhuma aplicação registrada ainda</span>`;
+
+        container.innerHTML = `
           <div class="flex items-start gap-2.5">
-            <div class="w-9 h-9 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-              </svg>
+            <div class="w-9 h-9 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0 text-base">
+              📅
             </div>
             <div class="flex-1">
               <div class="flex items-center justify-between gap-2">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-600">Mounjaro (Tirzepatida)</span>
                 <button
                   type="button"
-                  onclick="toggleManualMounjaroEdit()"
-                  class="text-[11px] font-semibold text-indigo-600 hover:text-indigo-800 underline"
+                  onclick="toggleMounjaroForm()"
+                  class="text-[11px] font-semibold text-indigo-700 hover:text-indigo-900 underline"
                 >
-                  ${showManualMounjaroEdit ? 'Fechar' : 'Registrar / Editar'}
+                  ${showMounjaroForm ? 'Fechar' : 'Registrar / Editar aplicação'}
                 </button>
               </div>
               <p class="text-sm font-bold text-indigo-950 leading-snug mt-0.5">${countdownText}</p>
-              <p class="text-[11px] mt-1">${lastDoseStatus}</p>
+              <p class="text-[11px] mt-1">${lastInfo}</p>
             </div>
           </div>
-          ${manualEditPanel}
+          ${showMounjaroForm ? renderManualMounjaroForm(todayKey, suggestedSite, '') : ''}
         `;
       }
+    }
 
-      // Check-in rápido diário: "Como estou hoje?"
-      const checkinBlock = `
-        <div class="mt-3.5 pt-3 border-t border-indigo-200/60">
-          <p class="text-[11px] font-semibold text-indigo-900/80 mb-2">Como estou hoje?</p>
-          <div class="grid grid-cols-3 gap-2">
-            ${SINTOMAS_OPCOES.map(sym => {
-              const isSelected = dailyState.symptom === sym.id;
-              return `
-                <button
-                  type="button"
-                  onclick="selectSymptom('${sym.id}')"
-                  class="py-2 px-2 rounded-2xl border text-center transition active:scale-95 flex flex-col items-center justify-center gap-0.5 ${
-                    isSelected
-                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
-                      : 'bg-white text-gray-700 border-indigo-100 hover:border-indigo-300'
-                  }"
-                >
-                  <span class="text-base leading-none">${sym.emoji}</span>
-                  <span class="text-[11px] font-semibold leading-tight mt-0.5">${sym.label}</span>
-                </button>
-              `;
-            }).join('')}
+    function renderManualMounjaroForm(defaultDate, defaultSite, defaultDose) {
+      return `
+        <form onsubmit="saveManualMounjaro(event)" class="mt-3 pt-3 border-t border-indigo-200/70 space-y-2.5 fade-in">
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[10px] font-bold uppercase text-indigo-900 mb-1">Data</label>
+              <input
+                id="mounjaro-input-date"
+                type="date"
+                value="${defaultDate}"
+                required
+                class="w-full bg-white border border-indigo-200 rounded-xl px-2.5 py-2 text-xs text-gray-800 focus:outline-none focus:border-indigo-500"
+              >
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold uppercase text-indigo-900 mb-1">Dose (opcional)</label>
+              <input
+                id="mounjaro-input-dose"
+                type="text"
+                value="${defaultDose}"
+                placeholder="Ex: 2,5 mg"
+                class="w-full bg-white border border-indigo-200 rounded-xl px-2.5 py-2 text-xs text-gray-800 focus:outline-none focus:border-indigo-500"
+              >
+            </div>
           </div>
-        </div>
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-indigo-900 mb-1">Local aplicado</label>
+            <select
+              id="mounjaro-input-site"
+              class="w-full bg-white border border-indigo-200 rounded-xl px-2.5 py-2 text-xs text-gray-800 focus:outline-none focus:border-indigo-500"
+            >
+              ${LOCAIS_APLICACAO.map(site => `<option value="${site}" ${site === defaultSite ? 'selected' : ''}>${site}</option>`).join('')}
+            </select>
+          </div>
+          <button
+            type="submit"
+            class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition active:scale-95"
+          >
+            Salvar aplicação
+          </button>
+        </form>
       `;
-
-      container.innerHTML = headerBlock + checkinBlock;
     }
 
-    function toggleMounjaroToday() {
-      toggleMounjaroDate(todayKey);
-    }
-
-    function toggleMounjaroDate(dateKey) {
-      const current = mounjaroLog[dateKey] || { applied: false, site: null };
-      current.applied = !current.applied;
-      mounjaroLog[dateKey] = current;
-      saveMounjaroLog();
+    function chooseMounjaroSite(site) {
+      selectedMounjaroSite = site;
       renderMounjaroCard();
     }
 
-    function selectMounjaroSite(site) {
-      selectMounjaroSiteForDate(todayKey, site);
-    }
-
-    function selectMounjaroSiteForDate(dateKey, site) {
-      const current = mounjaroLog[dateKey] || { applied: true, site: null };
-      current.site = current.site === site ? null : site;
-      if (current.site) current.applied = true;
-      mounjaroLog[dateKey] = current;
-      saveMounjaroLog();
+    function toggleMounjaroForm() {
+      showMounjaroForm = !showMounjaroForm;
       renderMounjaroCard();
     }
 
-    function toggleManualMounjaroEdit() {
-      showManualMounjaroEdit = !showManualMounjaroEdit;
+    function registerTodayMounjaro() {
+      const existingIdx = mounjaroLogs.findIndex(item => item.date === todayKey);
+      const entry = {
+        id: existingIdx >= 0 ? mounjaroLogs[existingIdx].id : `mj-${Date.now()}`,
+        date: todayKey,
+        site: selectedMounjaroSite,
+        dose: ''
+      };
+      if (existingIdx >= 0) mounjaroLogs[existingIdx] = entry;
+      else mounjaroLogs.push(entry);
+
+      saveMounjaroLogs();
+      selectedMounjaroSite = getSuggestedSite();
+      showToast('Aplicação registrada!');
       renderMounjaroCard();
     }
 
-    function selectSymptom(symId) {
-      dailyState.symptom = dailyState.symptom === symId ? null : symId;
-      saveDailyState();
+    function saveManualMounjaro(event) {
+      event.preventDefault();
+      const dateVal = document.getElementById('mounjaro-input-date').value;
+      const siteVal = document.getElementById('mounjaro-input-site').value;
+      const doseVal = document.getElementById('mounjaro-input-dose').value.trim();
+      if (!dateVal) return;
+
+      const existingIdx = mounjaroLogs.findIndex(item => item.date === dateVal);
+      const entry = {
+        id: existingIdx >= 0 ? mounjaroLogs[existingIdx].id : `mj-${Date.now()}`,
+        date: dateVal,
+        site: siteVal,
+        dose: doseVal
+      };
+      if (existingIdx >= 0) mounjaroLogs[existingIdx] = entry;
+      else mounjaroLogs.push(entry);
+
+      saveMounjaroLogs();
+      showMounjaroForm = false;
+      selectedMounjaroSite = getSuggestedSite();
+      showToast('Aplicação salva!');
       renderMounjaroCard();
+    }
+
+    function removeMounjaroLog(id) {
+      mounjaroLogs = mounjaroLogs.filter(item => item.id !== id);
+      saveMounjaroLogs();
+      selectedMounjaroSite = getSuggestedSite();
+      renderMounjaroCard();
+      renderHistory();
+      showToast('Registro removido');
     }
 
     /**
      * =========================================================================
-     * CONTADOR DE ÁGUA
+     * HIDRATAÇÃO E CHECK-IN DE SINTOMAS
      * =========================================================================
      */
     function renderWaterCard() {
-      const ml = dailyState.waterMl || 0;
-      const cups = Math.round(ml / 250);
-      const pct = Math.min(100, Math.round((ml / WATER_GOAL) * 100));
+      const cups = Math.max(0, Math.min(10, todayLog.waterCups || 0));
+      const ml = cups * 250;
+      const pct = Math.round((cups / 10) * 100);
 
       document.getElementById('water-amount').textContent = `${ml.toLocaleString('pt-BR')} ml`;
       document.getElementById('water-cups').textContent = `${cups}/10 copos`;
       document.getElementById('water-bar').style.width = `${pct}%`;
     }
 
-    function updateWater(delta) {
-      dailyState.waterMl = Math.max(0, (dailyState.waterMl || 0) + delta);
-      saveDailyState();
+    function updateWater(deltaCups) {
+      const next = Math.max(0, Math.min(10, (todayLog.waterCups || 0) + deltaCups));
+      todayLog.waterCups = next;
+      saveAllDailyLogs();
       renderWaterCard();
+    }
+
+    function renderSymptoms() {
+      const container = document.getElementById('symptom-buttons');
+      container.innerHTML = SINTOMAS_OPCOES.map(sym => {
+        const isSelected = todayLog.symptom === sym.id;
+        return `
+          <button
+            type="button"
+            onclick="selectSymptom('${sym.id}')"
+            class="py-2.5 px-2 rounded-2xl border text-center transition active:scale-95 flex flex-col items-center justify-center gap-0.5 ${
+              isSelected
+                ? 'bg-sage-600 text-white border-sage-600 shadow-xs'
+                : 'bg-cream text-gray-700 border-sage-100 hover:border-sage-300'
+            }"
+          >
+            <span class="text-base leading-none">${sym.emoji}</span>
+            <span class="text-[11px] font-semibold leading-tight mt-1">${sym.label}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectSymptom(symId) {
+      todayLog.symptom = todayLog.symptom === symId ? null : symId;
+      saveAllDailyLogs();
+      renderSymptoms();
     }
 
     /**
      * =========================================================================
-     * MOTOR DE REFEIÇÕES
+     * CARDÁPIO (7 REFEIÇÕES)
      * =========================================================================
      */
     function getActiveMealId() {
@@ -1424,17 +1618,15 @@
       for (let i = 0; i < PLANO_ALIMENTAR.length; i++) {
         const meal = PLANO_ALIMENTAR[i];
         const mealMinutes = meal.horaNum * 60 + meal.minNum;
-        if (nowMinutes <= mealMinutes + 45) {
-          return meal.id;
-        }
+        if (nowMinutes <= mealMinutes + 45) return meal.id;
       }
       return null;
     }
 
     function setDayMode(mode) {
       currentDayMode = mode;
-      dailyState.selectedTabs['almoco'] = 0;
-      saveDailyState();
+      todayLog.selectedTabs['almoco'] = 0;
+      saveAllDailyLogs();
       renderMeals();
     }
 
@@ -1444,31 +1636,29 @@
       container.innerHTML = '';
 
       PLANO_ALIMENTAR.forEach(meal => {
-        const isDone = !!dailyState.completedMeals[meal.id];
+        const isDone = !!todayLog.completedMeals[meal.id];
         const isActive = meal.id === activeMealId && !isDone;
 
         const opcoesList = meal.hasDayMode
           ? (currentDayMode === 'semana' ? meal.opcoesSemana : meal.opcoesFds)
           : meal.opcoes;
 
-        let activeTabIdx = dailyState.selectedTabs[meal.id] || 0;
+        let activeTabIdx = todayLog.selectedTabs[meal.id] || 0;
         if (activeTabIdx >= opcoesList.length) activeTabIdx = 0;
         const currentOption = opcoesList[activeTabIdx];
 
         const card = document.createElement('article');
         card.className = `bg-white rounded-3xl p-4 shadow-sm border transition-all ${
-          isActive ? 'border-sage-600 ring-2 ring-sage-600/15' : 'border-gray-100'
+          isActive ? 'border-sage-600 ring-2 ring-sage-600/15' : 'border-sage-100'
         } ${isDone ? 'opacity-80' : ''}`;
 
-        // Badge de status
         let badgeHtml = '';
         if (isActive) {
           badgeHtml = `<span class="text-[10px] font-bold uppercase tracking-wider bg-sage-600 text-white px-2 py-0.5 rounded-full">Agora / Próxima</span>`;
         } else if (isDone) {
-          badgeHtml = `<span class="text-[10px] font-bold uppercase tracking-wider bg-sage-100 text-sage-700 px-2 py-0.5 rounded-full">Concluída</span>`;
+          badgeHtml = `<span class="text-[10px] font-bold uppercase tracking-wider bg-sage-100 text-sage-800 px-2 py-0.5 rounded-full">Concluída</span>`;
         }
 
-        // Toggle Dia de Semana vs Fim de Semana (exclusivo no card do Almoço)
         let dayModeToggleHtml = '';
         if (meal.hasDayMode) {
           dayModeToggleHtml = `
@@ -1477,9 +1667,7 @@
                 type="button"
                 onclick="setDayMode('semana')"
                 class="py-1.5 px-2 rounded-xl text-xs font-semibold transition ${
-                  currentDayMode === 'semana'
-                    ? 'bg-sage-600 text-white shadow-xs'
-                    : 'text-gray-600 hover:text-gray-900'
+                  currentDayMode === 'semana' ? 'bg-sage-600 text-white shadow-xs' : 'text-gray-600 hover:text-gray-900'
                 }"
               >
                 Dia de Semana
@@ -1488,9 +1676,7 @@
                 type="button"
                 onclick="setDayMode('fds')"
                 class="py-1.5 px-2 rounded-xl text-xs font-semibold transition ${
-                  currentDayMode === 'fds'
-                    ? 'bg-sage-600 text-white shadow-xs'
-                    : 'text-gray-600 hover:text-gray-900'
+                  currentDayMode === 'fds' ? 'bg-sage-600 text-white shadow-xs' : 'text-gray-600 hover:text-gray-900'
                 }"
               >
                 Fim de Semana
@@ -1499,7 +1685,6 @@
           `;
         }
 
-        // Abas de substituição
         let tabsHtml = '';
         if (opcoesList.length > 1) {
           tabsHtml = `
@@ -1521,17 +1706,16 @@
           `;
         }
 
-        // Itens alimentares
         let itensHtml = '';
         if (currentOption.itens && currentOption.itens.length > 0) {
           itensHtml = `<div class="mt-3 space-y-2.5">` + currentOption.itens.map((item, itemIdx) => {
             const pillKey = `${meal.id}_${meal.hasDayMode ? currentDayMode : 'all'}_${activeTabIdx}_${itemIdx}`;
             const hasMultiple = item.opcoes.length > 1;
-            const selectedPill = dailyState.selectedPills[pillKey];
+            const selectedPill = todayLog.selectedPills[pillKey];
 
             if (!hasMultiple) {
               return `
-                <div class="bg-cream rounded-2xl px-3.5 py-2.5 border border-gray-100">
+                <div class="bg-cream rounded-2xl px-3.5 py-2.5 border border-sage-100">
                   <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400">${item.label}</p>
                   <p class="text-sm font-medium text-gray-800 mt-0.5">${item.opcoes[0]}</p>
                 </div>
@@ -1539,7 +1723,7 @@
             }
 
             return `
-              <div class="bg-cream rounded-2xl p-3 border border-gray-100">
+              <div class="bg-cream rounded-2xl p-3 border border-sage-100">
                 <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-2">${item.label}</p>
                 <div class="flex flex-wrap gap-1.5">
                   ${item.opcoes.map((optText, optIdx) => {
@@ -1551,7 +1735,7 @@
                         class="text-left text-xs px-3 py-2 rounded-xl border transition active:scale-95 ${
                           isSelected
                             ? 'bg-sage-600 text-white border-sage-600 font-semibold shadow-xs'
-                            : 'bg-white text-gray-700 border-gray-200 hover:border-sage-300'
+                            : 'bg-white text-gray-700 border-sage-100 hover:border-sage-300'
                         }"
                       >
                         ${optText}
@@ -1564,22 +1748,19 @@
           }).join('') + `</div>`;
         }
 
-        // Suplementos e Manipulados com checkbox individual
         let supHtml = '';
         if (currentOption.suplementos && currentOption.suplementos.length > 0) {
           supHtml = `<div class="mt-3 space-y-2">` + currentOption.suplementos.map(sup => {
-            const supChecked = !!dailyState.completedSupplements[sup.id];
+            const supChecked = !!todayLog.completedSupplements[sup.id];
             return `
               <label class="flex items-start gap-3 p-3 rounded-2xl border cursor-pointer transition ${
-                supChecked
-                  ? 'bg-sage-50/60 border-sage-200'
-                  : 'bg-sage-50 border-sage-200/80'
+                supChecked ? 'bg-sage-50/60 border-sage-200' : 'bg-sage-50 border-sage-200'
               }">
                 <input
                   type="checkbox"
                   ${supChecked ? 'checked' : ''}
                   onchange="toggleSupplement('${sup.id}')"
-                  class="mt-0.5 w-5 h-5 rounded-md accent-[#2E6F5E] shrink-0 cursor-pointer"
+                  class="mt-0.5 w-5 h-5 rounded-md accent-[#4E6B4C] shrink-0 cursor-pointer"
                 >
                 <div class="text-xs leading-relaxed">
                   <span class="font-bold text-sage-800 block uppercase tracking-wide text-[10px]">${sup.titulo}</span>
@@ -1590,7 +1771,6 @@
           }).join('') + `</div>`;
         }
 
-        // Observações
         let obsHtml = '';
         if (currentOption.obs) {
           obsHtml = `
@@ -1603,13 +1783,12 @@
           `;
         }
 
-        // Receita expansível (accordion)
         let receitaHtml = '';
         if (currentOption.receita) {
           receitaHtml = `
             <details class="mt-3 bg-amber-50/70 border border-amber-200/80 rounded-2xl p-3 group">
               <summary class="text-xs font-bold text-amber-900 cursor-pointer flex items-center justify-between list-none">
-                <span>🍅 Receita: ${currentOption.receita.titulo}</span>
+                <span>🍅 ${currentOption.receita.titulo}</span>
                 <span class="text-amber-700 group-open:rotate-180 transition-transform">▾</span>
               </summary>
               <div class="mt-2.5 pt-2.5 border-t border-amber-200/60 text-xs text-amber-950 space-y-2 leading-relaxed">
@@ -1624,7 +1803,7 @@
           <div class="flex items-start justify-between gap-2">
             <div>
               <div class="flex items-center gap-2">
-                <span class="text-xs font-bold text-sage-600 bg-sage-50 px-2.5 py-0.5 rounded-lg">${meal.horario}</span>
+                <span class="text-xs font-bold text-sage-800 bg-sage-50 px-2.5 py-0.5 rounded-lg">${meal.horario}</span>
                 ${badgeHtml}
               </div>
               <h3 class="text-base font-bold text-gray-900 mt-1.5 ${isDone ? 'line-through text-gray-400' : ''}">${meal.titulo}</h3>
@@ -1632,7 +1811,7 @@
             <label class="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-2xl text-xs font-semibold cursor-pointer transition active:scale-95 select-none ${
               isDone
                 ? 'bg-sage-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-sage-50 hover:text-sage-700'
+                : 'bg-gray-100 text-gray-700 hover:bg-sage-50 hover:text-sage-800'
             }">
               <input
                 type="checkbox"
@@ -1658,36 +1837,33 @@
     }
 
     function selectMealTab(mealId, tabIdx) {
-      dailyState.selectedTabs[mealId] = tabIdx;
-      saveDailyState();
+      todayLog.selectedTabs[mealId] = tabIdx;
+      saveAllDailyLogs();
       renderMeals();
     }
 
     function selectPill(pillKey, optIdx) {
-      if (dailyState.selectedPills[pillKey] === optIdx) {
-        delete dailyState.selectedPills[pillKey];
-      } else {
-        dailyState.selectedPills[pillKey] = optIdx;
-      }
-      saveDailyState();
+      if (todayLog.selectedPills[pillKey] === optIdx) delete todayLog.selectedPills[pillKey];
+      else todayLog.selectedPills[pillKey] = optIdx;
+      saveAllDailyLogs();
       renderMeals();
     }
 
     function toggleMealDone(mealId) {
-      dailyState.completedMeals[mealId] = !dailyState.completedMeals[mealId];
-      saveDailyState();
+      todayLog.completedMeals[mealId] = !todayLog.completedMeals[mealId];
+      saveAllDailyLogs();
       renderMeals();
     }
 
     function toggleSupplement(supId) {
-      dailyState.completedSupplements[supId] = !dailyState.completedSupplements[supId];
-      saveDailyState();
+      todayLog.completedSupplements[supId] = !todayLog.completedSupplements[supId];
+      saveAllDailyLogs();
       renderMeals();
     }
 
     /**
      * =========================================================================
-     * TELA 2: MERCADO (LISTA DE COMPRAS INTELIGENTE)
+     * ABA 2: MERCADO
      * =========================================================================
      */
     function getAllMarketItems() {
@@ -1708,14 +1884,9 @@
 
       if (progressText) progressText.textContent = `${inCart} de ${total} itens no carrinho`;
       if (progressBar) progressBar.style.width = `${pct}%`;
-
       if (navBadge) {
         navBadge.textContent = pending;
-        if (pending === 0) {
-          navBadge.classList.add('hidden');
-        } else {
-          navBadge.classList.remove('hidden');
-        }
+        navBadge.classList.toggle('hidden', pending === 0);
       }
     }
 
@@ -1724,11 +1895,9 @@
       ['todos', 'faltam', 'carrinho'].forEach(f => {
         const btn = document.getElementById(`filter-${f}`);
         if (!btn) return;
-        if (f === filter) {
-          btn.className = 'py-1.5 px-2 rounded-xl text-xs font-semibold transition bg-sage-600 text-white shadow-xs';
-        } else {
-          btn.className = 'py-1.5 px-2 rounded-xl text-xs font-semibold transition text-gray-600 hover:text-gray-900';
-        }
+        btn.className = f === filter
+          ? 'py-1.5 px-2 rounded-xl text-xs font-semibold transition bg-sage-600 text-white shadow-xs'
+          : 'py-1.5 px-2 rounded-xl text-xs font-semibold transition text-gray-600 hover:text-gray-900';
       });
       renderMarket();
     }
@@ -1745,12 +1914,8 @@
       const nome = input.value.trim();
       if (!nome) return;
 
-      const newItem = {
-        id: `extra-${Date.now()}`,
-        nome
-      };
       if (!marketState.extras) marketState.extras = [];
-      marketState.extras.unshift(newItem);
+      marketState.extras.unshift({ id: `extra-${Date.now()}`, nome });
       saveMarketState();
       input.value = '';
       renderMarket();
@@ -1771,6 +1936,7 @@
       marketState.checked = {};
       saveMarketState();
       renderMarket();
+      showToast('Carrinho limpo!');
     }
 
     function renderMarket() {
@@ -1779,11 +1945,9 @@
       if (!container) return;
       container.innerHTML = '';
 
-      const categoriesToRender = [];
-
-      // Se houver itens extras, exibe primeiro para acesso rápido
+      const categories = [];
       if (marketState.extras && marketState.extras.length > 0) {
-        categoriesToRender.push({
+        categories.push({
           id: 'extras',
           titulo: 'Itens Extras',
           icone: '📝',
@@ -1791,61 +1955,25 @@
           itens: marketState.extras
         });
       }
+      LISTA_MERCADO_BASE.forEach(c => categories.push(c));
 
-      LISTA_MERCADO_BASE.forEach(cat => categoriesToRender.push(cat));
-
-      let renderedAnyItem = false;
-
-      categoriesToRender.forEach(cat => {
-        const filteredItems = cat.itens.filter(item => {
+      let renderedAny = false;
+      categories.forEach(cat => {
+        const filtered = cat.itens.filter(item => {
           const isChecked = !!marketState.checked[item.id];
           if (currentMarketFilter === 'faltam') return !isChecked;
           if (currentMarketFilter === 'carrinho') return isChecked;
           return true;
         });
-
-        if (filteredItems.length === 0) return;
-        renderedAnyItem = true;
+        if (filtered.length === 0) return;
+        renderedAny = true;
 
         const section = document.createElement('section');
-        section.className = 'bg-white rounded-3xl p-4 shadow-sm border border-gray-100';
+        section.className = 'bg-white rounded-3xl p-4 shadow-sm border border-sage-100';
 
         const badgeHtml = cat.badge
           ? `<span class="text-[10px] font-bold uppercase tracking-wider bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">${cat.badge}</span>`
           : '';
-
-        const itemsHtml = filteredItems.map(item => {
-          const isChecked = !!marketState.checked[item.id];
-          const removeBtnHtml = cat.isExtra
-            ? `<button
-                type="button"
-                onclick="removeExtraMarketItem('${item.id}', event)"
-                aria-label="Remover item"
-                class="w-7 h-7 rounded-xl bg-gray-100 hover:bg-red-50 text-gray-400 hover:text-red-500 flex items-center justify-center text-xs shrink-0 transition"
-              >✕</button>`
-            : '';
-
-          return `
-            <label class="flex items-center gap-3 p-3 rounded-2xl border cursor-pointer transition active:scale-[0.99] select-none ${
-              isChecked
-                ? 'bg-sage-50/70 border-sage-200'
-                : 'bg-cream border-gray-100 hover:border-sage-300'
-            }">
-              <input
-                type="checkbox"
-                ${isChecked ? 'checked' : ''}
-                onchange="toggleMarketItem('${item.id}')"
-                class="w-6 h-6 rounded-lg accent-[#7C9A7A] shrink-0 cursor-pointer"
-              >
-              <span class="flex-1 text-sm leading-snug ${
-                isChecked ? 'line-through text-gray-400 font-normal' : 'text-gray-800 font-medium'
-              }">
-                ${item.nome}
-              </span>
-              ${removeBtnHtml}
-            </label>
-          `;
-        }).join('');
 
         section.innerHTML = `
           <div class="flex items-center justify-between gap-2 mb-3">
@@ -1856,24 +1984,227 @@
             ${badgeHtml}
           </div>
           <div class="space-y-2">
-            ${itemsHtml}
+            ${filtered.map(item => {
+              const isChecked = !!marketState.checked[item.id];
+              const removeBtn = cat.isExtra
+                ? `<button type="button" onclick="removeExtraMarketItem('${item.id}', event)" aria-label="Remover" class="w-7 h-7 rounded-xl bg-gray-100 hover:bg-red-50 text-gray-400 hover:text-red-500 flex items-center justify-center text-xs shrink-0 transition">✕</button>`
+                : '';
+              return `
+                <label class="flex items-center gap-3 p-3 rounded-2xl border cursor-pointer transition active:scale-[0.99] select-none ${
+                  isChecked ? 'bg-sage-50/70 border-sage-200' : 'bg-cream border-sage-100 hover:border-sage-300'
+                }">
+                  <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleMarketItem('${item.id}')" class="w-6 h-6 rounded-lg accent-[#7C9A7A] shrink-0 cursor-pointer">
+                  <span class="flex-1 text-sm leading-snug ${isChecked ? 'line-through text-gray-400' : 'text-gray-800 font-medium'}">${item.nome}</span>
+                  ${removeBtn}
+                </label>
+              `;
+            }).join('')}
           </div>
         `;
-
         container.appendChild(section);
       });
 
-      if (!renderedAnyItem) {
-        const emptyMsg = currentMarketFilter === 'faltam'
+      if (!renderedAny) {
+        const msg = currentMarketFilter === 'faltam'
           ? 'Tudo certo! Todos os itens já estão no carrinho.'
           : 'Nenhum item no carrinho ainda. Toque nos itens para marcar.';
         container.innerHTML = `
-          <div class="bg-white rounded-3xl p-8 text-center border border-gray-100 shadow-xs">
+          <div class="bg-white rounded-3xl p-8 text-center border border-sage-100 shadow-xs">
             <p class="text-2xl mb-2">${currentMarketFilter === 'faltam' ? '🎉' : '🛒'}</p>
-            <p class="text-sm font-semibold text-gray-700">${emptyMsg}</p>
+            <p class="text-sm font-semibold text-gray-700">${msg}</p>
           </div>
         `;
       }
+    }
+
+    /**
+     * =========================================================================
+     * ABA 3: HISTÓRICO (RESUMO MÉDICO, MOUNJARO E DIÁRIO)
+     * =========================================================================
+     */
+    function getRecentDateKeys(limit = 14) {
+      return Object.keys(allDailyLogs)
+        .sort((a, b) => b.localeCompare(a))
+        .slice(0, limit);
+    }
+
+    function renderHistory() {
+      const recentKeys = getRecentDateKeys(14);
+      const totalDays = recentKeys.length;
+
+      let sumWaterMl = 0;
+      let sumMeals = 0;
+      const symptomCounts = { 'Normal': 0, 'Pouco apetite': 0, 'Enjoo': 0 };
+
+      recentKeys.forEach(k => {
+        const log = allDailyLogs[k] || createEmptyDayLog();
+        sumWaterMl += (log.waterCups || 0) * 250;
+        sumMeals += PLANO_ALIMENTAR.filter(m => log.completedMeals && log.completedMeals[m.id]).length;
+        if (log.symptom && symptomCounts[log.symptom] !== undefined) {
+          symptomCounts[log.symptom]++;
+        }
+      });
+
+      const avgWater = totalDays > 0 ? Math.round(sumWaterMl / totalDays) : 0;
+      const avgMeals = totalDays > 0 ? (sumMeals / totalDays).toFixed(1).replace('.', ',') : '0';
+
+      // 3 Mini-cards de Resumo
+      const summaryEl = document.getElementById('history-summary-cards');
+      summaryEl.innerHTML = `
+        <div class="bg-cream rounded-2xl p-3 border border-sage-100 text-center">
+          <p class="text-[10px] font-bold uppercase text-gray-400">Média Água</p>
+          <p class="text-sm font-bold text-sky-700 mt-1">${avgWater.toLocaleString('pt-BR')} ml</p>
+          <p class="text-[10px] text-gray-400 mt-0.5">por dia</p>
+        </div>
+        <div class="bg-cream rounded-2xl p-3 border border-sage-100 text-center">
+          <p class="text-[10px] font-bold uppercase text-gray-400">Refeições</p>
+          <p class="text-sm font-bold text-sage-800 mt-1">${avgMeals}/7</p>
+          <p class="text-[10px] text-gray-400 mt-0.5">${totalDays} ${totalDays === 1 ? 'dia' : 'dias'}</p>
+        </div>
+        <div class="bg-cream rounded-2xl p-3 border border-sage-100 text-center">
+          <p class="text-[10px] font-bold uppercase text-gray-400">Sintomas</p>
+          <p class="text-[11px] font-semibold text-gray-700 mt-1 leading-tight">
+            😊 ${symptomCounts['Normal']} • 🍽️ ${symptomCounts['Pouco apetite']} • 🤢 ${symptomCounts['Enjoo']}
+          </p>
+          <p class="text-[10px] text-gray-400 mt-0.5">registros</p>
+        </div>
+      `;
+
+      // Lista de Aplicações de Mounjaro
+      const sortedMj = getSortedMounjaroLogs();
+      document.getElementById('mounjaro-count-badge').textContent = sortedMj.length;
+      const mjListEl = document.getElementById('history-mounjaro-list');
+
+      if (sortedMj.length === 0) {
+        mjListEl.innerHTML = `<p class="text-xs text-gray-400 text-center py-3">Nenhuma aplicação registrada ainda.</p>`;
+      } else {
+        mjListEl.innerHTML = sortedMj.map(item => `
+          <div class="flex items-center justify-between gap-2 bg-indigo-50/60 border border-indigo-100 rounded-2xl px-3.5 py-2.5">
+            <div>
+              <p class="text-xs font-bold text-indigo-950">${formatDateBR(item.date)} — ${item.site}</p>
+              ${item.dose ? `<p class="text-[11px] text-indigo-700">Dose: ${item.dose}</p>` : ''}
+            </div>
+            <button
+              type="button"
+              onclick="removeMounjaroLog('${item.id}')"
+              aria-label="Remover aplicação"
+              class="w-7 h-7 rounded-xl bg-white hover:bg-red-50 text-gray-400 hover:text-red-500 border border-indigo-100 flex items-center justify-center text-xs transition shrink-0"
+            >
+              ✕
+            </button>
+          </div>
+        `).join('');
+      }
+
+      // Diário dos Últimos Dias
+      const dailyListEl = document.getElementById('history-daily-list');
+      const allSortedKeys = Object.keys(allDailyLogs).sort((a, b) => b.localeCompare(a));
+
+      if (allSortedKeys.length === 0) {
+        dailyListEl.innerHTML = `<p class="text-xs text-gray-400 text-center py-6">Nenhum dia registrado ainda.</p>`;
+        return;
+      }
+
+      dailyListEl.innerHTML = allSortedKeys.map(dateKey => {
+        const log = allDailyLogs[dateKey] || createEmptyDayLog();
+        const mealsDoneList = PLANO_ALIMENTAR.filter(m => log.completedMeals && log.completedMeals[m.id]);
+        const supKeys = Object.keys(SUPLEMENTOS_MAP);
+        const supDoneList = supKeys.filter(id => log.completedSupplements && log.completedSupplements[id]);
+        const waterMl = (log.waterCups || 0) * 250;
+        const waterPct = Math.min(100, Math.round((waterMl / 2500) * 100));
+
+        const symObj = SINTOMAS_OPCOES.find(s => s.id === log.symptom);
+        const symBadge = symObj
+          ? `<span class="text-[10px] font-semibold bg-sage-50 text-sage-800 border border-sage-200 px-2 py-0.5 rounded-full">${symObj.emoji} ${symObj.label}</span>`
+          : `<span class="text-[10px] font-medium bg-gray-100 text-gray-400 px-2 py-0.5 rounded-full">Sem check-in</span>`;
+
+        const isTodayLabel = dateKey === todayKey ? ' (Hoje)' : '';
+
+        return `
+          <details class="bg-white rounded-3xl p-4 shadow-sm border border-sage-100 group">
+            <summary class="list-none cursor-pointer">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-sm font-bold text-gray-900 capitalize">${formatFullDateBR(dateKey)}${isTodayLabel}</span>
+                ${symBadge}
+              </div>
+
+              <div class="grid grid-cols-3 gap-2 mt-3 text-xs">
+                <div class="bg-cream rounded-xl p-2 border border-sage-100">
+                  <span class="block text-[10px] text-gray-400 font-semibold">Água</span>
+                  <span class="font-bold text-sky-700">${waterMl.toLocaleString('pt-BR')} ml</span>
+                  <div class="w-full h-1 bg-gray-200 rounded-full mt-1 overflow-hidden">
+                    <div class="h-full bg-sky-500 rounded-full" style="width: ${waterPct}%"></div>
+                  </div>
+                </div>
+                <div class="bg-cream rounded-xl p-2 border border-sage-100">
+                  <span class="block text-[10px] text-gray-400 font-semibold">Refeições</span>
+                  <span class="font-bold text-sage-800">${mealsDoneList.length}/${PLANO_ALIMENTAR.length}</span>
+                </div>
+                <div class="bg-cream rounded-xl p-2 border border-sage-100">
+                  <span class="block text-[10px] text-gray-400 font-semibold">Suplementos</span>
+                  <span class="font-bold text-sage-800">${supDoneList.length}/${supKeys.length}</span>
+                </div>
+              </div>
+            </summary>
+
+            <div class="mt-3 pt-3 border-t border-sage-100 space-y-2.5 text-xs">
+              <div>
+                <p class="font-bold text-gray-700 mb-1">Refeições marcadas:</p>
+                ${mealsDoneList.length > 0
+                  ? `<div class="flex flex-wrap gap-1.5">${mealsDoneList.map(m => `<span class="bg-sage-50 text-sage-800 px-2.5 py-1 rounded-xl font-medium">✓ ${m.horario} ${m.titulo}</span>`).join('')}</div>`
+                  : `<p class="text-gray-400">Nenhuma refeição marcada.</p>`
+                }
+              </div>
+              <div>
+                <p class="font-bold text-gray-700 mb-1">Suplementos tomados:</p>
+                ${supDoneList.length > 0
+                  ? `<div class="flex flex-wrap gap-1.5">${supDoneList.map(id => `<span class="bg-indigo-50 text-indigo-800 px-2.5 py-1 rounded-xl font-medium">✓ ${SUPLEMENTOS_MAP[id]}</span>`).join('')}</div>`
+                  : `<p class="text-gray-400">Nenhum suplemento marcado.</p>`
+                }
+              </div>
+            </div>
+          </details>
+        `;
+      }).join('');
+    }
+
+    function copyDoctorReport() {
+      const recentKeys = getRecentDateKeys(14);
+      const totalDays = recentKeys.length;
+      let sumWaterMl = 0;
+      let sumMeals = 0;
+      const symptomCounts = { 'Normal': 0, 'Pouco apetite': 0, 'Enjoo': 0 };
+
+      recentKeys.forEach(k => {
+        const log = allDailyLogs[k] || createEmptyDayLog();
+        sumWaterMl += (log.waterCups || 0) * 250;
+        sumMeals += PLANO_ALIMENTAR.filter(m => log.completedMeals && log.completedMeals[m.id]).length;
+        if (log.symptom && symptomCounts[log.symptom] !== undefined) symptomCounts[log.symptom]++;
+      });
+
+      const avgWater = totalDays > 0 ? Math.round(sumWaterMl / totalDays) : 0;
+      const avgMeals = totalDays > 0 ? (sumMeals / totalDays).toFixed(1).replace('.', ',') : '0';
+
+      const sortedMj = getSortedMounjaroLogs().slice(0, 6);
+      const mjLines = sortedMj.length > 0
+        ? sortedMj.map(m => `- ${formatDateBR(m.date)}: ${m.site}${m.dose ? ` (${m.dose})` : ''}`).join('\n')
+        : '- Nenhuma aplicação registrada';
+
+      const report = [
+        `📋 *RESUMO DE ACOMPANHAMENTO — POLIANA*`,
+        `Período: últimos ${totalDays} ${totalDays === 1 ? 'dia registrado' : 'dias registrados'}`,
+        ``,
+        `💧 *Hidratação:* média de ${avgWater.toLocaleString('pt-BR')} ml/dia`,
+        `🍽️ *Refeições:* média de ${avgMeals}/7 por dia`,
+        `🩺 *Como se sentiu:* Normal (${symptomCounts['Normal']}) | Pouco apetite (${symptomCounts['Pouco apetite']}) | Enjoo (${symptomCounts['Enjoo']})`,
+        ``,
+        `💉 *Últimas aplicações de Mounjaro (Quartas-feiras):*`,
+        mjLines,
+        ``,
+        `Enviado pelo app Plano Poliana`
+      ].join('\n');
+
+      copyTextToClipboard(report);
     }
 
     /**
@@ -1900,6 +2231,7 @@
     initHeader();
     renderMounjaroCard();
     renderWaterCard();
+    renderSymptoms();
     renderMeals();
     updateMarketStats();
   </script>
